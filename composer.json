@@ -2,7 +2,8 @@
     "name": "rdx/f95tracker",
     "type": "project",
     "require": {
-        "rdx/db": "^1.16"
+        "rdx/db": "^1.16",
+        "guzzlehttp/guzzle": "^7.1"
     },
     "autoload": {
         "psr-4": {
