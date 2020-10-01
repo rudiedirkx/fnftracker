@@ -33,17 +33,20 @@ foreach ($sources as $source) {
 	$redirects = $rsp->getHeader(RedirectMiddleware::HISTORY_HEADER);
 	$html = (string) $rsp->getBody();
 
-	if (!preg_match('#Release Date:\s+(\d\d\d\d-\d\d?-\d\d?)#i', $html, $match)) {
-		echo "- no match??\n\n";
-		continue;
-	}
+	$release = preg_match('#Release Date:\s+(\d\d\d\d-\d\d?-\d\d?)#i', $html, $match) ? $match[1] : null;
+	$thread = preg_match('#Thread Updated:\s+(\d\d\d\d-\d\d?-\d\d?)#i', $html, $match) ? $match[1] : null;
 
-	$date = $match[1];
-	echo "- $date\n";
+	if (!$release) {
+		echo "- no match??\n";
+	}
+	else {
+		echo "- $release\n";
+	}
 
 	Fetch::insert([
 		'source_id' => $source->id,
-		'date' => $date,
+		'release_date' => $release,
+		'thread_date' => $thread,
 		'url' => end($redirects),
 		'created_on' => time(),
 	]);

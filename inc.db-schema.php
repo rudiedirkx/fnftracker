@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'version' => 3,
+	'version' => 4,
 	'tables' => [
 		'sources' => [
 			'id' => ['pk' => true],
@@ -14,7 +14,8 @@ return [
 			'source_id' => ['unsigned' => true, 'references' => ['sources', 'id']],
 			'created_on' => ['unsigned' => true, 'null' => false, 'default' => 0],
 			'url',
-			'date',
+			'release_date',
+			'thread_date',
 		],
 	],
 ];
