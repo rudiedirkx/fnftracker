@@ -1,0 +1,19 @@
+{
+    "name": "rdx/f95tracker",
+    "type": "project",
+    "require": {
+        "rdx/db": "^1.16"
+    },
+    "autoload": {
+        "psr-4": {
+            "rdx\\f95\\": "src/"
+        },
+        "files": ["inc.functions.php"]
+    },
+    "authors": [
+        {
+            "name": "Rudie Dirkx",
+            "email": "github@hotblocks.nl"
+        }
+    ]
+}
