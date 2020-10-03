@@ -36,8 +36,9 @@ class Source extends Model {
 		$redirects = $rsp->getHeader(RedirectMiddleware::HISTORY_HEADER);
 		$html = (string) $rsp->getBody();
 
-		$release = preg_match('#Release Date:\s+(\d\d\d\d-\d\d?-\d\d?)#i', $html, $match) ? $match[1] : null;
-		$thread = preg_match('#Thread Updated:\s+(\d\d\d\d-\d\d?-\d\d?)#i', $html, $match) ? $match[1] : null;
+		$datePattern = '\d\d\d\d ?- ?\d\d? ?- ?\d\d?';
+		$release = preg_match('#Release Date:\s*(' . $datePattern . ')#i', $html, $match) ? str_replace(' ', '', $match[1]) : null;
+		$thread = preg_match('#Thread Updated:\s*(' . $datePattern . ')#i', $html, $match) ? str_replace(' ', '', $match[1]) : null;
 
 		return Fetch::insert([
 			'source_id' => $this->id,

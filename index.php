@@ -21,7 +21,16 @@ if ( isset($_POST['name'], $_POST['f95_id']) ) {
 	$source = Source::find($id);
 	$source->sync();
 
-	setcookie('hilite_source', $id);
+	setcookie('hilite_source', $source->id);
+
+	return do_redirect('index');
+}
+
+if ( isset($_GET['sync']) ) {
+	$source = Source::find($_GET['sync']);
+	$source->sync();
+
+	setcookie('hilite_source', $source->id);
 
 	return do_redirect('index');
 }
@@ -52,13 +61,13 @@ tr.hilited {
 	<table border="1">
 		<thead>
 			<tr>
-				<th colspan="4">Sources (<?= count($sources) ?>)</th>
+				<th colspan="5">Sources (<?= count($sources) ?>)</th>
 			</tr>
 			<tr>
 				<th></th>
 				<th>Title</th>
 				<th data-sortable>Latest release</th>
-				<!-- <th>Latest URL</th> -->
+				<th></th>
 				<th>Last checked</th>
 			</tr>
 		</thead>
@@ -70,7 +79,7 @@ tr.hilited {
 					<td nowrap class="<?= $source->released_recently ? 'recent-release' : '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
 						<?= $source->last_fetch ? ($source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '?') : '' ?>
 					</td>
-					<!-- <td><?= $source->last_fetch->url ?? '' ?></td> -->
+					<td><a href="?sync=<?= $source->id ?>">&#8635;</a></td>
 					<td nowrap>
 						<? if ($source->last_fetch): ?>
 							<?= date('D j-M', $source->last_fetch->created_on) ?>
