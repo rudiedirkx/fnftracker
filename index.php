@@ -67,8 +67,7 @@ tr.hilited {
 				<th></th>
 				<th>Title</th>
 				<th data-sortable>Latest release</th>
-				<th></th>
-				<th>Last checked</th>
+				<th data-sortable="asc">Last checked</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -78,12 +77,12 @@ tr.hilited {
 					<td><?= html($source->name) ?></td>
 					<td nowrap class="<?= $source->released_recently ? 'recent-release' : '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
 						<?= $source->last_fetch ? ($source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '?') : '' ?>
+						<a href="?sync=<?= $source->id ?>">&#8635;</a>
 					</td>
-					<td><a href="?sync=<?= $source->id ?>">&#8635;</a></td>
 					<td nowrap>
 						<? if ($source->last_fetch): ?>
-							<?= date('D j-M', $source->last_fetch->created_on) ?>
-							<a href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
+							<?= date('Y-m-d', $source->last_fetch->created_on) ?>
+							<a target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
 						<? endif ?>
 					</td>
 				</tr>
@@ -128,8 +127,9 @@ window.addEventListener('load', function() {
 	const handle = function(e) {
 		const i = this.cellIndex;
 		const tbody = this.closest('table').tBodies[0];
-		const rows = Array.from(tbody.rows);
+		let rows = Array.from(tbody.rows);
 		rows.sort((a, b) => a.cells[i].textContent < b.cells[i].textContent ? 1 : -1);
+		this.dataset.sortable === 'asc' && (rows = rows.reverse());
 		rows.forEach(row => tbody.append(row));
 	};
 	document.querySelectorAll('th[data-sortable]').forEach(el => el.addEventListener('click', handle));
