@@ -5,6 +5,7 @@ namespace rdx\f95;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\RedirectMiddleware;
+use rdx\jsdom\Node;
 
 class Source extends Model {
 
@@ -32,18 +33,17 @@ class Source extends Model {
 			'{id}' => $this->f95_id,
 		]);
 
-		$rsp = $guzzle->get($url);
-		$redirects = $rsp->getHeader(RedirectMiddleware::HISTORY_HEADER);
-		$html = (string) $rsp->getBody();
+		[$doc, $redirects] = $this->getRemote($guzzle, $url);
 
-		$json = $this->getLdData($html);
-		$text = $json['articleBody'];
+		$text = $this->getLdText($doc);
 
-		$datePattern = '\d\d\d\d ?- ?\d\d? ?- ?\d\d?';
-		$release = preg_match('#\sRelease [Dd]ate:\s*(' . $datePattern . ')#', $text, $match) ? str_replace(' ', '', $match[1]) : null;
-		$thread = preg_match('#\sThread [Uu]pdated:\s*(' . $datePattern . ')#', $text, $match) ? str_replace(' ', '', $match[1]) : (preg_match('#\sUpdated:\s*(' . $datePattern . ')#', $text, $match) ? str_replace(' ', '', $match[1]) : null);
+		[$release, $thread] = $this->getDates($text);
+		$version = $this->getVersion($text);
+		$banner = $this->getBanner($doc);
 
-		$version = preg_match('#\sVersion:\s*([^\r\n]+)#', $text, $match) ? trim($match[1]) : null;
+		$this->update([
+			'banner_url' => $banner,
+		]);
 
 		return Fetch::insert([
 			'source_id' => $this->id,
@@ -55,9 +55,41 @@ class Source extends Model {
 		]);
 	}
 
-	protected function getLdData( $html ) {
-		preg_match('#<script type="application/ld\+json">(.+?)</script>#s', $html, $match);
-		return json_decode($match[1], true);
+	protected function getBanner(Node $doc) {
+		$banner = $doc->query('.message-threadStarterPost a > .bbImage');
+		return $banner->parent()['href'];
+	}
+
+	protected function getVersion(string $text) {
+		$version = preg_match('#\sVersion:\s*([^\r\n]+)#', $text, $match) ? trim($match[1]) : null;
+		return $version;
+	}
+
+	protected function getDate(string $text, string $pattern) {
+		return preg_match($pattern, $text, $match) ? str_replace(' ', '', $match[1]) : null;
+	}
+
+	protected function getDates(string $text) {
+		$datePattern = '\d\d\d\d ?- ?\d\d? ?- ?\d\d?';
+		$release = $this->getDate($text, '#\sRelease [Dd]ate:\s*(' . $datePattern . ')#');
+		$thread = $this->getDate($text, '#\sThread [Uu]pdated:\s*(' . $datePattern . ')#') ?? $this->getDate($text, '#\sUpdated:\s*(' . $datePattern . ')#');
+		return [$release, $thread];
+	}
+
+	protected function getRemote(Guzzle $guzzle, string $url) {
+		$rsp = $guzzle->get($url);
+		$redirects = $rsp->getHeader(RedirectMiddleware::HISTORY_HEADER);
+		$html = (string) $rsp->getBody();
+		return [
+			Node::create($html),
+			$redirects,
+		];
+	}
+
+	protected function getLdText(Node $doc) {
+		$el = $doc->query('script[type="application/ld+json"]');
+		$data = json_decode($el->textContent, true);
+		return $data['articleBody'];
 	}
 
 	protected function get_not_release_date() {

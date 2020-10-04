@@ -3,7 +3,8 @@
     "type": "project",
     "require": {
         "rdx/db": "^1.16",
-        "guzzlehttp/guzzle": "^7.1"
+        "guzzlehttp/guzzle": "^7.1",
+        "rdx/js-dom": "^1.1"
     },
     "autoload": {
         "psr-4": {

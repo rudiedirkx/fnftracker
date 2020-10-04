@@ -45,6 +45,16 @@ Source::eager('last_fetch', $sources);
 
 ?>
 <style>
+body.show-banner {
+	--transparency: 0.65;
+	background: none center 0 no-repeat;
+	background-image: /*linear-gradient(rgba(255, 255, 255, var(--transparency)), rgba(255, 255, 255, var(--transparency))),*/ var(--banner);
+	background-size: contain;
+	background-attachment: fixed;
+}
+table {
+	background-color: rgba(255, 255, 255, 0.65);
+}
 tr.hilited {
 	background: lightblue;
 }
@@ -57,6 +67,12 @@ tr.hilited {
 }
 .version {
 	font-family: monospace;
+}
+.version:not(:focus) {
+	/*display: inline-block;*/
+	max-width: 6em;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 </style>
 
@@ -76,15 +92,15 @@ tr.hilited {
 		</thead>
 		<tbody>
 			<? foreach ($sources as $source): ?>
-				<tr class="<?= $hilite == $source->id ? 'hilited' : '' ?>">
+				<tr class="<?= $hilite == $source->id ? 'hilited' : '' ?>" data-banner="<?= html($source->banner_url) ?>">
 					<td><input type="checkbox" name="enabled[]" value="<?= $source->id ?>" <?= $source->active ? 'checked' : '' ?> /></td>
 					<td><?= html($source->name) ?></td>
 					<td nowrap class="<?= $source->released_recently ? 'recent-release' : '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
 						<?= $source->last_fetch ? ($source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '?') : '' ?>
 						<a href="?sync=<?= $source->id ?>">&#8635;</a>
 					</td>
-					<td nowrap class="version">
-						<?= $source->last_fetch->version ?? '' ?>
+					<td nowrap class="version" tabindex="-1">
+						<span><?= $source->last_fetch->version ?? '' ?></span>
 					</td>
 					<td nowrap>
 						<? if ($source->last_fetch): ?>
@@ -127,10 +143,6 @@ window.addEventListener('load', function() {
 	});
 });
 window.addEventListener('load', function() {
-	const el = document.querySelector('.hilited');
-	el && el.scrollIntoViewIfNeeded();
-});
-window.addEventListener('load', function() {
 	const handle = function(e) {
 		const i = this.cellIndex;
 		const tbody = this.closest('table').tBodies[0];
@@ -140,6 +152,26 @@ window.addEventListener('load', function() {
 		rows.forEach(row => tbody.append(row));
 	};
 	document.querySelectorAll('th[data-sortable]').forEach(el => el.addEventListener('click', handle));
+});
+window.addEventListener('load', function() {
+	const body = document.body;
+	const over = function(e) {
+		const url = this.dataset.banner;
+		if (!url) return;
+		body.style.setProperty('--banner', `url('${url}')`);
+		body.classList.add('show-banner');
+	};
+	const out = function(e) {
+		body.classList.remove('show-banner');
+	};
+	document.querySelectorAll('tr[data-banner]').forEach(el => {
+		el.addEventListener('mouseover', over);
+		el.addEventListener('mouseout', out);
+	});
+});
+window.addEventListener('load', function() {
+	const el = document.querySelector('.hilited');
+	el && el.scrollIntoViewIfNeeded();
 });
 </script>
 <?php

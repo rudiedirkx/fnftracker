@@ -1,13 +1,14 @@
 <?php
 
 return [
-	'version' => 5,
+	'version' => 6,
 	'tables' => [
 		'sources' => [
 			'id' => ['pk' => true],
 			'active' => ['type' => 'int', 'default' => 1],
 			'f95_id',
 			'name',
+			'banner_url',
 		],
 		'fetches' => [
 			'id' => ['pk' => true],

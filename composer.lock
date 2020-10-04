@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0c620ce1907ed0f1a12674d43aeb603c",
+    "content-hash": "45b1f468ba2b176076e3a5f3b808e021",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -399,6 +399,109 @@
             ],
             "description": "Simple MySQL/SQLite wrapper",
             "time": "2020-05-02T09:32:23+00:00"
+        },
+        {
+            "name": "rdx/js-dom",
+            "version": "1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rudiedirkx/php-js-dom.git",
+                "reference": "eaf29eac51b7c7ee4fc555ae1b27683650dc1c22"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rudiedirkx/php-js-dom/zipball/eaf29eac51b7c7ee4fc555ae1b27683650dc1c22",
+                "reference": "eaf29eac51b7c7ee4fc555ae1b27683650dc1c22",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/css-selector": "^3.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "rdx\\jsdom\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rudie Dirkx",
+                    "email": "github@hotblocks.nl"
+                }
+            ],
+            "description": "JS-like DOM traversal",
+            "time": "2020-10-04T13:10:28+00:00"
+        },
+        {
+            "name": "symfony/css-selector",
+            "version": "v3.4.45",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/css-selector.git",
+                "reference": "9ccf6e78077a3fc1596e6c7b5958008965a11518"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/9ccf6e78077a3fc1596e6c7b5958008965a11518",
+                "reference": "9ccf6e78077a3fc1596e6c7b5958008965a11518",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.5.9|>=7.0.8"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\CssSelector\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Jean-François Simon",
+                    "email": "jeanfrancois.simon@sensiolabs.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony CssSelector Component",
+            "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-03-16T08:31:04+00:00"
         }
     ],
     "packages-dev": [],
