@@ -36,17 +36,28 @@ class Source extends Model {
 		$redirects = $rsp->getHeader(RedirectMiddleware::HISTORY_HEADER);
 		$html = (string) $rsp->getBody();
 
+		$json = $this->getLdData($html);
+		$text = $json['articleBody'];
+
 		$datePattern = '\d\d\d\d ?- ?\d\d? ?- ?\d\d?';
-		$release = preg_match('#Release Date:\s*(' . $datePattern . ')#i', $html, $match) ? str_replace(' ', '', $match[1]) : null;
-		$thread = preg_match('#Thread Updated:\s*(' . $datePattern . ')#i', $html, $match) ? str_replace(' ', '', $match[1]) : null;
+		$release = preg_match('#\sRelease [Dd]ate:\s*(' . $datePattern . ')#', $text, $match) ? str_replace(' ', '', $match[1]) : null;
+		$thread = preg_match('#\sThread [Uu]pdated:\s*(' . $datePattern . ')#', $text, $match) ? str_replace(' ', '', $match[1]) : (preg_match('#\sUpdated:\s*(' . $datePattern . ')#', $text, $match) ? str_replace(' ', '', $match[1]) : null);
+
+		$version = preg_match('#\sVersion:\s*([^\r\n]+)#', $text, $match) ? trim($match[1]) : null;
 
 		return Fetch::insert([
 			'source_id' => $this->id,
 			'release_date' => $release,
 			'thread_date' => $thread,
+			'version' => $version,
 			'url' => end($redirects),
 			'created_on' => time(),
 		]);
+	}
+
+	protected function getLdData( $html ) {
+		preg_match('#<script type="application/ld\+json">(.+?)</script>#s', $html, $match);
+		return json_decode($match[1], true);
 	}
 
 	protected function get_not_release_date() {

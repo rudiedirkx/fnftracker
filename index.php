@@ -55,6 +55,9 @@ tr.hilited {
 .not-release-date {
 	color: orange;
 }
+.version {
+	font-family: monospace;
+}
 </style>
 
 <form method="post" action>
@@ -67,6 +70,7 @@ tr.hilited {
 				<th></th>
 				<th>Title</th>
 				<th data-sortable>Latest release</th>
+				<th>Version</th>
 				<th data-sortable="asc">Last checked</th>
 			</tr>
 		</thead>
@@ -78,6 +82,9 @@ tr.hilited {
 					<td nowrap class="<?= $source->released_recently ? 'recent-release' : '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
 						<?= $source->last_fetch ? ($source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '?') : '' ?>
 						<a href="?sync=<?= $source->id ?>">&#8635;</a>
+					</td>
+					<td nowrap class="version">
+						<?= $source->last_fetch->version ?? '' ?>
 					</td>
 					<td nowrap>
 						<? if ($source->last_fetch): ?>
