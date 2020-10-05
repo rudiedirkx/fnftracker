@@ -26,6 +26,15 @@ if ( isset($_POST['name'], $_POST['f95_id']) ) {
 	return do_redirect('index');
 }
 
+if ( isset($_GET['newname'], $_POST['name']) ) {
+	$source = Source::find($_GET['newname']);
+	$source->update([
+		'name' => trim($_POST['name']),
+	]);
+	echo json_encode(['name' => $source->name]);
+	exit;
+}
+
 if ( isset($_GET['sync']) ) {
 	$source = Source::find($_GET['sync']);
 	$source->sync();
@@ -77,6 +86,21 @@ th:first-child:last-child {
 tr.hilited {
 	background: #c8e5ee;
 }
+tr.completed td.title:before,
+tr.onhold td.title:before,
+tr.abandoned td.title:before {
+	content: "C";
+	float: right;
+	color: royalblue;
+	font-weight: bold;
+	margin-left: .5em;
+}
+tr.onhold td.title:before {
+	content: "H";
+}
+tr.abandoned td.title:before {
+	content: "A";
+}
 .recent-release {
 	color: green;
 	font-weight: bold;
@@ -119,7 +143,7 @@ a.goto {
 			</tr>
 			<tr>
 				<th></th>
-				<th>Title</th>
+				<th class="title">Title</th>
 				<th data-sortable>Latest release</th>
 				<th data-sortable>Version</th>
 				<th data-sortable="asc">Last checked</th>
@@ -127,11 +151,11 @@ a.goto {
 		</thead>
 		<tbody>
 			<? foreach ($sources as $source): ?>
-				<tr class="<?= $hilite == $source->id ? 'hilited' : '' ?>" data-banner="<?= html($source->banner_url) ?>">
+				<tr class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_prefix ?>" data-banner="<?= html($source->banner_url) ?>" data-id="<?= $source->id ?>">
 					<td><input type="checkbox" name="enabled[]" value="<?= $source->id ?>" <?= $source->active ? 'checked' : '' ?> /></td>
-					<td>
-						<?= html($source->name) ?>
-						<? if ($source->last_fetch->prefixes ?? null): ?>
+					<td class="title">
+						<span class="title-name"><?= html($source->name) ?></span>
+						<? if (0 && $source->last_fetch->prefixes ?? null): ?>
 							<span class="prefixes">(<?= strtoupper($source->last_fetch->prefixes) ?>)</span>
 						<? endif ?>
 					</td>
@@ -201,6 +225,19 @@ window.addEventListener('load', function() {
 		rows.forEach(row => tbody.append(row));
 	};
 	document.querySelectorAll('th[data-sortable]').forEach(el => el.addEventListener('click', handle));
+});
+window.addEventListener('load', function() {
+	const handle = function(e) {
+		const name = prompt('New name:', this.textContent.trim());
+		if (name && name.trim()) {
+			fetch('?newname=' + this.closest('tr').dataset.id, {
+				'method': 'post',
+				'body': 'name=' + encodeURIComponent(name),
+				'headers': {'Content-type': 'application/x-www-form-urlencoded'},
+			}).then(rsp => location.reload());
+		}
+	};
+	document.querySelectorAll('.title-name').forEach(el => el.addEventListener('dblclick', handle));
 });
 window.addEventListener('load', function() {
 	const body = document.body;
