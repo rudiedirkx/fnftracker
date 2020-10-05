@@ -83,14 +83,18 @@ class Source extends Model {
 		return $version;
 	}
 
+	protected function formatDate(string $date) {
+		return date('Y-m-d', strtotime(str_replace(' ', '', $date)));
+	}
+
 	protected function getDate(string $text, string $pattern) {
-		return preg_match($pattern, $text, $match) ? str_replace(' ', '', $match[1]) : null;
+		$datePattern = '\d\d\d\d ?- ?\d\d? ?- ?\d\d?';
+		return preg_match("#\s$pattern:\s*($datePattern)#", $text, $match) ? $this->formatDate($match[1]) : null;
 	}
 
 	protected function getDates(string $text) {
-		$datePattern = '\d\d\d\d ?- ?\d\d? ?- ?\d\d?';
-		$release = $this->getDate($text, '#\sRelease [Dd]ate:\s*(' . $datePattern . ')#');
-		$thread = $this->getDate($text, '#\sThread [Uu]pdated:\s*(' . $datePattern . ')#') ?? $this->getDate($text, '#\sUpdated:\s*(' . $datePattern . ')#');
+		$release = $this->getDate($text, 'Release [Dd]ate');
+		$thread = $this->getDate($text, 'Thread [Uu]pdated') ?? $this->getDate($text, 'Updated');
 		return [$release, $thread];
 	}
 
