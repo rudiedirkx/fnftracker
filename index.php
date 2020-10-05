@@ -13,26 +13,25 @@ if ( isset($_POST['enabled']) ) {
 }
 
 if ( isset($_POST['name'], $_POST['f95_id']) ) {
-	$id = Source::insert([
+	$data = [
 		'name' => trim($_POST['name']),
 		'f95_id' => trim($_POST['f95_id']),
-	]);
+	];
 
-	$source = Source::find($id);
-	$source->sync();
+	if ( isset($_POST['id']) ) {
+		$id = $_POST['id'];
+		$source = Source::find($id);
+		$source->update($data);
+	}
+	else {
+		$id = Source::insert($data);
+		$source = Source::find($id);
+		$source->sync();
+	}
 
 	setcookie('hilite_source', $source->id);
 
 	return do_redirect('index');
-}
-
-if ( isset($_GET['newname'], $_POST['name']) ) {
-	$source = Source::find($_GET['newname']);
-	$source->update([
-		'name' => trim($_POST['name']),
-	]);
-	echo json_encode(['name' => $source->name]);
-	exit;
 }
 
 if ( isset($_GET['sync']) ) {
@@ -51,6 +50,8 @@ include 'tpl.header.php';
 
 $sources = Source::all("active = '1' ORDER BY active DESC, name ASC");
 Source::eager('last_fetch', $sources);
+
+$edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 $inactive = Source::count("active = '0'");
 
@@ -83,7 +84,8 @@ th, td {
 th:first-child:last-child {
 	text-align: center;
 }
-tr.hilited {
+tr.hilited,
+legend.hilited {
 	background: #c8e5ee;
 }
 tr.completed td.title:before,
@@ -192,9 +194,14 @@ a.goto {
 
 <form method="post" action>
 	<fieldset>
-		<legend>Add source</legend>
-		<p>Name: <input name="name" required /></p>
-		<p>F95 ID: <input name="f95_id" required pattern="^\d+$" /></p>
+		<? if ($edit): ?>
+			<legend class="hilited">Edit source</legend>
+			<input type="hidden" name="id" value="<?= $edit->id ?>" />
+		<? else: ?>
+			<legend>Add source</legend>
+		<? endif ?>
+		<p>Name: <input name="name" required value="<?= html($edit->name) ?? '' ?>" /></p>
+		<p>F95 ID: <input name="f95_id" required pattern="^\d+$" value="<?= html($edit->f95_id) ?? '' ?>" /></p>
 		<p><button>Save</button></p>
 	</fieldset>
 </form>
@@ -228,14 +235,7 @@ window.addEventListener('load', function() {
 });
 window.addEventListener('load', function() {
 	const handle = function(e) {
-		const name = prompt('New name:', this.textContent.trim());
-		if (name && name.trim()) {
-			fetch('?newname=' + this.closest('tr').dataset.id, {
-				'method': 'post',
-				'body': 'name=' + encodeURIComponent(name),
-				'headers': {'Content-type': 'application/x-www-form-urlencoded'},
-			}).then(rsp => location.reload());
-		}
+		location.href = '?edit=' + this.closest('tr').dataset.id;
 	};
 	document.querySelectorAll('.title-name').forEach(el => el.addEventListener('dblclick', handle));
 });
