@@ -50,6 +50,10 @@ $inactive = Source::count("active = '0'");
 body {
 	font-family: sans-serif;
 }
+a, a:visited {
+	color: deeppink;
+}
+
 body.show-banner {
 	/*--transparency: 0.75;*/
 	background: none center 0 no-repeat;
@@ -64,7 +68,7 @@ table {
 th, td {
 	border: solid 1px #999;
 	border-width: 1px 0;
-	padding: 4px 6px;
+	padding: 3px 4px;
 	text-align: left;
 }
 th:first-child:last-child {
@@ -80,6 +84,10 @@ tr.hilited {
 .not-release-date {
 	color: orange;
 }
+.prefixes {
+	font-weight: bold;
+	color: royalblue
+}
 .version {
 	font-family: monospace;
 }
@@ -88,6 +96,14 @@ tr.hilited {
 	max-width: 6em;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+a.sync, a.goto {
+	float: right;
+	display: inline-block;
+	margin-left: auto;
+}
+a.goto {
+	line-height: 1;
 }
 .inactives {
 	text-align: center;
@@ -113,10 +129,15 @@ tr.hilited {
 			<? foreach ($sources as $source): ?>
 				<tr class="<?= $hilite == $source->id ? 'hilited' : '' ?>" data-banner="<?= html($source->banner_url) ?>">
 					<td><input type="checkbox" name="enabled[]" value="<?= $source->id ?>" <?= $source->active ? 'checked' : '' ?> /></td>
-					<td><?= html($source->name) ?></td>
+					<td>
+						<?= html($source->name) ?>
+						<? if ($source->last_fetch->prefixes ?? null): ?>
+							<span class="prefixes">(<?= strtoupper($source->last_fetch->prefixes) ?>)</span>
+						<? endif ?>
+					</td>
 					<td nowrap class="<?= $source->released_recently ? 'recent-release' : '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
 						<?= $source->last_fetch ? ($source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '?') : '' ?>
-						<a href="?sync=<?= $source->id ?>">&#8635;</a>
+						<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>
 					</td>
 					<td nowrap class="version" tabindex="-1">
 						<span><?= $source->last_fetch->version ?? '' ?></span>
@@ -124,7 +145,7 @@ tr.hilited {
 					<td nowrap>
 						<? if ($source->last_fetch): ?>
 							<?= date('Y-m-d', $source->last_fetch->created_on) ?>
-							<a target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
+							<a class="goto" target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
 						<? endif ?>
 					</td>
 				</tr>

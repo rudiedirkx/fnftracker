@@ -9,6 +9,8 @@ use rdx\jsdom\Node;
 
 class Source extends Model {
 
+	const KEEP_PREFIXES = ['completed', 'onhold', 'abandoned'];
+
 	static public $_table = 'sources';
 
 	static public function makeGuzzle() {
@@ -41,6 +43,8 @@ class Source extends Model {
 		$version = $this->getVersion($text);
 		$banner = $this->getBanner($doc);
 
+		$prefixes = $this->getPrefixes($doc);
+
 		$this->update([
 			'banner_url' => $banner,
 		]);
@@ -50,9 +54,23 @@ class Source extends Model {
 			'release_date' => $release,
 			'thread_date' => $thread,
 			'version' => $version,
+			'prefixes' => implode(',', $prefixes) ?: null,
 			'url' => end($redirects),
 			'created_on' => time(),
 		]);
+	}
+
+	protected function getPrefixes(Node $doc) {
+		$els = $doc->queryAll('h1 .labelLink');
+
+		$prefixes = [];
+		foreach ($els as $el) {
+			if (in_array($prefix = strtolower(trim($el->textContent, '[]')), self::KEEP_PREFIXES)) {
+				$prefixes[] = $prefix;
+			}
+		}
+
+		return $prefixes;
 	}
 
 	protected function getBanner(Node $doc) {

@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'version' => 6,
+	'version' => 7,
 	'tables' => [
 		'sources' => [
 			'id' => ['pk' => true],
@@ -18,6 +18,7 @@ return [
 			'release_date',
 			'thread_date',
 			'version',
+			'prefixes',
 		],
 	],
 ];
