@@ -40,23 +40,38 @@ setcookie('hilite_source', 0, 1);
 
 include 'tpl.header.php';
 
-$sources = Source::all('1=1 ORDER BY active DESC, name ASC');
+$sources = Source::all("active = '1' ORDER BY active DESC, name ASC");
 Source::eager('last_fetch', $sources);
+
+$inactive = Source::count("active = '0'");
 
 ?>
 <style>
+body {
+	font-family: sans-serif;
+}
 body.show-banner {
-	--transparency: 0.65;
+	/*--transparency: 0.75;*/
 	background: none center 0 no-repeat;
 	background-image: /*linear-gradient(rgba(255, 255, 255, var(--transparency)), rgba(255, 255, 255, var(--transparency))),*/ var(--banner);
 	background-size: contain;
 	background-attachment: fixed;
 }
 table {
-	background-color: rgba(255, 255, 255, 0.65);
+	background-color: rgba(255, 255, 255, 0.75);
+	border-collapse: collapse;
+}
+th, td {
+	border: solid 1px #999;
+	border-width: 1px 0;
+	padding: 4px 6px;
+	text-align: left;
+}
+th:first-child:last-child {
+	text-align: center;
 }
 tr.hilited {
-	background: lightblue;
+	background: #c8e5ee;
 }
 .recent-release {
 	color: green;
@@ -74,6 +89,10 @@ tr.hilited {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+.inactives {
+	text-align: center;
+	background-color: #eee;
+}
 </style>
 
 <form method="post" action>
@@ -86,7 +105,7 @@ tr.hilited {
 				<th></th>
 				<th>Title</th>
 				<th data-sortable>Latest release</th>
-				<th>Version</th>
+				<th data-sortable>Version</th>
 				<th data-sortable="asc">Last checked</th>
 			</tr>
 		</thead>
@@ -111,6 +130,15 @@ tr.hilited {
 				</tr>
 			<? endforeach ?>
 		</tbody>
+		<? if ($inactive): ?>
+			<tbody>
+				<tr>
+					<td colspan="5" class="inactives">
+						... <?= $inactive ?> inactive titles ...
+					</td>
+				</tr>
+			</tbody>
+		<? endif ?>
 	</table>
 	<p><button>Save</button></p>
 </form>
