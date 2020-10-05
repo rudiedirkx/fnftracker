@@ -103,6 +103,13 @@ tr.onhold td.title:before {
 tr.abandoned td.title:before {
 	content: "A";
 }
+td > .cols {
+	display: flex;
+	justify-content: space-between;
+}
+td > .cols > :last-child {
+	margin-left: .5em;
+}
 .recent-release {
 	color: green;
 	font-weight: bold;
@@ -122,11 +129,6 @@ tr.abandoned td.title:before {
 	max-width: 6em;
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-a.sync, a.goto {
-	float: right;
-	display: inline-block;
-	margin-left: auto;
 }
 a.goto {
 	line-height: 1;
@@ -162,16 +164,20 @@ a.goto {
 						<? endif ?>
 					</td>
 					<td nowrap class="<?= $source->released_recently ? 'recent-release' : '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
-						<?= $source->last_fetch ? ($source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '?') : '' ?>
-						<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>
+						<div class="cols">
+							<span><?= $source->last_fetch ? ($source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '?') : '' ?></span>
+							<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>
+						</div>
 					</td>
 					<td nowrap class="version" tabindex="-1">
 						<span><?= $source->last_fetch->version ?? '' ?></span>
 					</td>
 					<td nowrap>
 						<? if ($source->last_fetch): ?>
-							<?= date('Y-m-d', $source->last_fetch->created_on) ?>
-							<a class="goto" target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
+							<div class="cols">
+								<span><?= date('Y-m-d', $source->last_fetch->created_on) ?></span>
+								<a class="goto" target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
+							</div>
 						<? endif ?>
 					</td>
 				</tr>
