@@ -9,6 +9,8 @@ $guzzle = Source::makeGuzzle();
 
 $sources = Source::all('active = 1');
 
+echo date('c') . "\n\n";
+
 foreach ($sources as $source) {
 	echo "$source->id. $source->name\n";
 
@@ -22,4 +24,7 @@ foreach ($sources as $source) {
 	}
 
 	echo "\n";
+	usleep(1000 * rand(500, 1500));
 }
+
+echo date('c') . "\n";
