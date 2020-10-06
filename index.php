@@ -113,8 +113,20 @@ td > .cols {
 td > .cols > :last-child {
 	margin-left: .5em;
 }
-tr.new-priority > td {
+tr.new-priority td,
+tr.hidden-sources td {
 	border-top-width: 3px;
+}
+tr.hidden-sources td {
+	text-align: center;
+	background-color: #eee;
+	cursor: pointer;
+}
+tr.hidden-sources td:hover {
+	background-color: #ddd;
+}
+tr.hidden-sources ~ tr {
+	display: none;
 }
 td.priority {
 	user-select: none;
@@ -177,7 +189,12 @@ a.goto {
 		</thead>
 		<tbody>
 			<? $prevprio = null ?>
-			<? foreach ($sources as $source): ?>
+			<? foreach (array_values($sources) as $i => $source): ?>
+				<? if ($prevprio && $source->priority != $prevprio && $source->priority == 0): ?>
+					<tr class="hidden-sources"><td colspan="5">
+						... Show <?= count($sources) - $i ?> hidden sources ...
+					</td></tr>
+				<? endif ?>
 				<tr class="<?= $prevprio && $source->priority != $prevprio ? 'new-priority' : '' ?> <?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_prefix ?>" data-banner="<?= html($source->banner_url) ?>" data-id="<?= $source->id ?>" data-priority="<?= $source->priority ?>">
 					<td class="priority">
 						<input type="hidden" name="priorities[<?= $source->id ?>]" value="<?= $source->priority ?>" />
@@ -265,10 +282,10 @@ window.addEventListener('load', function() {
 	document.querySelectorAll('td.priority').forEach(el => el.addEventListener('click', handle));
 });
 window.addEventListener('load', function() {
-	const handle = function(e) {
-		location.href = '?edit=' + this.closest('tr').dataset.id;
-	};
-	document.querySelectorAll('.title-name').forEach(el => el.addEventListener('dblclick', handle));
+	const el = document.querySelector('tr.hidden-sources td');
+	el && el.addEventListener('click', function(e) {
+		this.closest('tr').remove();
+	});
 });
 window.addEventListener('load', function() {
 	const body = document.body;
