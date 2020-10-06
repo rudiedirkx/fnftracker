@@ -193,6 +193,8 @@ a.goto, a.sync, a.edit-icon {
 			<? $prevprio = null ?>
 			<? foreach (array_values($sources) as $i => $source): ?>
 				<? if ($prevprio && $source->priority != $prevprio && $source->priority == 0): ?>
+					</tbody>
+					<tbody>
 					<tr class="hidden-sources"><td colspan="5">
 						... Show <?= count($sources) - $i ?> hidden sources ...
 					</td></tr>
@@ -208,7 +210,7 @@ a.goto, a.sync, a.edit-icon {
 					</td>
 					<td nowrap class="<?= $source->released_recently ? 'recent-release' : '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
 						<div class="cols">
-							<span><?= $source->last_fetch ? ($source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '?') : '' ?></span>
+							<span><?= $source->last_fetch ? ($source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '') : '' ?></span>
 							<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>
 						</div>
 					</td>
