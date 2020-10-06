@@ -9,6 +9,7 @@ use rdx\jsdom\Node;
 
 class Source extends Model {
 
+	const PRIORITIES = [0 => null, 1 => '8 days', 2 => '4 days', 3 => '2 days'];
 	const KEEP_PREFIXES = ['completed', 'onhold', 'abandoned'];
 
 	static public $_table = 'sources';

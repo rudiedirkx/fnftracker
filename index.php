@@ -4,10 +4,15 @@ use rdx\f95\Source;
 
 require 'inc.bootstrap.php';
 
-if ( isset($_POST['enabled']) ) {
-	$ids = $_POST['enabled'];
-	Source::updateAll(['active' => 0], "id not in (?)", [$ids]);
-	Source::updateAll(['active' => 1], "id in (?)", [$ids]);
+if ( isset($_POST['priorities']) ) {
+	$groups = [];
+	foreach ( $_POST['priorities'] as $id => $priority ) {
+		$groups[$priority][] = $id;
+	}
+
+	foreach ( $groups as $priority => $ids ) {
+		Source::updateAll(['priority' => $priority], ['id' => $ids]);
+	}
 
 	return do_redirect('index');
 }
@@ -24,7 +29,7 @@ if ( isset($_POST['name'], $_POST['f95_id']) ) {
 		$source->update($data);
 	}
 	else {
-		$id = Source::insert($data);
+		$id = Source::insert($data + ['priority' => max(array_keys(Source::PRIORITIES))]);
 		$source = Source::find($id);
 		$source->sync();
 	}
@@ -48,12 +53,10 @@ setcookie('hilite_source', 0, 1);
 
 include 'tpl.header.php';
 
-$sources = Source::all("active = '1' ORDER BY active DESC, name ASC");
+$sources = Source::all("1=1 ORDER BY priority DESC, name ASC");
 Source::eager('last_fetch', $sources);
 
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
-
-$inactive = Source::count("active = '0'");
 
 ?>
 <style>
@@ -110,6 +113,24 @@ td > .cols {
 td > .cols > :last-child {
 	margin-left: .5em;
 }
+tr.new-priority > td {
+	border-top-width: 3px;
+}
+td.priority {
+	user-select: none;
+	cursor: pointer;
+	background-color: pink;
+}
+tr[data-priority="1"] td.priority {
+	background-color: salmon;
+}
+tr[data-priority="2"] td.priority {
+	background-color: red;
+}
+tr[data-priority="3"] td.priority {
+	background-color: darkred;
+	color: white;
+}
 .recent-release {
 	color: green;
 	font-weight: bold;
@@ -133,10 +154,6 @@ td > .cols > :last-child {
 a.goto {
 	line-height: 1;
 }
-.inactives {
-	text-align: center;
-	background-color: #eee;
-}
 </style>
 
 <form method="post" action>
@@ -154,9 +171,13 @@ a.goto {
 			</tr>
 		</thead>
 		<tbody>
+			<? $prevprio = null ?>
 			<? foreach ($sources as $source): ?>
-				<tr class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_prefix ?>" data-banner="<?= html($source->banner_url) ?>" data-id="<?= $source->id ?>">
-					<td><input type="checkbox" name="enabled[]" value="<?= $source->id ?>" <?= $source->active ? 'checked' : '' ?> /></td>
+				<tr class="<?= $prevprio && $source->priority != $prevprio ? 'new-priority' : '' ?> <?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_prefix ?>" data-banner="<?= html($source->banner_url) ?>" data-id="<?= $source->id ?>" data-priority="<?= $source->priority ?>">
+					<td class="priority">
+						<input type="hidden" name="priorities[<?= $source->id ?>]" value="<?= $source->priority ?>" />
+						<output><?= $source->priority ?></output>
+					</td>
 					<td class="title">
 						<span class="title-name"><?= html($source->name) ?></span>
 						<? if (0 && $source->last_fetch->prefixes ?? null): ?>
@@ -181,17 +202,9 @@ a.goto {
 						<? endif ?>
 					</td>
 				</tr>
+				<? $prevprio = $source->priority ?>
 			<? endforeach ?>
 		</tbody>
-		<? if ($inactive): ?>
-			<tbody>
-				<tr>
-					<td colspan="5" class="inactives">
-						... <?= $inactive ?> inactive titles ...
-					</td>
-				</tr>
-			</tbody>
-		<? endif ?>
 	</table>
 	<p><button>Save</button></p>
 </form>
@@ -240,6 +253,16 @@ window.addEventListener('load', function() {
 	document.querySelectorAll('th[data-sortable]').forEach(el => el.addEventListener('click', handle));
 });
 window.addEventListener('load', function() {
+	const PRIORITIES = <?= json_encode(array_keys(Source::PRIORITIES)) ?>;
+	const handle = function(e) {
+		const tr = this.closest('tr');
+		const i = PRIORITIES.indexOf(parseInt(this.textContent.trim()));
+		const nxt = PRIORITIES[(i-1+PRIORITIES.length) % PRIORITIES.length];
+		this.querySelector('output').value = this.querySelector('input').value = tr.dataset.priority = nxt;
+	};
+	document.querySelectorAll('td.priority').forEach(el => el.addEventListener('click', handle));
+});
+window.addEventListener('load', function() {
 	const handle = function(e) {
 		location.href = '?edit=' + this.closest('tr').dataset.id;
 	};
@@ -248,7 +271,7 @@ window.addEventListener('load', function() {
 window.addEventListener('load', function() {
 	const body = document.body;
 	const over = function(e) {
-		const url = this.dataset.banner;
+		const url = this.closest('tr').dataset.banner;
 		if (!url) return;
 		body.style.setProperty('--banner', `url('${url}')`);
 		body.classList.add('show-banner');
@@ -256,7 +279,7 @@ window.addEventListener('load', function() {
 	const out = function(e) {
 		body.classList.remove('show-banner');
 	};
-	document.querySelectorAll('tr[data-banner]').forEach(el => {
+	document.querySelectorAll('tr[data-banner] span.title-name').forEach(el => {
 		el.addEventListener('mouseover', over);
 		el.addEventListener('mouseout', out);
 	});

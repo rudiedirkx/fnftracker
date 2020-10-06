@@ -7,11 +7,21 @@ require 'inc.bootstrap.php';
 
 $guzzle = Source::makeGuzzle();
 
-$sources = Source::all('active = 1');
+$priomap = array_filter(array_map(function($time) {
+	return $time ? strtotime('+1 hour', strtotime("-$time")) : null;
+}, Source::PRIORITIES));
+
+$sources = Source::all('priority > 0');
 
 echo date('c') . "\n\n";
 
-foreach ($sources as $source) {
+$skipped = [];
+foreach ( $sources as $source ) {
+	if ( $source->last_fetch->created_on > $priomap[$source->priority] ) {
+		$skipped[] = $source;
+		continue;
+	}
+
 	echo "$source->id. $source->name\n";
 
 	$fetch = Fetch::find($source->sync($guzzle));
@@ -27,4 +37,6 @@ foreach ($sources as $source) {
 	usleep(1000 * rand(500, 1500));
 }
 
-echo date('c') . "\n";
+echo date('c') . "\n\n";
+
+echo "Skipped " . count($skipped) . " sources.\n";
