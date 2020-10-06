@@ -154,6 +154,11 @@ tr[data-priority="3"] td.priority {
 a.goto {
 	line-height: 1;
 }
+@media (max-width: 400px) {
+	.hide-on-mobile {
+		display: none;
+	}
+}
 </style>
 
 <form method="post" action>
@@ -167,7 +172,7 @@ a.goto {
 				<th class="title">Title</th>
 				<th data-sortable>Latest release</th>
 				<th data-sortable>Version</th>
-				<th data-sortable="asc">Last checked</th>
+				<th data-sortable="asc" class="hide-on-mobile">Last checked</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -193,7 +198,7 @@ a.goto {
 					<td nowrap class="version" tabindex="-1">
 						<span><?= $source->last_fetch->version ?? '' ?></span>
 					</td>
-					<td nowrap>
+					<td nowrap class="hide-on-mobile">
 						<? if ($source->last_fetch): ?>
 							<div class="cols">
 								<span><?= date('Y-m-d', $source->last_fetch->created_on) ?></span>
