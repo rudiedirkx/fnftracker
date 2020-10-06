@@ -53,7 +53,7 @@ setcookie('hilite_source', 0, 1);
 
 include 'tpl.header.php';
 
-$sources = Source::all("1=1 ORDER BY priority DESC, name ASC");
+$sources = Source::all("1=1 ORDER BY priority DESC, (CASE WHEN LOWER(SUBSTR(name, 1, 4)) = 'the ' THEN SUBSTR(name, 5) ELSE name END) ASC");
 Source::eager('last_fetch', $sources);
 
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
