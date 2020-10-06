@@ -1,13 +1,14 @@
 <?php
 
 return [
-	'version' => 8,
+	'version' => 9,
 	'tables' => [
 		'sources' => [
 			'id' => ['pk' => true],
 			'priority' => ['unsigned' => true, 'default' => 1],
 			'f95_id',
 			'name',
+			'description',
 			'banner_url',
 		],
 		'fetches' => [

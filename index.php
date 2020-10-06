@@ -21,6 +21,7 @@ if ( isset($_POST['name'], $_POST['f95_id']) ) {
 	$data = [
 		'name' => trim($_POST['name']),
 		'f95_id' => trim($_POST['f95_id']),
+		'description' => trim($_POST['description']),
 	];
 
 	if ( isset($_POST['id']) ) {
@@ -242,6 +243,7 @@ a.goto, a.sync, a.edit-icon {
 		<? endif ?>
 		<p>Name: <input name="name" required value="<?= html($edit->name ?? '') ?>" <?= $edit ? 'autofocus' : '' ?> /></p>
 		<p>F95 ID: <input name="f95_id" required pattern="^\d+$" value="<?= html($edit->f95_id ?? '') ?>" /></p>
+		<p><textarea name="description" cols="35" rows="3" placeholder="Description..."><?= html($edit->description ?? '') ?></textarea></p>
 		<p><button>Save</button></p>
 	</fieldset>
 </form>
