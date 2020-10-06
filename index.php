@@ -163,8 +163,9 @@ tr[data-priority="3"] td.priority {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-a.goto {
+a.goto, a.sync, a.edit-icon {
 	line-height: 1;
+	text-decoration: none;
 }
 @media (max-width: 400px) {
 	.hide-on-mobile {
@@ -202,9 +203,7 @@ a.goto {
 					</td>
 					<td class="title">
 						<span class="title-name"><?= html($source->name) ?></span>
-						<? if (0 && $source->last_fetch->prefixes ?? null): ?>
-							<span class="prefixes">(<?= strtoupper($source->last_fetch->prefixes) ?>)</span>
-						<? endif ?>
+						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
 					</td>
 					<td nowrap class="<?= $source->released_recently ? 'recent-release' : '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
 						<div class="cols">
@@ -241,7 +240,7 @@ a.goto {
 		<? else: ?>
 			<legend>Add source</legend>
 		<? endif ?>
-		<p>Name: <input name="name" required value="<?= html($edit->name ?? '') ?>" /></p>
+		<p>Name: <input name="name" required value="<?= html($edit->name ?? '') ?>" <?= $edit ? 'autofocus' : '' ?> /></p>
 		<p>F95 ID: <input name="f95_id" required pattern="^\d+$" value="<?= html($edit->f95_id ?? '') ?>" /></p>
 		<p><button>Save</button></p>
 	</fieldset>
