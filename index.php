@@ -231,14 +231,11 @@ window.addEventListener('load', function() {
 		preg_quote('{name}') => '[^\/\.]+',
 		preg_quote('{id}') => '(\d+)',
 	]) ?>/;
-	document.querySelector('input[name="f95_id"]').addEventListener('paste', function(e) {
-		// console.log(e.clipboardData.getData('text'));
-		setTimeout(() => {
-			const m = this.value.match(URL_PATTERN);
-			if (m) {
-				this.value = m[1];
-			}
-		}, 1);
+	document.querySelector('input[name="f95_id"]').addEventListener('input', function(e) {
+		const m = this.value.match(URL_PATTERN);
+		if (m) {
+			this.value = m[1];
+		}
 	});
 });
 window.addEventListener('load', function() {
