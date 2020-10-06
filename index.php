@@ -206,8 +206,8 @@ a.goto {
 		<? else: ?>
 			<legend>Add source</legend>
 		<? endif ?>
-		<p>Name: <input name="name" required value="<?= html($edit->name) ?? '' ?>" /></p>
-		<p>F95 ID: <input name="f95_id" required pattern="^\d+$" value="<?= html($edit->f95_id) ?? '' ?>" /></p>
+		<p>Name: <input name="name" required value="<?= html($edit->name ?? '') ?>" /></p>
+		<p>F95 ID: <input name="f95_id" required pattern="^\d+$" value="<?= html($edit->f95_id ?? '') ?>" /></p>
 		<p><button>Save</button></p>
 	</fieldset>
 </form>
