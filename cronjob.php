@@ -17,12 +17,19 @@ echo date('c') . "\n\n";
 
 $skipped = [];
 foreach ( $sources as $source ) {
+	$anyway = false;
 	if ( $source->last_fetch->created_on > $priomap[$source->priority] ) {
-		$skipped[] = $source;
-		continue;
+		if ( rand(0, 100)/100 < CRON_DO_ANYWAY ) {
+			$anyway = true;
+		}
+		else {
+			$skipped[] = $source;
+			continue;
+		}
 	}
 
-	echo "$source->id. $source->name\n";
+	$anyway = $anyway ? ' (ANYWAY)' : '';
+	echo "$source->id. $source->name$anyway\n";
 
 	$fetch = Fetch::find($source->sync($guzzle));
 
