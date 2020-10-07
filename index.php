@@ -144,9 +144,15 @@ tr[data-priority="3"] td.priority {
 	background-color: darkred;
 	color: white;
 }
-.recent-release {
+.recent-1 {
 	color: green;
 	font-weight: bold;
+}
+.recent-2 {
+	color: green;
+}
+.recent-3 {
+	color: lightgreen;
 }
 .not-release-date {
 	color: orange;
@@ -208,7 +214,7 @@ a.goto, a.sync, a.edit-icon {
 						<span class="title-name"><?= html($source->name) ?></span>
 						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
 					</td>
-					<td nowrap class="<?= $source->released_recently ? 'recent-release' : '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
+					<td nowrap class="recent-<?= $source->recent_release ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
 						<div class="cols">
 							<span><?= $source->last_fetch ? ($source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '') : '' ?></span>
 							<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>

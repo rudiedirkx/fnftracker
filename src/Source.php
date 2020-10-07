@@ -123,14 +123,20 @@ class Source extends Model {
 		return $this->last_fetch && !$this->last_fetch->release_date && $this->last_fetch->thread_date;
 	}
 
-	protected function get_released_recently() {
+	protected function get_recent_release() {
 		if ($this->last_fetch) {
 			$date = $this->last_fetch->release_date;
 			if ($date) {
 				$utc = strtotime($date);
-				return strtotime('-' . RECENT_TIMESTR) < $utc;
+				foreach (RECENT_TIMESTR as $i => $time) {
+					if (strtotime("-$time") < $utc) {
+						return $i + 1;
+					}
+				}
 			}
 		}
+
+		return 0;
 	}
 
 	protected function relate_last_fetch() {
