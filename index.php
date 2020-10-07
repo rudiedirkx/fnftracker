@@ -70,7 +70,7 @@ a, a:visited {
 
 body.show-banner {
 	/*--transparency: 0.75;*/
-	background: none center 0 no-repeat;
+	background: none right top no-repeat;
 	background-image: /*linear-gradient(rgba(255, 255, 255, var(--transparency)), rgba(255, 255, 255, var(--transparency))),*/ var(--banner);
 	background-size: contain;
 	background-attachment: fixed;
