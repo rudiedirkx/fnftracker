@@ -57,6 +57,8 @@ include 'tpl.header.php';
 $sources = Source::all("1=1 ORDER BY priority DESC, (CASE WHEN LOWER(SUBSTR(name, 1, 4)) = 'the ' THEN SUBSTR(name, 5) ELSE name END) ASC");
 Source::eager('last_fetch', $sources);
 
+$developers = array_values(array_unique(array_filter(array_column($sources, 'developer'))));
+
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 ?>
@@ -253,9 +255,16 @@ a.goto, a.sync, a.edit-icon {
 		<? endif ?>
 		<p>Name: <input name="name" required value="<?= html($edit->name ?? '') ?>" <?= $edit ? 'autofocus' : '' ?> /></p>
 		<p>F95 ID: <input name="f95_id" required pattern="^\d+$" value="<?= html($edit->f95_id ?? '') ?>" /></p>
+		<p>Developer: <input name="developer" value="<?= html($edit->developer ?? '') ?>" list="dl-developers" /></p>
 		<p><textarea name="description" cols="35" rows="3" placeholder="Description..."><?= html($edit->description ?? '') ?></textarea></p>
 		<p><button>Save</button></p>
 	</fieldset>
+
+	<datalist id="dl-developers">
+		<? foreach ($developers as $name): ?>
+			<option value="<?= html($name) ?>">
+		<? endforeach ?>
+	</datalist>
 </form>
 
 <script>

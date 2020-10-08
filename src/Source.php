@@ -43,11 +43,12 @@ class Source extends Model {
 		[$release, $thread] = $this->getDates($text);
 		$version = $this->getVersion($text);
 		$banner = $this->getBanner($doc);
-
+		$developer = $this->getDeveloper($doc);
 		$prefixes = $this->getPrefixes($doc);
 
 		$this->update([
 			'banner_url' => $banner,
+			'developer' => $developer,
 		]);
 
 		return Fetch::insert([
@@ -77,6 +78,11 @@ class Source extends Model {
 	protected function getBanner(Node $doc) {
 		$banner = $doc->query('.message-threadStarterPost a > .bbImage');
 		return $banner->parent()['href'];
+	}
+
+	protected function getDeveloper(Node $doc) {
+		$body = $doc->query('.message-threadStarterPost .message-body > .bbWrapper')->innerText;
+		return preg_match('#\sDeveloper:\s*([^\r\n]+)#', $body, $match) ? trim($match[1], '- ') : null;
 	}
 
 	protected function getVersion(string $text) {
