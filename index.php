@@ -75,6 +75,9 @@ body.show-banner {
 	background-size: contain;
 	background-attachment: fixed;
 }
+h1 {
+	margin-top: 0;
+}
 table {
 	background-color: rgba(255, 255, 255, 0.75);
 	border-collapse: collapse;
@@ -181,12 +184,11 @@ a.goto, a.sync, a.edit-icon {
 }
 </style>
 
+<h1>Sources (<?= count($sources) ?>)</h1>
+
 <form method="post" action>
 	<table border="1">
 		<thead>
-			<tr>
-				<th colspan="5">Sources (<?= count($sources) ?>)</th>
-			</tr>
 			<tr>
 				<th></th>
 				<th class="title">Title</th>
