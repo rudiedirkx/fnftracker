@@ -221,7 +221,7 @@ a.goto, a.sync, a.edit-icon {
 						</div>
 					</td>
 					<td nowrap class="version" tabindex="-1">
-						<span><?= $source->last_fetch->version ?? '' ?></span>
+						<span><?= $source->last_fetch->cleaned_version ?? '' ?></span>
 					</td>
 					<td nowrap class="hide-on-mobile">
 						<? if ($source->last_fetch): ?>

@@ -80,8 +80,10 @@ class Source extends Model {
 	}
 
 	protected function getVersion(string $text) {
-		$version = preg_match('#\sVersion:\s*([^\r\n\(]+)#', $text, $match) ? trim($match[1]) : null;
-		return $version;
+		if (preg_match('#\sVersion:\s*([^\r\n]+)#', $text, $match)) {
+			$version = trim($match[1]);
+			return $version;
+		}
 	}
 
 	protected function formatDate(string $date) {
