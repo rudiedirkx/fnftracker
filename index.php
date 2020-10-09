@@ -1,5 +1,6 @@
 <?php
 
+use rdx\f95\Fetch;
 use rdx\f95\Source;
 
 require 'inc.bootstrap.php';
@@ -59,6 +60,19 @@ Source::eager('last_fetch', $sources);
 
 $developers = array_values(array_unique(array_filter(array_column($sources, 'developer'))));
 
+$changes = Fetch::query("
+	select
+		source_id,
+		release_date,
+		(select version from fetches where source_id = f.source_id and release_date = f.release_date order by id desc limit 1) version,
+		cast(min(created_on) as int) change_on
+	from fetches f
+	where release_date is not null
+	group by source_id, release_date
+	having change_on > ?
+	order by change_on desc
+", [strtotime('-' . min(Source::RECENTS) . ' days')]);
+
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 ?>
@@ -68,7 +82,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 <p><input type="search" placeholder="Name &amp; developer..." value="<?= html($_GET['search'] ?? '') ?>" /></p>
 
 <form method="post" action>
-	<table border="1">
+	<table>
 		<thead>
 			<tr>
 				<th></th>
@@ -151,6 +165,34 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 		<? endforeach ?>
 	</datalist>
 </form>
+
+<br>
+
+<fieldset>
+	<legend>Recent changes</legend>
+	<table>
+		<thead>
+			<tr>
+				<th class="title">Title</th>
+				<th>Released</th>
+				<th class="hide-on-mobile">Version</th>
+				<th class="hide-on-mobile">Changed</th>
+			</tr>
+		</thead>
+		<tbody>
+			<? foreach ($changes as $fetch): ?>
+				<tr>
+					<td><?= html($fetch->source->name) ?></td>
+					<td><?= $fetch->release_date ?></td>
+					<td nowrap class="version hide-on-mobile" tabindex="0">
+						<span><?= $fetch->cleaned_version ?></span>
+					</td>
+					<td class="hide-on-mobile"><?= date('Y-m-d', $fetch->change_on) ?></td>
+				</tr>
+			<? endforeach ?>
+		</tbody>
+	</table>
+</fieldset>
 
 <script>
 window.addEventListener('load', function() {

@@ -14,4 +14,8 @@ class Fetch extends Model {
 		return $version;
 	}
 
+	protected function relate_source() {
+		return $this->to_one(Source::class, 'source_id');
+	}
+
 }
