@@ -43,7 +43,7 @@ class Source extends Model {
 		[$release, $thread] = $this->getDates($text);
 		$version = $this->getVersion($text);
 		$banner = $this->getBanner($doc);
-		$developer = $this->getDeveloper($doc);
+		$developer = $this->getDeveloper($doc, $text);
 		$prefixes = $this->getPrefixes($doc);
 
 		$this->update([
@@ -80,13 +80,19 @@ class Source extends Model {
 		return $banner->parent()['href'];
 	}
 
-	protected function getDeveloper(Node $doc) {
+	protected function getDeveloper(Node $doc, string $text) {
 		$body = $doc->query('.message-threadStarterPost .message-body > .bbWrapper')->innerText;
-		return preg_match('#\sDeveloper:\s*([^\r\n]+)#', $body, $match) ? trim($match[1], '- ') : null;
+		if (preg_match('#\sDeveloper/[Pp]ublisher: *([^\r\n]+)#', $body, $match)) {
+			return trim($match[1], '- ');
+		}
+
+		if (preg_match('#\sDeveloper/[Pp]ublisher: *([^\r\n]+)#', $text, $match)) {
+			return trim($match[1], '- ');
+		}
 	}
 
 	protected function getVersion(string $text) {
-		if (preg_match('#\sVersion:\s*([^\r\n]+)#', $text, $match)) {
+		if (preg_match('#\sVersion: *([^\r\n]+)#', $text, $match)) {
 			$version = trim($match[1]);
 			return $version;
 		}
@@ -98,7 +104,7 @@ class Source extends Model {
 
 	protected function getDate(string $text, string $pattern) {
 		$datePattern = '\d\d\d\d ?- ?\d\d? ?- ?\d\d?';
-		return preg_match("#\s$pattern:\s*($datePattern)#", $text, $match) ? $this->formatDate($match[1]) : null;
+		return preg_match("#\s$pattern: *($datePattern)#", $text, $match) ? $this->formatDate($match[1]) : null;
 	}
 
 	protected function getDates(string $text) {
