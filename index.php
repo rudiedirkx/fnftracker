@@ -21,7 +21,7 @@ if ( isset($_POST['name'], $_POST['f95_id']) ) {
 	$data = [
 		'name' => trim($_POST['name']),
 		'f95_id' => trim($_POST['f95_id']),
-		'description' => trim($_POST['description']),
+		'description' => trim($_POST['description']) ?: null,
 	];
 
 	if ( isset($_POST['id']) ) {
