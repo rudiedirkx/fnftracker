@@ -65,6 +65,8 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 <h1>Sources (<?= count($sources) ?>)</h1>
 
+<p><input type="search" placeholder="Name &amp; developer..." /></p>
+
 <form method="post" action>
 	<table border="1">
 		<thead>
@@ -86,7 +88,13 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						... Show <?= count($sources) - $i ?> hidden sources ...
 					</td></tr>
 				<? endif ?>
-				<tr class="<?= $prevprio && $source->priority != $prevprio ? 'new-priority' : '' ?> <?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_prefix ?>" data-banner="<?= html($source->banner_url) ?>" data-id="<?= $source->id ?>" data-priority="<?= $source->priority ?>">
+				<tr
+					class="<?= $prevprio && $source->priority != $prevprio ? 'new-priority' : '' ?> <?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_prefix ?>"
+					data-id="<?= $source->id ?>"
+					data-search="<?= html(mb_strtolower(trim("$source->name $source->developer"))) ?>"
+					data-banner="<?= html($source->banner_url) ?>"
+					data-priority="<?= $source->priority ?>"
+				>
 					<td class="priority">
 						<input type="hidden" name="priorities[<?= $source->id ?>]" value="<?= $source->priority ?>" />
 						<output><?= $source->priority ?></output>
@@ -198,6 +206,14 @@ window.addEventListener('load', function() {
 	document.querySelectorAll('tr[data-banner] span.title-name').forEach(el => {
 		el.addEventListener('mouseover', over);
 		el.addEventListener('mouseout', out);
+	});
+});
+window.addEventListener('load', function() {
+	document.querySelector('input[type="search"]').addEventListener('input', function(e) {
+		const q = this.value.toLowerCase().trim();
+		document.body.classList.toggle('searching', q != '');
+		const rows = document.querySelectorAll('tr[data-search]');
+		rows.forEach(tr => tr.hidden = q && !tr.dataset.search.includes(q));
 	});
 });
 window.addEventListener('load', function() {

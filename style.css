@@ -66,7 +66,10 @@ tr.hidden-sources td {
 tr.hidden-sources td:hover {
 	background-color: #ddd;
 }
-tr.hidden-sources ~ tr {
+body:not(.searching) tr.hidden-sources ~ tr {
+	display: none;
+}
+body.searching tr.hidden-sources {
 	display: none;
 }
 td.priority {
