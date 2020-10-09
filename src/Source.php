@@ -9,7 +9,8 @@ use rdx\jsdom\Node;
 
 class Source extends Model {
 
-	const PRIORITIES = [0 => null, 1 => '8 days', 2 => '4 days', 3 => '2 days'];
+	const RECENTS = [RECENT0, RECENT1, RECENT2];
+	const PRIORITIES = [0 => null, 1 => 8, 2 => 4, 3 => 2];
 	const KEEP_PREFIXES = ['completed', 'onhold', 'abandoned'];
 
 	static public $_table = 'sources';
@@ -142,8 +143,8 @@ class Source extends Model {
 			$date = $this->last_fetch->release_date;
 			if ($date) {
 				$utc = strtotime($date);
-				foreach (RECENT_TIMESTR as $i => $time) {
-					if (strtotime("-$time") < $utc) {
+				foreach (self::RECENTS as $i => $days) {
+					if (strtotime("-$days days") < $utc) {
 						return $i + 1;
 					}
 				}

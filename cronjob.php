@@ -7,8 +7,8 @@ require 'inc.bootstrap.php';
 
 $guzzle = Source::makeGuzzle();
 
-$priomap = array_filter(array_map(function($time) {
-	return $time ? strtotime('+1 hour', strtotime("-$time")) : null;
+$priomap = array_filter(array_map(function($days) {
+	return $time ? strtotime('+1 hour', strtotime("-$days days")) : null;
 }, Source::PRIORITIES));
 
 $sources = Source::all('priority > 0');
