@@ -116,7 +116,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						<output><?= $source->priority ?></output>
 					</td>
 					<td class="title">
-						<span class="title-name"><?= html($source->name) ?></span>
+						<span class="title-name" title="<?= html($source->developer) ?>"><?= html($source->name) ?></span>
 						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
 					</td>
 					<td nowrap class="recent-<?= $source->recent_release ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
