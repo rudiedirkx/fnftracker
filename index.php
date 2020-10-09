@@ -60,6 +60,7 @@ Source::eager('last_fetch', $sources);
 
 $developers = array_values(array_unique(array_filter(array_column($sources, 'developer'))));
 
+$changesUtc = strtotime('-' . min(Source::RECENTS) . ' days');
 $changes = Fetch::query("
 	select
 		source_id,
@@ -69,9 +70,9 @@ $changes = Fetch::query("
 	from fetches f
 	where release_date is not null
 	group by source_id, release_date
-	having change_on > ?
+	-- having change_on > ?
 	order by change_on desc
-", [strtotime('-' . min(Source::RECENTS) . ' days')]);
+", [$changesUtc]);
 
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
@@ -98,12 +99,12 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<? if ($prevprio && $source->priority != $prevprio && $source->priority == 0): ?>
 					</tbody>
 					<tbody>
-					<tr class="hidden-sources"><td colspan="5">
+					<tr class="hidden-rows"><td colspan="5">
 						... Show <?= count($sources) - $i ?> hidden sources ...
 					</td></tr>
 				<? endif ?>
 				<tr
-					class="<?= $prevprio && $source->priority != $prevprio ? 'new-priority' : '' ?> <?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_prefix ?>"
+					class="<?= $prevprio && $source->priority != $prevprio ? 'new-section' : '' ?> <?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_prefix ?>"
 					data-id="<?= $source->id ?>"
 					data-search="<?= html(mb_strtolower(trim("$source->name $source->developer"))) ?>"
 					data-banner="<?= html($source->banner_url) ?>"
@@ -180,15 +181,28 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 			</tr>
 		</thead>
 		<tbody>
+			<? $lastNew = null ?>
 			<? foreach ($changes as $fetch): ?>
-				<tr>
-					<td><?= html($fetch->source->name) ?></td>
+				<? $new = $fetch->change_on > $changesUtc ?>
+				<? if ($lastNew != null && $lastNew != $new && !$new): ?>
+					</tbody>
+					<tbody>
+					<tr class="hidden-rows"><td colspan="5">
+						... Show all history ...
+					</td></tr>
+				<? endif?>
+				<tr
+					class="<?= $lastNew != null && $new != $lastNew ? 'new-section' : '' ?>"
+					data-priority="<?= $fetch->source->priority ?>"
+				>
+					<td class="with-priority"><?= html($fetch->source->name) ?></td>
 					<td><?= $fetch->release_date ?></td>
 					<td nowrap class="version hide-on-mobile" tabindex="0">
 						<span><?= $fetch->cleaned_version ?></span>
 					</td>
 					<td class="hide-on-mobile"><?= date('Y-m-d', $fetch->change_on) ?></td>
 				</tr>
+				<? $lastNew = $new ?>
 			<? endforeach ?>
 		</tbody>
 	</table>
@@ -229,10 +243,10 @@ window.addEventListener('load', function() {
 	document.querySelectorAll('td.priority').forEach(el => el.addEventListener('click', handle));
 });
 window.addEventListener('load', function() {
-	const el = document.querySelector('tr.hidden-sources td');
-	el && el.addEventListener('click', function(e) {
+	const handle = function(e) {
 		this.closest('tr').remove();
-	});
+	};
+	const el = document.querySelectorAll('tr.hidden-rows td').forEach(el => el.addEventListener('click', handle));
 });
 window.addEventListener('load', function() {
 	const body = document.body;

@@ -55,22 +55,22 @@ td > .cols {
 td > .cols > :last-child {
 	margin-left: .5em;
 }
-tr.new-priority td,
-tr.hidden-sources td {
+tr.new-section td,
+tr.hidden-rows td {
 	border-top-width: 3px;
 }
-tr.hidden-sources td {
+tr.hidden-rows td {
 	text-align: center;
 	background-color: #eee;
 	cursor: pointer;
 }
-tr.hidden-sources td:hover {
+tr.hidden-rows td:hover {
 	background-color: #ddd;
 }
-body:not(.searching) tr.hidden-sources ~ tr {
+body:not(.searching) tr.hidden-rows ~ tr {
 	display: none;
 }
-body.searching tr.hidden-sources {
+body.searching tr.hidden-rows {
 	display: none;
 }
 td.priority {
@@ -78,15 +78,27 @@ td.priority {
 	cursor: pointer;
 	background-color: pink;
 }
+td.with-priority {
+	border-left: solid 7px pink;
+}
 tr[data-priority="1"] td.priority {
 	background-color: salmon;
+}
+tr[data-priority="1"] td.with-priority {
+	border-left-color: salmon;
 }
 tr[data-priority="2"] td.priority {
 	background-color: red;
 }
+tr[data-priority="2"] td.with-priority {
+	border-left-color: red;
+}
 tr[data-priority="3"] td.priority {
 	background-color: darkred;
 	color: white;
+}
+tr[data-priority="3"] td.with-priority {
+	border-left-color: darkred;
 }
 .recent-1 {
 	color: green;
