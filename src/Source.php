@@ -82,11 +82,11 @@ class Source extends Model {
 
 	protected function getDeveloper(Node $doc, string $text) {
 		$body = $doc->query('.message-threadStarterPost .message-body > .bbWrapper')->innerText;
-		if (preg_match('#\sDeveloper/[Pp]ublisher: *([^\r\n]+)#', $body, $match)) {
+		if (preg_match('#\sDeveloper(?:/[Pp]ublisher)?: *([^\r\n]+)#', $body, $match)) {
 			return trim($match[1], '- ');
 		}
 
-		if (preg_match('#\sDeveloper/[Pp]ublisher: *([^\r\n]+)#', $text, $match)) {
+		if (preg_match('#\sDeveloper(?:/[Pp]ublisher)?: *([^\r\n]+)#', $text, $match)) {
 			return trim($match[1], '- ');
 		}
 	}
