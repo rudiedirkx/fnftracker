@@ -31,14 +31,27 @@ foreach ( $sources as $source ) {
 	$anyway = $anyway ? ' (ANYWAY)' : '';
 	echo "$source->id. $source->name$anyway\n";
 
+	$developer = $source->developer;
 	$fetch = Fetch::find($source->sync($guzzle));
 
 	if (!$fetch->release_date) {
-		echo "- no match??\n";
+		echo "- no release date??\n";
 	}
 	else {
 		echo "- $fetch->release_date\n";
 	}
+
+	if (!$source->developer) {
+		echo "- no developer?\n";
+	}
+	elseif ($source->developer == $developer) {
+		echo "- $source->developer (unchanged)\n";
+	}
+	else {
+		echo "- $source->developer (new)\n";
+	}
+
+	exit;
 
 	echo "\n";
 	usleep(1000 * rand(500, 1500));
