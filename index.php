@@ -65,6 +65,7 @@ $changes = Fetch::query("
 	select
 		source_id,
 		release_date,
+		prefixes,
 		(select version from fetches where source_id = f.source_id and release_date = f.release_date order by id desc limit 1) version,
 		cast(min(created_on) as int) change_on
 	from fetches f
@@ -104,7 +105,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					</td></tr>
 				<? endif ?>
 				<tr
-					class="<?= $prevprio && $source->priority != $prevprio ? 'new-section' : '' ?> <?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_prefix ?>"
+					class="<?= $prevprio && $source->priority != $prevprio ? 'new-section' : '' ?> <?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_fetch->prefix ?>"
 					data-id="<?= $source->id ?>"
 					data-search="<?= html(mb_strtolower(trim("$source->name $source->developer"))) ?>"
 					data-banner="<?= html($source->banner_url) ?>"
@@ -192,15 +193,15 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					</td></tr>
 				<? endif?>
 				<tr
-					class="<?= $lastNew != null && $new != $lastNew ? 'new-section' : '' ?>"
+					class="<?= $lastNew != null && $new != $lastNew ? 'new-section' : '' ?> <?= $fetch->prefix ?>"
 					data-priority="<?= $fetch->source->priority ?>"
 				>
-					<td class="with-priority"><?= html($fetch->source->name) ?></td>
-					<td><?= $fetch->release_date ?></td>
+					<td class="with-priority title"><?= html($fetch->source->name) ?></td>
+					<td nowrap><?= $fetch->release_date ?></td>
 					<td nowrap class="version hide-on-mobile" tabindex="0">
 						<span><?= $fetch->cleaned_version ?></span>
 					</td>
-					<td class="hide-on-mobile"><?= date('Y-m-d', $fetch->change_on) ?></td>
+					<td nowrap class="hide-on-mobile"><?= date('Y-m-d', $fetch->change_on) ?></td>
 				</tr>
 				<? $lastNew = $new ?>
 			<? endforeach ?>

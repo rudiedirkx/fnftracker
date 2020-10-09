@@ -6,6 +6,10 @@ class Fetch extends Model {
 
 	static public $_table = 'fetches';
 
+	protected function get_prefix() {
+		return $this->prefixes;
+	}
+
 	protected function get_cleaned_version() {
 		$version = trim(explode(' (', $this->version)[0]);
 		if (preg_match('#^v[\d\.]+$#', $version)) {
