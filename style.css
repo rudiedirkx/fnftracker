@@ -1,0 +1,121 @@
+body {
+	font-family: sans-serif;
+}
+a, a:visited {
+	color: deeppink;
+}
+
+body.show-banner {
+	/*--transparency: 0.75;*/
+	background: none right top no-repeat;
+	background-image: /*linear-gradient(rgba(255, 255, 255, var(--transparency)), rgba(255, 255, 255, var(--transparency))),*/ var(--banner);
+	background-size: contain;
+	background-attachment: fixed;
+}
+h1 {
+	margin-top: 0;
+}
+table {
+	background-color: rgba(255, 255, 255, 0.75);
+	border-collapse: collapse;
+}
+th, td {
+	border: solid 1px #999;
+	border-width: 1px 0;
+	padding: 3px 4px;
+	text-align: left;
+}
+th:first-child:last-child {
+	text-align: center;
+}
+tr.hilited,
+legend.hilited {
+	background: #c8e5ee;
+}
+tr.completed td.title:before,
+tr.onhold td.title:before,
+tr.abandoned td.title:before {
+	content: "C";
+	float: right;
+	color: royalblue;
+	font-weight: bold;
+	margin-left: .5em;
+}
+tr.onhold td.title:before {
+	content: "H";
+}
+tr.abandoned td.title:before {
+	content: "A";
+}
+td > .cols {
+	display: flex;
+	justify-content: space-between;
+}
+td > .cols > :last-child {
+	margin-left: .5em;
+}
+tr.new-priority td,
+tr.hidden-sources td {
+	border-top-width: 3px;
+}
+tr.hidden-sources td {
+	text-align: center;
+	background-color: #eee;
+	cursor: pointer;
+}
+tr.hidden-sources td:hover {
+	background-color: #ddd;
+}
+tr.hidden-sources ~ tr {
+	display: none;
+}
+td.priority {
+	user-select: none;
+	cursor: pointer;
+	background-color: pink;
+}
+tr[data-priority="1"] td.priority {
+	background-color: salmon;
+}
+tr[data-priority="2"] td.priority {
+	background-color: red;
+}
+tr[data-priority="3"] td.priority {
+	background-color: darkred;
+	color: white;
+}
+.recent-1 {
+	color: green;
+	font-weight: bold;
+}
+.recent-2 {
+	color: green;
+}
+.recent-3 {
+	color: lightgreen;
+}
+.not-release-date {
+	color: orange;
+}
+.prefixes {
+	font-weight: bold;
+	color: royalblue
+}
+.version {
+	font-family: monospace;
+}
+.version:not(:focus) {
+	/*display: inline-block;*/
+	max-width: 6em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+a.goto, a.sync, a.edit-icon {
+	line-height: 1;
+	text-decoration: none;
+}
+@media (max-width: 400px) {
+	.hide-on-mobile {
+		display: none;
+	}
+}
