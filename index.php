@@ -65,7 +65,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 <h1>Sources (<?= count($sources) ?>)</h1>
 
-<p><input type="search" placeholder="Name &amp; developer..." /></p>
+<p><input type="search" placeholder="Name &amp; developer..." value="<?= html($_GET['search'] ?? '') ?>" /></p>
 
 <form method="post" action>
 	<table border="1">
@@ -209,12 +209,14 @@ window.addEventListener('load', function() {
 	});
 });
 window.addEventListener('load', function() {
-	document.querySelector('input[type="search"]').addEventListener('input', function(e) {
+	const search = document.querySelector('input[type="search"]');
+	search.addEventListener('input', function(e) {
 		const q = this.value.toLowerCase().trim();
 		document.body.classList.toggle('searching', q != '');
 		const rows = document.querySelectorAll('tr[data-search]');
 		rows.forEach(tr => tr.hidden = q && !tr.dataset.search.includes(q));
 	});
+	search.dispatchEvent(new CustomEvent('input'));
 });
 window.addEventListener('load', function() {
 	const el = document.querySelector('.hilited');
