@@ -18,11 +18,12 @@ if ( isset($_POST['priorities']) ) {
 	return do_redirect('index');
 }
 
-if ( isset($_POST['name'], $_POST['f95_id']) ) {
+if ( isset($_POST['name'], $_POST['f95_id'], $_POST['description'], $_POST['finished']) ) {
 	$data = [
 		'name' => trim($_POST['name']),
 		'f95_id' => trim($_POST['f95_id']),
 		'description' => trim($_POST['description']) ?: null,
+		'finished' => trim($_POST['finished']) ?: null,
 	];
 
 	if ( isset($_POST['id']) ) {
@@ -155,6 +156,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 		<p>Name: <input name="name" required value="<?= html($edit->name ?? '') ?>" <?= $edit ? 'autofocus' : '' ?> /></p>
 		<p>F95 ID: <input name="f95_id" required pattern="^\d+$" value="<?= html($edit->f95_id ?? '') ?>" /></p>
 		<p>Developer: <input name="developer" value="<?= html($edit->developer ?? '') ?>" list="dl-developers" /></p>
+		<p>Finished: <input name="finished" type="date" value="<?= html($edit->finished ?? '') ?>" /></p>
 		<p><textarea name="description" cols="35" rows="3" placeholder="Description..."><?= html($edit->description ?? '') ?></textarea></p>
 		<p><button>Save</button></p>
 	</fieldset>
