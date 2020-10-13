@@ -14,6 +14,14 @@ class Source extends Model {
 		return $fetcher->sync();
 	}
 
+	protected function get_prefix_class() {
+		if ($this->finished) {
+			return 'played';
+		}
+
+		return $this->last_fetch->prefixes;
+	}
+
 	protected function get_not_release_date() {
 		return $this->last_fetch && !$this->last_fetch->release_date && $this->last_fetch->thread_date;
 	}

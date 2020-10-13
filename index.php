@@ -104,7 +104,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					</td></tr>
 				<? endif ?>
 				<tr
-					class="<?= $prevprio && $source->priority != $prevprio ? 'new-section' : '' ?> <?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_fetch->prefix ?>"
+					class="<?= $prevprio && $source->priority != $prevprio ? 'new-section' : '' ?> <?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->prefix_class ?>"
 					data-id="<?= $source->id ?>"
 					data-search="<?= html(mb_strtolower(trim("$source->name $source->developer"))) ?>"
 					data-banner="<?= html($source->banner_url) ?>"

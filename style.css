@@ -33,6 +33,7 @@ tr.hilited,
 legend.hilited {
 	background: #c8e5ee;
 }
+tr.played td.title:before,
 tr.completed td.title:before,
 tr.onhold td.title:before,
 tr.abandoned td.title:before {
@@ -41,6 +42,10 @@ tr.abandoned td.title:before {
 	color: royalblue;
 	font-weight: bold;
 	margin-left: .5em;
+}
+tr.played td.title:before {
+	content: "P";
+	color: orange;
 }
 tr.onhold td.title:before {
 	content: "H";
