@@ -63,9 +63,7 @@ $developers = array_values(array_unique(array_filter(array_column($sources, 'dev
 $changesUtc = strtotime('-' . min(Source::RECENTS) . ' days');
 $changes = Fetch::query("
 	select
-		source_id,
-		release_date,
-		prefixes,
+		f.*,
 		(select version from fetches where source_id = f.source_id and release_date = f.release_date order by id desc limit 1) version,
 		cast(min(created_on) as int) change_on
 	from fetches f
@@ -194,14 +192,24 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<? endif?>
 				<tr
 					class="<?= $lastNew != null && $new != $lastNew ? 'new-section' : '' ?> <?= $fetch->prefix ?>"
+					data-search="<?= html(mb_strtolower(trim("{$fetch->source->name} {$fetch->source->developer}"))) ?>"
+					data-banner="<?= html($fetch->source->banner_url) ?>"
 					data-priority="<?= $fetch->source->priority ?>"
 				>
-					<td class="with-priority title"><?= html($fetch->source->name) ?></td>
+					<td class="with-priority title">
+						<span class="title-name"><?= html($fetch->source->name) ?></span>
+						<a class="edit-icon" href="?edit=<?= $fetch->source_id ?>">&#9998;</a>
+					</td>
 					<td nowrap><?= $fetch->release_date ?></td>
 					<td nowrap class="version hide-on-mobile" tabindex="0">
 						<span><?= $fetch->cleaned_version ?></span>
 					</td>
-					<td nowrap class="hide-on-mobile"><?= date('Y-m-d', $fetch->change_on) ?></td>
+					<td nowrap class="hide-on-mobile">
+						<div class="cols">
+							<span><?= date('Y-m-d', $fetch->change_on) ?></span>
+							<a class="goto" target="_blank" href="<?= html($fetch->url) ?>">&#10132;</a>
+						</div>
+					</td>
 				</tr>
 				<? $lastNew = $new ?>
 			<? endforeach ?>
@@ -274,6 +282,11 @@ window.addEventListener('load', function() {
 		rows.forEach(tr => tr.hidden = q && !tr.dataset.search.includes(q));
 	});
 	search.dispatchEvent(new CustomEvent('input'));
+	document.addEventListener('keyup', function(e) {
+		if (e.code == 'Slash' && document.activeElement.matches('body, a, button')) {
+			search.focus();
+		}
+	});
 });
 window.addEventListener('load', function() {
 	const el = document.querySelector('.hilited');
