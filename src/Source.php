@@ -26,22 +26,6 @@ class Source extends Model {
 		return $this->last_fetch && !$this->last_fetch->release_date && $this->last_fetch->thread_date;
 	}
 
-	protected function get_recent_release() {
-		if ($this->last_fetch) {
-			$date = $this->last_fetch->release_date;
-			if ($date) {
-				$utc = strtotime($date);
-				foreach (self::RECENTS as $i => $days) {
-					if (strtotime("-$days days") < $utc) {
-						return $i + 1;
-					}
-				}
-			}
-		}
-
-		return 0;
-	}
-
 	protected function relate_last_fetch() {
 		return $this->to_first(Fetch::class, 'source_id')
 			->where('id in (select max(id) from fetches group by source_id)');

@@ -12,8 +12,13 @@ body.show-banner {
 	background-size: contain;
 	background-attachment: fixed;
 }
+
 h1 {
 	margin-top: 0;
+}
+
+.table-wrapper {
+	overflow-x: auto;
 }
 table {
 	background-color: rgba(255, 255, 255, 0.75);
@@ -25,6 +30,7 @@ th, td {
 	border-width: 1px 0;
 	padding: 3px 4px;
 	text-align: left;
+	vertical-align: top;
 }
 th:first-child:last-child {
 	text-align: center;
@@ -114,6 +120,9 @@ tr[data-priority="3"] td.with-priority {
 }
 .recent-3 {
 	color: lightgreen;
+}
+td.title {
+	min-width: 8em;
 }
 .not-release-date {
 	color: orange;
