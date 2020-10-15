@@ -1,10 +1,11 @@
 <?php
 
 return [
-	'version' => 11,
+	'version' => 12,
 	'tables' => [
 		'sources' => [
 			'id' => ['pk' => true],
+			'created_on' => ['unsigned' => true, 'null' => false, 'default' => 0],
 			'priority' => ['unsigned' => true, 'default' => 1],
 			'f95_id',
 			'name',

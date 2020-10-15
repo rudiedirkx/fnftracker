@@ -32,7 +32,10 @@ if ( isset($_POST['name'], $_POST['f95_id'], $_POST['description'], $_POST['fini
 		$source->update($data);
 	}
 	else {
-		$id = Source::insert($data + ['priority' => max(array_keys(Source::PRIORITIES))]);
+		$id = Source::insert($data + [
+			'created_on' => time(),
+			'priority' => max(array_keys(Source::PRIORITIES)),
+		]);
 		$source = Source::find($id);
 		$source->sync(null, true);
 	}
@@ -203,6 +206,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 		<? if ($edit): ?>
 			<legend class="hilited">Edit source</legend>
 			<input type="hidden" name="id" value="<?= $edit->id ?>" />
+			<p>Created: <?= date('Y-m-d H:i', $edit->created_on) ?></p>
 		<? else: ?>
 			<legend>Add source</legend>
 		<? endif ?>
