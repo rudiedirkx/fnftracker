@@ -34,7 +34,7 @@ if ( isset($_POST['name'], $_POST['f95_id'], $_POST['description'], $_POST['fini
 	else {
 		$id = Source::insert($data + ['priority' => max(array_keys(Source::PRIORITIES))]);
 		$source = Source::find($id);
-		$source->sync();
+		$source->sync(null, true);
 	}
 
 	setcookie('hilite_source', $source->id);
@@ -44,7 +44,7 @@ if ( isset($_POST['name'], $_POST['f95_id'], $_POST['description'], $_POST['fini
 
 if ( isset($_GET['sync']) ) {
 	$source = Source::find($_GET['sync']);
-	$source->sync();
+	$source->sync(null, false);
 
 	setcookie('hilite_source', $source->id);
 

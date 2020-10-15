@@ -35,20 +35,25 @@ foreach ( $sources as $source ) {
 	echo "[$source->id.] $source->name$anyway\n";
 
 	$developer = $source->developer;
-	$fetch = Fetch::find($fetcher->sync($guzzle));
+	$fetch = Fetch::find($fetcher->sync($guzzle, true));
 
-	if (!$fetch->release_date) {
-		echo "- no release date??\n";
+	if (!$fetch) {
+		echo "- CONNECTION EXCEPTION\n";
 	}
 	else {
-		echo "- $fetch->release_date\n";
-	}
+		if (!$fetch->release_date) {
+			echo "- no release date??\n";
+		}
+		else {
+			echo "- $fetch->release_date\n";
+		}
 
-	if (!$fetcher->developer) {
-		echo "- no developer?\n";
-	}
-	else {
-		echo "- $fetcher->developer\n";
+		if (!$fetcher->developer) {
+			echo "- no developer?\n";
+		}
+		else {
+			echo "- $fetcher->developer\n";
+		}
 	}
 
 	echo "\n";

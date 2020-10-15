@@ -4,6 +4,7 @@ namespace rdx\f95;
 
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\RedirectMiddleware;
 use rdx\jsdom\Node;
 
@@ -40,10 +41,18 @@ class Fetcher {
 		]);
 	}
 
-	public function sync(Guzzle $guzzle = null) {
+	public function sync(Guzzle $guzzle = null, $catch = false) {
 		$guzzle or $guzzle = self::makeGuzzle();
 
-		[$doc, $redirects] = $this->getRemote($guzzle, $this->url);
+		try {
+			[$doc, $redirects] = $this->getRemote($guzzle, $this->url);
+		}
+		catch (ConnectException $ex) {
+			if (!$catch) {
+				throw $ex;
+			}
+			return 0;
+		}
 
 		$text = $this->getLdText($doc);
 
