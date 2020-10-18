@@ -84,7 +84,7 @@ $recentChanges = count(array_filter($changes, function($fetch) {
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 ?>
-<p><input type="search" placeholder="Name &amp; developer..." value="<?= html($_GET['search'] ?? '') ?>" /></p>
+<p><input type="search" placeholder="Name &amp; developer..." autofocus value="<?= html($_GET['search'] ?? '') ?>" /></p>
 
 <h2>Recent changes (<?= $recentChanges ?>)</h2>
 
@@ -138,7 +138,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 <h2>Sources (<?= $activeSources ?>)</h2>
 
-<form method="post" action>
+<form method="post" action class="table-wrapper">
 	<table>
 		<thead>
 			<tr>
@@ -146,7 +146,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<th class="title">Title</th>
 				<th data-sortable>Latest release</th>
 				<th data-sortable="asc">Version</th>
-				<th data-sortable="asc" class="hide-on-mobile">Last checked</th>
+				<th data-sortable="asc">Last checked</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -183,7 +183,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					<td nowrap class="version" tabindex="0">
 						<span><?= $source->last_fetch->cleaned_version ?? '' ?></span>
 					</td>
-					<td nowrap class="hide-on-mobile">
+					<td nowrap>
 						<? if ($source->last_fetch): ?>
 							<div class="cols">
 								<span><?= date('Y-m-d', $source->last_fetch->created_on) ?></span>
