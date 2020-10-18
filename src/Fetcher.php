@@ -62,10 +62,11 @@ class Fetcher {
 		$this->developer = $this->getDeveloper($doc, $text);
 		$prefixes = $this->getPrefixes($doc);
 
-		$this->source->update([
-			'banner_url' => $this->banner,
-			'developer' => $this->developer,
-		]);
+		$update = ['banner_url' => $this->banner];
+		if (!$this->source->custom_developer) {
+			$update['developer'] = $this->developer;
+		}
+		$this->source->update($update);
 
 		return Fetch::insert([
 			'source_id' => $this->source->id,

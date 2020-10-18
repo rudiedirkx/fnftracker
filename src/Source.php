@@ -14,6 +14,10 @@ class Source extends Model {
 		return $fetcher->sync();
 	}
 
+	protected function get_custom_developer() {
+		return substr($this->developer, 0, 1) === '=';
+	}
+
 	protected function get_prefix_class() {
 		if ($this->finished) {
 			return 'played';

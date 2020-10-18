@@ -18,10 +18,11 @@ if ( isset($_POST['priorities']) ) {
 	return do_redirect('index');
 }
 
-if ( isset($_POST['name'], $_POST['f95_id'], $_POST['description'], $_POST['finished']) ) {
+if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['finished'], $_POST['description']) ) {
 	$data = [
 		'name' => trim($_POST['name']),
 		'f95_id' => trim($_POST['f95_id']),
+		'developer' => trim($_POST['developer']),
 		'description' => trim($_POST['description']) ?: null,
 		'finished' => trim($_POST['finished']) ?: null,
 	];
@@ -84,7 +85,7 @@ $recentChanges = count(array_filter($changes, function($fetch) {
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 ?>
-<p><input type="search" placeholder="Name &amp; developer..." autofocus value="<?= html($_GET['search'] ?? '') ?>" /></p>
+<p><input type="search" placeholder="Name &amp; developer..." <?= $edit ? '' : 'autofocus' ?> value="<?= html($_GET['search'] ?? '') ?>" /></p>
 
 <h2>Recent changes (<?= $recentChanges ?>)</h2>
 
