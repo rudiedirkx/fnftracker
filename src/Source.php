@@ -14,6 +14,11 @@ class Source extends Model {
 		return $fetcher->sync();
 	}
 
+	protected function relate_versions() {
+		return $this->to_many_scalar('version', Fetch::$_table, 'source_id')
+			->where('version IS NOT NULL GROUP BY source_id, version');
+	}
+
 	protected function get_custom_developer() {
 		return substr($this->developer, 0, 1) === '=';
 	}

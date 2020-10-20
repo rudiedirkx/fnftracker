@@ -18,11 +18,12 @@ if ( isset($_POST['priorities']) ) {
 	return do_redirect('index');
 }
 
-if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['finished'], $_POST['description']) ) {
+if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['installed'], $_POST['finished'], $_POST['description']) ) {
 	$data = [
 		'name' => trim($_POST['name']),
 		'f95_id' => trim($_POST['f95_id']),
 		'developer' => trim($_POST['developer']),
+		'installed' => trim($_POST['installed']) ?: null,
 		'description' => trim($_POST['description']) ?: null,
 		'finished' => trim($_POST['finished']) ?: null,
 	];
@@ -173,6 +174,9 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					</td>
 					<td class="title">
 						<span class="title-name" title="<?= html($source->developer) ?>"><?= html($source->name) ?></span>
+						<? if ($source->installed): ?>
+							(<?= html($source->installed) ?>)
+						<? endif ?>
 						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
 					</td>
 					<td nowrap class="recent-<?= $source->last_fetch->recent_release ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
@@ -214,6 +218,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 		<p>Name: <input name="name" required value="<?= html($edit->name ?? '') ?>" <?= $edit ? 'autofocus' : '' ?> /></p>
 		<p>F95 ID: <input name="f95_id" required pattern="^\d+$" value="<?= html($edit->f95_id ?? '') ?>" /></p>
 		<p>Developer: <input name="developer" value="<?= html($edit->developer ?? '') ?>" list="dl-developers" /></p>
+		<p>Installed version: <input name="installed" value="<?= html($edit->installed ?? '') ?>" list="dl-versions" /></p>
 		<p>Finished: <input name="finished" type="date" value="<?= html($edit->finished ?? '') ?>" /></p>
 		<p><textarea name="description" cols="35" rows="3" placeholder="Description..."><?= html($edit->description ?? '') ?></textarea></p>
 		<p><button>Save</button></p>
@@ -224,6 +229,14 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 			<option value="<?= html($name) ?>">
 		<? endforeach ?>
 	</datalist>
+
+	<? if ($edit): ?>
+		<datalist id="dl-versions">
+			<? foreach ($edit->versions as $version): ?>
+				<option value="<?= html($version) ?>">
+			<? endforeach ?>
+		</datalist>
+	<? endif ?>
 </form>
 
 <script>
