@@ -85,7 +85,7 @@ $recentChanges = count(array_filter($changes, function($fetch) {
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 ?>
-<p><input type="search" placeholder="Name &amp; developer..." <?= $edit ? '' : 'autofocus' ?> value="<?= html($_GET['search'] ?? '') ?>" /></p>
+<p><input type="search" placeholder="Name &amp; developer..." value="<?= html($_GET['search'] ?? '') ?>" /></p>
 
 <h2>Recent changes (<?= $recentChanges ?>)</h2>
 
