@@ -39,7 +39,7 @@ if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['instal
 			'priority' => max(array_keys(Source::PRIORITIES)),
 		]);
 		$source = Source::find($id);
-		$source->sync(null, true);
+		$source->sync(2);
 	}
 
 	setcookie('hilite_source', $source->id);
@@ -49,7 +49,7 @@ if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['instal
 
 if ( isset($_GET['sync']) ) {
 	$source = Source::find($_GET['sync']);
-	$source->sync(null, false);
+	$source->sync();
 
 	setcookie('hilite_source', $source->id);
 

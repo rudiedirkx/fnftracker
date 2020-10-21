@@ -2,6 +2,8 @@
 
 namespace rdx\f95;
 
+use GuzzleHttp\Exception\ConnectException;
+
 class Source extends Model {
 
 	const RECENTS = [RECENT0, RECENT1, RECENT2];
@@ -9,9 +11,20 @@ class Source extends Model {
 
 	static public $_table = 'sources';
 
-	public function sync() {
+	public function sync(int $attempts = 1) {
 		$fetcher = new Fetcher($this);
-		return $fetcher->sync();
+		$throw = null;
+		for ($i = 0; $i < $attempts; $i++) {
+			try {
+				return $fetcher->sync();
+			}
+			catch (ConnectException $ex) {
+				$throw = $ex;
+				sleep(1);
+			}
+		}
+
+		throw $throw;
 	}
 
 	protected function relate_versions() {
