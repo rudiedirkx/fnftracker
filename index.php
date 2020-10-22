@@ -119,6 +119,9 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				>
 					<td class="with-priority title">
 						<span class="title-name"><?= html($fetch->source->name) ?></span>
+						<? if ($fetch->source->installed): ?>
+							(<?= html($fetch->source->installed) ?>)
+						<? endif ?>
 						<a class="edit-icon" href="?edit=<?= $fetch->source_id ?>">&#9998;</a>
 					</td>
 					<td nowrap class="recent-<?= $fetch->recent_release ?>"><?= $fetch->release_date ?></td>
