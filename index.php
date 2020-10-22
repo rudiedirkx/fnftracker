@@ -123,6 +123,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 							(<?= html($fetch->source->installed) ?>)
 						<? endif ?>
 						<a class="edit-icon" href="?edit=<?= $fetch->source_id ?>">&#9998;</a>
+						<a class="search-icon" href>&#128270;</a>
 					</td>
 					<td nowrap class="recent-<?= $fetch->recent_release ?>"><?= $fetch->release_date ?></td>
 					<td nowrap>
@@ -280,7 +281,7 @@ window.addEventListener('load', function() {
 	const handle = function(e) {
 		this.closest('tr').remove();
 	};
-	const el = document.querySelectorAll('tr.hidden-rows td').forEach(el => el.addEventListener('click', handle));
+	document.querySelectorAll('tr.hidden-rows td').forEach(el => el.addEventListener('click', handle));
 });
 window.addEventListener('load', function() {
 	const body = document.body;
@@ -310,8 +311,16 @@ window.addEventListener('load', function() {
 	document.addEventListener('keyup', function(e) {
 		if (e.code == 'Slash' && document.activeElement.matches('body, a, button')) {
 			search.focus();
+			search.select();
 		}
 	});
+	const handle = function(e) {
+		e.preventDefault();
+		search.value = this.closest('tr').querySelector('.title-name').textContent.trim();
+		search.focus();
+		search.dispatchEvent(new CustomEvent('input'));
+	};
+	document.querySelectorAll('.search-icon').forEach(el => el.addEventListener('click', handle));
 });
 window.addEventListener('load', function() {
 	const el = document.querySelector('.hilited');
