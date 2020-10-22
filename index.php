@@ -112,7 +112,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					</td></tr>
 				<? endif?>
 				<tr
-					class="<?= $lastNew != null && $new != $lastNew ? 'new-section' : '' ?> <?= $fetch->prefix ?>"
+					class="<?= $fetch->prefix ?>"
 					data-search="<?= html(mb_strtolower(trim("{$fetch->source->name} {$fetch->source->developer}"))) ?>"
 					data-banner="<?= html($fetch->source->banner_url) ?>"
 					data-priority="<?= $fetch->source->priority ?>"
@@ -162,7 +162,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					</td></tr>
 				<? endif ?>
 				<tr
-					class="<?= $prevprio && $source->priority != $prevprio ? 'new-section' : '' ?> <?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->prefix_class ?>"
+					class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->prefix_class ?>"
 					data-id="<?= $source->id ?>"
 					data-search="<?= html(mb_strtolower(trim("$source->name $source->developer"))) ?>"
 					data-banner="<?= html($source->banner_url) ?>"

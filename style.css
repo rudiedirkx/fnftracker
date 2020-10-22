@@ -66,9 +66,8 @@ td > .cols {
 td > .cols > :last-child {
 	margin-left: .5em;
 }
-tr.new-section td,
-tr.hidden-rows td {
-	border-top-width: 3px;
+tbody + tbody {
+	border-top: solid 3px black;
 }
 tr.hidden-rows td {
 	text-align: center;
