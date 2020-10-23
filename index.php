@@ -153,8 +153,8 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<th data-sortable>Latest release</th>
 				<th data-sortable="asc">Version</th>
 				<th data-sortable="asc">Last checked</th>
-				<th>Added</th>
-				<th>Finished</th>
+				<th data-sortable>Added</th>
+				<th data-sortable>Finished</th>
 			</tr>
 		</thead>
 		<tbody>
