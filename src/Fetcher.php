@@ -98,13 +98,17 @@ class Fetcher {
 	}
 
 	protected function getDeveloper(Node $doc, string $text) {
+		$clean = function($name) {
+			return trim(preg_replace('#\s+f95zone$#i', '', trim($name, '- ')));
+		};
+
 		$body = $doc->query('.message-threadStarterPost .message-body > .bbWrapper')->innerText;
 		if (preg_match('#\sDeveloper(?:/[Pp]ublisher)?: *([^\r\n]+)#', $body, $match)) {
-			return trim($match[1], '- ');
+			return $clean($match[1]);
 		}
 
 		if (preg_match('#\sDeveloper(?:/[Pp]ublisher)?: *([^\r\n]+)#', $text, $match)) {
-			return trim($match[1], '- ');
+			return $clean($match[1]);
 		}
 	}
 
