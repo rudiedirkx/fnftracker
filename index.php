@@ -265,11 +265,10 @@ window.addEventListener('load', function() {
 window.addEventListener('load', function() {
 	const handle = function(e) {
 		const i = this.cellIndex;
-		const tbody = this.closest('table').tBodies[0];
-		let rows = Array.from(tbody.rows);
+		let rows = Array.from(this.closest('table').querySelectorAll('tbody > tr:not(.hidden-rows)'));
 		rows.sort((a, b) => a.cells[i].textContent < b.cells[i].textContent ? 1 : -1);
 		this.dataset.sortable === 'asc' && (rows = rows.reverse());
-		rows.forEach(row => tbody.append(row));
+		rows.forEach(tr => tr.parentNode.append(tr));
 	};
 	document.querySelectorAll('th[data-sortable]').forEach(el => el.addEventListener('click', handle));
 });
