@@ -107,7 +107,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<? if ($lastNew != null && $lastNew != $new && !$new): ?>
 					</tbody>
 					<tbody>
-					<tr class="hidden-rows"><td colspan="5">
+					<tr class="hidden-rows"><td colspan="4">
 						... Show all history ...
 					</td></tr>
 				<? endif?>
@@ -153,6 +153,8 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<th data-sortable>Latest release</th>
 				<th data-sortable="asc">Version</th>
 				<th data-sortable="asc">Last checked</th>
+				<th>Added</th>
+				<th>Finished</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -161,7 +163,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<? if ($prevprio && $source->priority != $prevprio && $source->priority == 0): ?>
 					</tbody>
 					<tbody>
-					<tr class="hidden-rows"><td colspan="5">
+					<tr class="hidden-rows"><td colspan="7">
 						... Show <?= count($sources) - $i ?> hidden sources ...
 					</td></tr>
 				<? endif ?>
@@ -193,12 +195,16 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						<span><?= $source->last_fetch->cleaned_version ?? '' ?></span>
 					</td>
 					<td nowrap>
-						<? if ($source->last_fetch): ?>
-							<div class="cols">
-								<span><?= date('Y-m-d', $source->last_fetch->created_on) ?></span>
-								<a class="goto" target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
-							</div>
-						<? endif ?>
+						<div class="cols">
+							<span><?= date('Y-m-d', $source->last_fetch->created_on) ?></span>
+							<a class="goto" target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
+						</div>
+					</td>
+					<td>
+						<?= date('Y-m-d', $source->created_on) ?>
+					</td>
+					<td>
+						<?= $source->finished ?>
 					</td>
 				</tr>
 				<? $prevprio = $source->priority ?>
