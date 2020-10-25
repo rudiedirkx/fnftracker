@@ -118,7 +118,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					data-priority="<?= $fetch->source->priority ?>"
 				>
 					<td class="with-priority title">
-						<span class="title-name" title="<?= html($fetch->source->developer) ?>"><?= html($fetch->source->name) ?></span>
+						<span class="title-name" title="<?= html($fetch->source->developer) ?>: <?= html($fetch->source->description) ?>"><?= html($fetch->source->name) ?></span>
 						<? if ($fetch->source->installed): ?>
 							(<?= html($fetch->source->installed) ?>)
 						<? endif ?>
@@ -179,7 +179,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						<output><?= $source->priority ?></output>
 					</td>
 					<td class="title">
-						<span class="title-name" title="<?= html($source->developer) ?>"><?= html($source->name) ?></span>
+						<span class="title-name" title="<?= html($source->developer) ?>: <?= html($source->description) ?>"><?= html($source->name) ?></span>
 						<? if ($source->installed): ?>
 							(<?= html($source->installed) ?>)
 						<? endif ?>
