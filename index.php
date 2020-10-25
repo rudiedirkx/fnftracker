@@ -184,6 +184,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 							(<?= html($source->installed) ?>)
 						<? endif ?>
 						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
+						<a class="search-icon" href>&#128270;</a>
 					</td>
 					<td nowrap class="recent-<?= $source->last_fetch->recent_release ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
 						<div class="cols">
