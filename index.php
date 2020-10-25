@@ -91,7 +91,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 <h2>Recent changes (<?= $recentChanges ?>)</h2>
 
 <div class="table-wrapper">
-	<table>
+	<table class="changes">
 		<thead>
 			<tr>
 				<th class="title">Title</th>
@@ -145,7 +145,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 <h2>Sources (<?= $activeSources ?>)</h2>
 
 <form method="post" action class="table-wrapper">
-	<table>
+	<table class="sources">
 		<thead>
 			<tr>
 				<th></th>
@@ -154,7 +154,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<th data-sortable="asc">Version</th>
 				<th data-sortable="asc">Last checked</th>
 				<th data-sortable>Added</th>
-				<th data-sortable>Finished</th>
+				<th data-sortable class="finished">Finished</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -203,7 +203,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					<td>
 						<?= date('Y-m-d', $source->created_on) ?>
 					</td>
-					<td>
+					<td class="finished">
 						<?= $source->finished ?>
 					</td>
 				</tr>
@@ -284,6 +284,7 @@ window.addEventListener('load', function() {
 });
 window.addEventListener('load', function() {
 	const handle = function(e) {
+		this.closest('table').classList.add('showing-hidden-rows');
 		this.closest('tr').remove();
 	};
 	document.querySelectorAll('tr.hidden-rows td').forEach(el => el.addEventListener('click', handle));
