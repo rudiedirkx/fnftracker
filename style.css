@@ -92,7 +92,7 @@ td.priority {
 	background-color: pink;
 }
 td.with-priority {
-	border-left: solid 7px pink;
+	border-left: solid 10px pink;
 }
 tr[data-priority="1"] td.priority {
 	background-color: salmon;

@@ -201,10 +201,10 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 							<a class="goto" target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
 						</div>
 					</td>
-					<td>
+					<td nowrap>
 						<?= date('Y-m-d', $source->created_on) ?>
 					</td>
-					<td class="finished">
+					<td class="finished" nowrap>
 						<?= $source->finished ?>
 					</td>
 				</tr>
@@ -309,10 +309,11 @@ window.addEventListener('load', function() {
 window.addEventListener('load', function() {
 	const search = document.querySelector('input[type="search"]');
 	search.addEventListener('input', function(e) {
-		const q = this.value.toLowerCase().trim();
+		const q = this.value.toLowerCase().replace(/(^[\s|]+|[\s|]+$)/g, '');
+		const re = new RegExp(q, 'i');
 		document.body.classList.toggle('searching', q != '');
 		const rows = document.querySelectorAll('tr[data-search]');
-		rows.forEach(tr => tr.hidden = q && !tr.dataset.search.includes(q));
+		rows.forEach(tr => tr.hidden = q && !re.test(tr.dataset.search));
 	});
 	search.dispatchEvent(new CustomEvent('input'));
 	document.addEventListener('keyup', function(e) {
