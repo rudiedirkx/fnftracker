@@ -59,7 +59,7 @@ tr.onhold td.title:before {
 tr.abandoned td.title:before {
 	content: "A";
 }
-table.sources:not(.showing-hidden-rows) .finished {
+body:not(.searching) table.sources:not(.showing-hidden-rows) .finished {
 	display: none;
 }
 td > .cols {
