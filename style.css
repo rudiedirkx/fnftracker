@@ -129,6 +129,16 @@ td.title {
 .not-release-date {
 	color: orange;
 }
+.old-last-change-1,
+.old-last-change-2 {
+	color: red;
+}
+.old-last-change-2 {
+	font-weight: bold;
+}
+.installed-version {
+	color: #999;
+}
 .prefixes {
 	font-weight: bold;
 	color: royalblue

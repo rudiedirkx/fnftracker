@@ -120,7 +120,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					<td class="with-priority title">
 						<span class="title-name" title="<?= html($fetch->source->developer) ?>: <?= html($fetch->source->description) ?>"><?= html($fetch->source->name) ?></span>
 						<? if ($fetch->source->installed): ?>
-							(<?= html($fetch->source->installed) ?>)
+							<span class="installed-version">(<?= html($fetch->source->installed) ?>)</span>
 						<? endif ?>
 						<a class="edit-icon" href="?edit=<?= $fetch->source_id ?>">&#9998;</a>
 						<a class="search-icon" href>&#128270;</a>
@@ -181,12 +181,12 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					<td class="title">
 						<span class="title-name" title="<?= html($source->developer) ?>: <?= html($source->description) ?>"><?= html($source->name) ?></span>
 						<? if ($source->installed): ?>
-							(<?= html($source->installed) ?>)
+							<span class="installed-version">(<?= html($source->installed) ?>)</span>
 						<? endif ?>
 						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
 						<a class="search-icon" href>&#128270;</a>
 					</td>
-					<td nowrap class="recent-<?= $source->last_fetch->recent_release ?> <?= $source->not_release_date ? 'not-release-date' : '' ?>">
+					<td nowrap class="recent-<?= $source->last_fetch->recent_release ?> <?= $source->not_release_date ? 'not-release-date' : '' ?> old-last-change-<?= $source->old_last_change ?>">
 						<div class="cols">
 							<span><?= $source->last_fetch ? ($source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '') : '' ?></span>
 							<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>

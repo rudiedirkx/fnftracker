@@ -45,7 +45,20 @@ class Source extends Model {
 	}
 
 	protected function get_not_release_date() {
-		return $this->last_fetch && !$this->last_fetch->release_date && $this->last_fetch->thread_date;
+		return !$this->last_fetch->release_date && $this->last_fetch->thread_date;
+	}
+
+	protected function get_old_last_change() {
+		if ($date = ($this->last_fetch->release_date ?? $this->last_fetch->thread_date)) {
+			if ($date <= date('Y-m-d', strtotime('-2 years'))) {
+				return 2;
+			}
+			elseif ($date <= date('Y-m-d', strtotime('-1 year'))) {
+				return 1;
+			}
+		}
+
+		return 0;
 	}
 
 	protected function relate_last_fetch() {
