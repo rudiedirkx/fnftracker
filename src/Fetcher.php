@@ -120,12 +120,24 @@ class Fetcher {
 	}
 
 	protected function formatDate(string $date) {
-		return date('Y-m-d', strtotime(str_replace(' ', '', $date)));
+		return date('Y-m-d', strtotime($date));
 	}
 
-	protected function getDate(string $text, string $pattern) {
+	protected function getDate(string $text, string $textPpattern) {
 		$datePattern = '\d\d\d\d ?- ?\d\d? ?- ?\d\d?';
-		return preg_match("#\s$pattern: *($datePattern)#", $text, $match) ? $this->formatDate($match[1]) : null;
+		if (preg_match("#\s$textPpattern: *($datePattern)#", $text, $match)) {
+			return $this->formatDate(str_replace(' ', '', $match[1]));
+		}
+
+		$datePattern = '\d\d? ?- ?[a-zA-Z]{3} ?- ?\d\d\d\d';
+		if (preg_match("#\s$textPpattern: *($datePattern)#", $text, $match)) {
+			return $this->formatDate(str_replace('-', ' ', $match[1]));
+		}
+
+		$datePattern = '(\d\d?)/(\d\d?)/(\d\d\d\d)';
+		if (preg_match("#\s$textPpattern: *$datePattern#", $text, $match)) {
+			return $this->formatDate("{$match[1]}-{$match[2]}-{$match[3]}");
+		}
 	}
 
 	protected function getDates(string $text) {
