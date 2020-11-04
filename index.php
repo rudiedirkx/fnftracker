@@ -186,9 +186,9 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
 						<a class="search-icon" href>&#128270;</a>
 					</td>
-					<td nowrap class="recent-<?= $source->last_fetch->recent_release ?> <?= $source->not_release_date ? 'not-release-date' : '' ?> old-last-change-<?= $source->old_last_change ?>">
+					<td nowrap class="recent-<?= $source->last_fetch->recent_release ?? '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?> old-last-change-<?= $source->old_last_change ?>">
 						<div class="cols">
-							<span><?= $source->last_fetch ? ($source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '') : '' ?></span>
+							<span><?= $source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '' ?></span>
 							<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>
 						</div>
 					</td>
@@ -197,7 +197,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					</td>
 					<td nowrap>
 						<div class="cols">
-							<span><?= date('Y-m-d', $source->last_fetch->created_on) ?></span>
+							<span><?= date('Y-m-d', $source->last_fetch->created_on ?? 0) ?></span>
 							<a class="goto" target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
 						</div>
 					</td>
