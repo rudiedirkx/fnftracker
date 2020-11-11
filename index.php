@@ -72,11 +72,10 @@ $developers = array_values(array_unique(array_filter(array_column($sources, 'dev
 $changes = Fetch::query("
 	select
 		f.*,
-		(select version from fetches where source_id = f.source_id and release_date = f.release_date order by id desc limit 1) version,
 		cast(min(created_on) as int) change_on
 	from fetches f
-	where release_date is not null and source_id in (select source_id from fetches group by source_id having count(distinct release_date) > 1)
-	group by source_id, release_date
+	where release_date is not null and version is not null and source_id in (select distinct source_id from fetches where version is not null and release_date is not null group by source_id, release_date, version having count(1) > 1)
+	group by source_id, release_date, version
 	order by change_on desc
 ");
 $recentChanges = count(array_filter($changes, function($fetch) {
@@ -88,7 +87,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 ?>
 <p><input type="search" placeholder="Name &amp; developer..." value="<?= html($_GET['search'] ?? '') ?>" /></p>
 
-<h2>Recent changes (<?= $recentChanges ?>)</h2>
+<h2>Recent changes (<?= $recentChanges ?> + <?= count($changes) - $recentChanges ?>)</h2>
 
 <div class="table-wrapper">
 	<table class="changes">
@@ -102,13 +101,13 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 		</thead>
 		<tbody>
 			<? $lastNew = null ?>
-			<? foreach ($changes as $fetch): ?>
+			<? foreach (array_values($changes) as $i => $fetch): ?>
 				<? $new = $fetch->is_recent_fetch ?>
 				<? if ($lastNew != null && $lastNew != $new && !$new): ?>
 					</tbody>
 					<tbody>
 					<tr class="hidden-rows"><td colspan="4">
-						... Show all history ...
+						... Show <?= count($changes) - $i ?> hidden history ...
 					</td></tr>
 				<? endif?>
 				<tr
@@ -142,7 +141,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 	</table>
 </div>
 
-<h2>Sources (<?= $activeSources ?>)</h2>
+<h2>Sources (<?= $activeSources ?> + <?= count($sources) - $activeSources ?>)</h2>
 
 <form method="post" action class="table-wrapper">
 	<table class="sources">
