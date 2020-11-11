@@ -41,14 +41,18 @@ class Source extends Model {
 			return 'played';
 		}
 
-		return $this->last_fetch->prefixes;
+		return $this->last_fetch->prefixes ?? '';
 	}
 
 	protected function get_not_release_date() {
-		return !$this->last_fetch->release_date && $this->last_fetch->thread_date;
+		return $this->last_fetch && !$this->last_fetch->release_date && $this->last_fetch->thread_date;
 	}
 
 	protected function get_old_last_change() {
+		if (!$this->last_fetch) {
+			return 0;
+		}
+
 		if ($date = ($this->last_fetch->release_date ?? $this->last_fetch->thread_date)) {
 			if ($date <= date('Y-m-d', strtotime('-2 years'))) {
 				return 2;

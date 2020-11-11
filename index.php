@@ -195,10 +195,12 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						<span><?= $source->last_fetch->cleaned_version ?? '' ?></span>
 					</td>
 					<td nowrap>
-						<div class="cols">
-							<span><?= date('Y-m-d', $source->last_fetch->created_on ?? 0) ?></span>
-							<a class="goto" target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
-						</div>
+						<? if ($source->last_fetch): ?>
+							<div class="cols">
+								<span><?= date('Y-m-d', $source->last_fetch->created_on) ?></span>
+								<a class="goto" target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
+							</div>
+						<? endif ?>
 					</td>
 					<td nowrap>
 						<?= date('Y-m-d', $source->created_on) ?>
