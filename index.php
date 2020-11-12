@@ -69,12 +69,17 @@ $activeSources = count(array_filter($sources, function($source) {
 
 $developers = array_values(array_unique(array_filter(array_column($sources, 'developer'))));
 
+$notNulls = "coalesce(release_date, thread_date) is not null and version is not null";
 $changes = Fetch::query("
 	select
 		f.*,
 		cast(min(created_on) as int) change_on
 	from fetches f
-	where release_date is not null and version is not null and source_id in (select distinct source_id from fetches where version is not null and release_date is not null group by source_id, release_date, version having count(1) > 1)
+	where $notNulls and source_id in (
+		select source_id from (
+			select source_id, release_date, version from fetches where $notNulls group by source_id, release_date, version
+		) x group by source_id having count(1) > 1
+	)
 	group by source_id, release_date, version
 	order by change_on desc
 ");
