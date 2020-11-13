@@ -87,6 +87,22 @@ $recentChanges = count(array_filter($changes, function($fetch) {
 	return $fetch->is_recent_fetch;
 }));
 
+$releaseStats = $db->fetch("
+	select priority, releases, count(1) titles
+	from (
+		select priority, source_id, name, count(1) releases
+		from (
+			select s.priority, s.id source_id, s.name, coalesce(f.release_date, f.thread_date) title_date, version
+			from sources s
+			left join fetches f on f.source_id = s.id and coalesce(f.release_date, f.thread_date) is not null and f.version is not null
+			group by s.id, title_date, version
+		) x
+		group by source_id
+	) y
+	group by priority, releases
+	order by priority desc, releases asc
+")->all();
+
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 ?>
@@ -255,6 +271,35 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 		</datalist>
 	<? endif ?>
 </form>
+
+<br>
+
+<fieldset>
+	<legend>Release stats</legend>
+	<table>
+		<thead>
+			<tr>
+				<!-- <th>Priority</th> -->
+				<th># releases</th>
+				<th># titles</th>
+			</tr>
+		</thead>
+		<tbody>
+			<? $lastPrio = null ?>
+			<? foreach ($releaseStats as $stat): ?>
+				<? if ($lastPrio != null && $lastPrio != $stat->priority): ?>
+					</tbody><tbody>
+				<? endif?>
+				<tr data-priority="<?= $stat->priority ?>">
+					<!-- <td><?= $stat->priority ?></td> -->
+					<td class="with-priority"><?= $stat->releases ?></td>
+					<td><?= $stat->titles ?></td>
+				</tr>
+				<? $lastPrio = $stat->priority ?>
+			<? endforeach ?>
+		</tbody>
+	</table>
+</fieldset>
 
 <script>
 window.addEventListener('load', function() {
