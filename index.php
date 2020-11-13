@@ -375,7 +375,7 @@ window.addEventListener('load', function() {
 	});
 	const handle = function(e) {
 		e.preventDefault();
-		search.value = this.closest('tr').querySelector('.title-name').textContent.trim();
+		search.value = this.closest('tr').querySelector('.title-name').textContent.split('(')[0].trim();
 		search.focus();
 		search.dispatchEvent(new CustomEvent('input'));
 	};
