@@ -120,7 +120,7 @@ class Fetcher {
 	}
 
 	protected function formatDate(string $date) {
-		return date('Y-m-d', strtotime($date));
+		return ($utc = strtotime($date)) ? date('Y-m-d', $utc) : null;
 	}
 
 	protected function getDate(string $text, string $textPpattern) {
@@ -134,9 +134,14 @@ class Fetcher {
 			return $this->formatDate(str_replace('-', ' ', $match[1]));
 		}
 
+		$datePattern = '[a-zA-Z]{3} \d\d?,? \d\d\d\d';
+		if (preg_match("#\s$textPpattern: *($datePattern)#", $text, $match)) {
+			return $this->formatDate(str_replace('-', ' ', $match[1]));
+		}
+
 		$datePattern = '(\d\d?)/(\d\d?)/(\d\d\d\d)';
 		if (preg_match("#\s$textPpattern: *$datePattern#", $text, $match)) {
-			return $this->formatDate("{$match[1]}-{$match[2]}-{$match[3]}");
+			return $this->formatDate("{$match[3]}-{$match[2]}-{$match[1]}") ?? $this->formatDate("{$match[3]}-{$match[1]}-{$match[2]}");
 		}
 	}
 
