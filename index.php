@@ -133,7 +133,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<? endif?>
 				<tr
 					class="<?= $fetch->prefix ?>"
-					data-search="<?= html(mb_strtolower(trim("{$fetch->source->name} {$fetch->source->developer}"))) ?>"
+					data-search="<?= html(mb_strtolower(trim("{$fetch->source->name} {$fetch->source->description} {$fetch->source->developer}"))) ?>"
 					data-banner="<?= html($fetch->source->banner_url) ?>"
 					data-priority="<?= $fetch->source->priority ?>"
 				>
@@ -190,7 +190,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<tr
 					class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->prefix_class ?>"
 					data-id="<?= $source->id ?>"
-					data-search="<?= html(mb_strtolower(trim("$source->name $source->developer"))) ?>"
+					data-search="<?= html(mb_strtolower(trim("$source->name $source->description $source->developer"))) ?>"
 					data-banner="<?= html($source->banner_url) ?>"
 					data-priority="<?= $source->priority ?>"
 				>
