@@ -103,6 +103,8 @@ $releaseStats = $db->fetch("
 	order by priority desc, releases asc
 ")->all();
 
+$hideHidden = stripos($_SERVER['HTTP_USER_AGENT'], 'mobile') !== false;
+
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 ?>
@@ -124,7 +126,9 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 			<? $lastNew = null ?>
 			<? foreach (array_values($changes) as $i => $fetch): ?>
 				<? $new = $fetch->is_recent_fetch ?>
-				<? if ($lastNew != null && $lastNew != $new && !$new): ?>
+				<? if ($lastNew != null && $lastNew != $new && !$new):
+					if ($hideHidden) break;
+					?>
 					</tbody>
 					<tbody>
 					<tr class="hidden-rows"><td colspan="4">
@@ -181,7 +185,9 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 		<tbody>
 			<? $prevprio = null ?>
 			<? foreach (array_values($sources) as $i => $source): ?>
-				<? if ($prevprio && $source->priority != $prevprio && $source->priority == 0): ?>
+				<? if ($prevprio && $source->priority != $prevprio && $source->priority == 0):
+					if ($hideHidden) break;
+					?>
 					</tbody>
 					<tbody>
 					<tr class="hidden-rows"><td colspan="7">
