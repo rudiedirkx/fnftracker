@@ -143,12 +143,13 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				>
 					<td class="with-priority title">
 						<span class="title-name" title="<?= html($fetch->source->description) ?>"><?= html($fetch->source->name) ?></span>
-						<span class="developer">(<?= html($fetch->source->developer) ?>)</span>
 						<? if ($fetch->source->installed): ?>
 							<span class="installed-version">(<?= html($fetch->source->installed) ?>)</span>
 						<? endif ?>
-						<a class="edit-icon" href="?edit=<?= $fetch->source_id ?>">&#9998;</a>
 						<a class="search-icon" href>&#128270;</a>
+						<a class="edit-icon" href="?edit=<?= $fetch->source_id ?>">&#9998;</a>
+						<span class="developer"><?= html($fetch->source->developer) ?></span>
+						<a class="search-icon" href data-query="<?= html($fetch->source->developer) ?>">&#128270;</a>
 					</td>
 					<td nowrap class="recent-<?= $fetch->recent_release ?>"><?= $fetch->release_date ?></td>
 					<td nowrap>
@@ -207,12 +208,13 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					</td>
 					<td class="title">
 						<span class="title-name" title="<?= html($source->description) ?>"><?= html($source->name) ?></span>
-						<span class="developer">(<?= html($source->developer) ?>)</span>
 						<? if ($source->installed): ?>
 							<span class="installed-version">(<?= html($source->installed) ?>)</span>
 						<? endif ?>
-						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
 						<a class="search-icon" href>&#128270;</a>
+						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
+						<span class="developer"><?= html($source->developer) ?></span>
+						<a class="search-icon" href data-query="<?= html($source->developer) ?>">&#128270;</a>
 					</td>
 					<td nowrap class="recent-<?= $source->last_fetch->recent_release ?? '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?> old-last-change-<?= $source->old_last_change ?>">
 						<div class="cols">
@@ -383,7 +385,7 @@ window.addEventListener('load', function() {
 	});
 	const handle = function(e) {
 		e.preventDefault();
-		search.value = this.closest('tr').querySelector('.title-name').textContent.split('(')[0].trim();
+		search.value = this.dataset.query || this.closest('tr').querySelector('.title-name').textContent.split('(')[0].trim();
 		search.focus();
 		search.dispatchEvent(new CustomEvent('input'));
 	};

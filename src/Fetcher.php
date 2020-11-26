@@ -99,7 +99,7 @@ class Fetcher {
 
 	protected function getDeveloper(Node $doc, string $text) {
 		$clean = function($name) {
-			return trim(preg_replace('#\s+f95zone$#i', '', trim($name, '- ')));
+			return explode(' - ', trim(preg_replace('#\s+f95zone$#i', '', trim($name, '- '))))[0];
 		};
 
 		$body = $doc->query('.message-threadStarterPost .message-body > .bbWrapper')->innerText;
