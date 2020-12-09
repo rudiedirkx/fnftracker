@@ -2,7 +2,7 @@
 
 namespace rdx\f95;
 
-use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\TransferException;
 
 class Source extends Model {
 
@@ -18,7 +18,7 @@ class Source extends Model {
 			try {
 				return $fetcher->sync();
 			}
-			catch (ConnectException $ex) {
+			catch (TransferException $ex) {
 				$throw = $ex;
 				sleep(1);
 			}

@@ -4,7 +4,7 @@ namespace rdx\f95;
 
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Cookie\CookieJar;
-use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\RedirectMiddleware;
 use rdx\jsdom\Node;
 
@@ -47,7 +47,7 @@ class Fetcher {
 		try {
 			[$doc, $redirects] = $this->getRemote($guzzle, $this->url);
 		}
-		catch (ConnectException $ex) {
+		catch (TransferException $ex) {
 			if (!$catch) {
 				throw $ex;
 			}
