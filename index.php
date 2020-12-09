@@ -148,8 +148,10 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						<? endif ?>
 						<a class="search-icon" href>&#128270;</a>
 						<a class="edit-icon" href="?edit=<?= $fetch->source_id ?>">&#9998;</a>
-						<span class="developer"><?= html($fetch->source->developer) ?></span>
-						<a class="search-icon" href data-query="<?= html($fetch->source->developer) ?>">&#128270;</a>
+						<?if ($fetch->source->developer): ?>
+							<span class="developer"><?= html($fetch->source->developer) ?></span>
+							<a class="search-icon" href data-query="<?= html($fetch->source->developer) ?>">&#128270;</a>
+						<? endif ?>
 					</td>
 					<td nowrap class="recent-<?= $fetch->recent_release ?>"><?= $fetch->release_date ?></td>
 					<td nowrap>
@@ -213,8 +215,10 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						<? endif ?>
 						<a class="search-icon" href>&#128270;</a>
 						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
-						<span class="developer"><?= html($source->developer) ?></span>
-						<a class="search-icon" href data-query="<?= html($source->developer) ?>">&#128270;</a>
+						<?if ($source->developer): ?>
+							<span class="developer"><?= html($source->developer) ?></span>
+							<a class="search-icon" href data-query="<?= html($source->developer) ?>">&#128270;</a>
+						<? endif ?>
 					</td>
 					<td nowrap class="recent-<?= $source->last_fetch->recent_release ?? '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?> old-last-change-<?= $source->old_last_change ?>">
 						<div class="cols">
