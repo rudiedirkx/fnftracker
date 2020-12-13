@@ -316,7 +316,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 </fieldset>
 
 <script>
-window.addEventListener('load', function() {
+window.addEventListener('load', e => setTimeout(() => {
 	const URL_PATTERN = /^<?= strtr(preg_quote(F95_URL, '/'), [
 		preg_quote('{name}') => '[^\/\.]+',
 		preg_quote('{id}') => '(\d+)',
@@ -327,35 +327,31 @@ window.addEventListener('load', function() {
 			this.value = m[1];
 		}
 	});
-});
-window.addEventListener('load', function() {
-	const handle = function(e) {
+
+	const sortHandle = function(e) {
 		const i = this.cellIndex;
 		let rows = Array.from(this.closest('table').querySelectorAll('tbody > tr:not(.hidden-rows)'));
 		rows.sort((a, b) => a.cells[i].textContent < b.cells[i].textContent ? 1 : -1);
 		this.dataset.sortable === 'asc' && (rows = rows.reverse());
 		rows.forEach(tr => tr.parentNode.append(tr));
 	};
-	document.querySelectorAll('th[data-sortable]').forEach(el => el.addEventListener('click', handle));
-});
-window.addEventListener('load', function() {
+	document.querySelectorAll('th[data-sortable]').forEach(el => el.addEventListener('click', sortHandle));
+
 	const PRIORITIES = <?= json_encode(array_keys(Source::PRIORITIES)) ?>;
-	const handle = function(e) {
+	const priorityHandle = function(e) {
 		const tr = this.closest('tr');
 		const i = PRIORITIES.indexOf(parseInt(this.textContent.trim()));
 		const nxt = PRIORITIES[(i-1+PRIORITIES.length) % PRIORITIES.length];
 		this.querySelector('output').value = this.querySelector('input').value = tr.dataset.priority = nxt;
 	};
-	document.querySelectorAll('td.priority').forEach(el => el.addEventListener('click', handle));
-});
-window.addEventListener('load', function() {
-	const handle = function(e) {
+	document.querySelectorAll('td.priority').forEach(el => el.addEventListener('click', priorityHandle));
+
+	const hiddenHandle = function(e) {
 		this.closest('table').classList.add('showing-hidden-rows');
 		this.closest('tr').remove();
 	};
-	document.querySelectorAll('tr.hidden-rows td').forEach(el => el.addEventListener('click', handle));
-});
-window.addEventListener('load', function() {
+	document.querySelectorAll('tr.hidden-rows td').forEach(el => el.addEventListener('click', hiddenHandle));
+
 	const body = document.body;
 	const over = function(e) {
 		const url = this.closest('tr').dataset.banner;
@@ -370,8 +366,7 @@ window.addEventListener('load', function() {
 		el.addEventListener('mouseover', over);
 		el.addEventListener('mouseout', out);
 	});
-});
-window.addEventListener('load', function() {
+
 	const search = document.querySelector('input[type="search"]');
 	search.addEventListener('input', function(e) {
 		const q = this.value.toLowerCase().replace(/(^[\s|]+|[\s|]+$)/g, '');
@@ -387,18 +382,17 @@ window.addEventListener('load', function() {
 			search.select();
 		}
 	});
-	const handle = function(e) {
+	const searchHandle = function(e) {
 		e.preventDefault();
 		search.value = this.dataset.query || this.closest('tr').querySelector('.title-name').textContent.split('(')[0].trim();
 		search.focus();
 		search.dispatchEvent(new CustomEvent('input'));
 	};
-	document.querySelectorAll('.search-icon').forEach(el => el.addEventListener('click', handle));
-});
-window.addEventListener('load', function() {
+	document.querySelectorAll('.search-icon').forEach(el => el.addEventListener('click', searchHandle));
+
 	const el = document.querySelector('.hilited');
 	el && el.scrollIntoViewIfNeeded();
-});
+}, 200));
 </script>
 <?php
 
