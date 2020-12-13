@@ -103,7 +103,7 @@ $releaseStats = $db->fetch("
 	order by priority desc, releases asc
 ")->all();
 
-$hideHidden = stripos($_SERVER['HTTP_USER_AGENT'], 'mobile') !== false;
+$hideHidden = false; // stripos($_SERVER['HTTP_USER_AGENT'], 'mobile') !== false;
 
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
