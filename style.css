@@ -86,32 +86,32 @@ body:not(.searching) tr.hidden-rows ~ tr {
 body.searching tr.hidden-rows {
 	display: none;
 }
-td.priority {
+table.release-stats tr > * {
+	text-align: right;
+	width: 2em;
+}
+[data-priority] {
+	--prio-color: pink;
+	--prio-color-txt: black;
+}
+[data-priority="1"] {
+	--prio-color: salmon;
+}
+[data-priority="2"] {
+	--prio-color: red;
+}
+[data-priority="3"] {
+	--prio-color: darkred;
+	--prio-color-txt: white;
+}
+.priority {
 	user-select: none;
 	cursor: pointer;
-	background-color: pink;
+	background-color: var(--prio-color);
+	color: var(--prio-color-txt);
 }
-td.with-priority {
-	border-left: solid 10px pink;
-}
-tr[data-priority="1"] td.priority {
-	background-color: salmon;
-}
-tr[data-priority="1"] td.with-priority {
-	border-left-color: salmon;
-}
-tr[data-priority="2"] td.priority {
-	background-color: red;
-}
-tr[data-priority="2"] td.with-priority {
-	border-left-color: red;
-}
-tr[data-priority="3"] td.priority {
-	background-color: darkred;
-	color: white;
-}
-tr[data-priority="3"] td.with-priority {
-	border-left-color: darkred;
+.with-priority {
+	border-left: solid 14px var(--prio-color);
 }
 .recent-1 {
 	color: green;

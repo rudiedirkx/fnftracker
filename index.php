@@ -102,6 +102,11 @@ $releaseStats = $db->fetch("
 	group by priority, releases
 	order by priority desc, releases asc
 ")->all();
+$releaseStatsGroups = array_reduce($releaseStats, function($grid, $stat) {
+	$grid[$stat->priority][$stat->releases] = $stat->titles;
+	return $grid;
+}, []);
+// print_r($releaseStatsGroups);exit;
 
 $hideHidden = false; // stripos($_SERVER['HTTP_USER_AGENT'], 'mobile') !== false;
 
@@ -290,27 +295,19 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 <fieldset>
 	<legend>Release stats</legend>
-	<table>
-		<thead>
-			<tr>
-				<!-- <th>Priority</th> -->
-				<th># releases</th>
-				<th># titles</th>
-			</tr>
-		</thead>
+	<? $mr = max(array_column($releaseStats, 'releases')) ?>
+	<table class="release-stats">
 		<tbody>
-			<? $lastPrio = null ?>
-			<? foreach ($releaseStats as $stat): ?>
-				<? if ($lastPrio != null && $lastPrio != $stat->priority): ?>
-					</tbody><tbody>
-				<? endif?>
-				<tr data-priority="<?= $stat->priority ?>">
-					<!-- <td><?= $stat->priority ?></td> -->
-					<td class="with-priority"><?= $stat->releases ?></td>
-					<td><?= $stat->titles ?></td>
+			<? for ($r = 1; $r <= $mr; $r++): ?>
+				<tr>
+					<th><?= $r ?>x</th>
+					<? foreach (array_reverse(array_keys(Source::PRIORITIES)) as $prio): ?>
+						<td data-priority="<?= $prio ?>" class="priority">
+							<?= $releaseStatsGroups[$prio][$r] ?? '' ?>
+						</td>
+					<? endforeach ?>
 				</tr>
-				<? $lastPrio = $stat->priority ?>
-			<? endforeach ?>
+			<? endfor ?>
 		</tbody>
 	</table>
 </fieldset>
