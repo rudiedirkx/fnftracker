@@ -36,6 +36,10 @@ class Source extends Model {
 		return substr($this->developer, 0, 1) === '=';
 	}
 
+	protected function get_pretty_developer() {
+		return ltrim($this->developer, '=');
+	}
+
 	protected function get_prefix_class() {
 		if ($this->finished) {
 			return 'played';
