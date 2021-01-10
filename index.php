@@ -141,13 +141,13 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					</td></tr>
 				<? endif?>
 				<tr
-					class="<?= $fetch->prefix ?>"
+					class="<?= $fetch->prefix ?> <? if ($fetch->source->description): ?>has-description<? endif ?>"
 					data-search="<?= html(mb_strtolower(trim("{$fetch->source->name} {$fetch->source->description} {$fetch->source->developer}"))) ?>"
 					data-banner="<?= html($fetch->source->banner_url) ?>"
 					data-priority="<?= $fetch->source->priority ?>"
 				>
 					<td class="with-priority title">
-						<span class="title-name" title="<?= html($fetch->source->description) ?>"><?= html($fetch->source->name) ?></span>
+						<span class="title-name"><?= html($fetch->source->name) ?></span>
 						<? if ($fetch->source->installed): ?>
 							<span class="installed-version">(<?= html($fetch->source->installed) ?>)</span>
 						<? endif ?>
@@ -169,6 +169,11 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						<span><?= $fetch->cleaned_version ?></span>
 					</td>
 				</tr>
+				<? if ($fetch->source->description): ?>
+					<tr class="description">
+						<td colspan="11"><?= html($fetch->source->description) ?></td>
+					</tr>
+				<? endif ?>
 				<? $lastNew = $new ?>
 			<? endforeach ?>
 		</tbody>
@@ -203,7 +208,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					</td></tr>
 				<? endif ?>
 				<tr
-					class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->prefix_class ?>"
+					class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->prefix_class ?> <? if ($source->description): ?>has-description<? endif ?>"
 					data-id="<?= $source->id ?>"
 					data-search="<?= html(mb_strtolower(trim("$source->name $source->description $source->developer"))) ?>"
 					data-banner="<?= html($source->banner_url) ?>"
@@ -214,7 +219,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						<output><?= $source->priority ?></output>
 					</td>
 					<td class="title">
-						<span class="title-name" title="<?= html($source->description) ?>"><?= html($source->name) ?></span>
+						<span class="title-name"><?= html($source->name) ?></span>
 						<? if ($source->installed): ?>
 							<span class="installed-version">(<?= html($source->installed) ?>)</span>
 						<? endif ?>
@@ -249,6 +254,11 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						<?= $source->finished ?>
 					</td>
 				</tr>
+				<? if ($source->description): ?>
+					<tr class="description">
+						<td colspan="11"><?= html($source->description) ?></td>
+					</tr>
+				<? endif ?>
 				<? $prevprio = $source->priority ?>
 			<? endforeach ?>
 		</tbody>
@@ -314,6 +324,8 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 <script>
 window.addEventListener('load', e => setTimeout(() => {
+	const body = document.body;
+
 	const URL_PATTERN = /^<?= strtr(preg_quote(F95_URL, '/'), [
 		preg_quote('{name}') => '[^\/\.]+',
 		preg_quote('{id}') => '(\d+)',
@@ -349,7 +361,6 @@ window.addEventListener('load', e => setTimeout(() => {
 	};
 	document.querySelectorAll('tr.hidden-rows td').forEach(el => el.addEventListener('click', hiddenHandle));
 
-	const body = document.body;
 	const over = function(e) {
 		const url = this.closest('tr').dataset.banner;
 		if (!url) return;
@@ -386,6 +397,21 @@ window.addEventListener('load', e => setTimeout(() => {
 		search.dispatchEvent(new CustomEvent('input'));
 	};
 	document.querySelectorAll('.search-icon').forEach(el => el.addEventListener('click', searchHandle));
+
+	document.querySelectorAll('tr.description').forEach(el => {
+		const name = el.previousElementSibling.querySelector('.title-name');
+		var timer = 0;
+		name.addEventListener('mouseover', e => {
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				el.classList.add('show-description');
+			}, 250);
+		});
+		name.addEventListener('mouseout', e => {
+			clearTimeout(timer);
+			document.querySelectorAll('tr.show-description').forEach(el => el.classList.remove('show-description'));
+		});
+	});
 
 	const el = document.querySelector('.hilited');
 	el && el.scrollIntoViewIfNeeded();

@@ -72,6 +72,12 @@ td > .cols > :last-child {
 tbody + tbody {
 	border-top: solid 3px black;
 }
+tr.description:not(.show-description) {
+	display: none;
+}
+tr.has-description .title-name {
+	color: blue;
+}
 tr.hidden-rows td {
 	text-align: center;
 	background-color: #eee;
