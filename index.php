@@ -341,10 +341,10 @@ window.addEventListener('load', e => setTimeout(() => {
 
 	const sortHandle = function(e) {
 		const i = this.cellIndex;
-		let rows = Array.from(this.closest('table').querySelectorAll('tbody > tr:not(.hidden-rows)'));
+		let rows = Array.from(this.closest('table').querySelectorAll('tbody > tr:not(.hidden-rows):not(.description)'));
 		rows.sort((a, b) => a.cells[i].textContent < b.cells[i].textContent ? 1 : -1);
 		this.dataset.sortable === 'asc' && (rows = rows.reverse());
-		rows.forEach(tr => tr.parentNode.append(tr));
+		rows.forEach(tr => (tr.nextElementSibling && tr.nextElementSibling.classList.contains('description') ? [tr, tr.nextElementSibling] : [tr]).forEach(tr => tr.parentNode.append(tr)));
 	};
 	document.querySelectorAll('th[data-sortable]').forEach(el => el.addEventListener('click', sortHandle));
 
