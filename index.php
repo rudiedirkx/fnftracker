@@ -108,7 +108,9 @@ $releaseStatsGroups = array_reduce($releaseStats, function($grid, $stat) {
 }, []);
 // print_r($releaseStatsGroups);exit;
 
-$hideHidden = false; // stripos($_SERVER['HTTP_USER_AGENT'], 'mobile') !== false;
+$mobile = stripos($_SERVER['HTTP_USER_AGENT'], 'mobile') !== false;
+$hideHiddenChanges = $mobile;
+$hideHiddenSources = false;
 
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
@@ -131,15 +133,15 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 			<? $lastNew = null ?>
 			<? foreach (array_values($changes) as $i => $fetch): ?>
 				<? $new = $fetch->is_recent_fetch ?>
-				<? if ($lastNew != null && $lastNew != $new && !$new):
-					if ($hideHidden) break;
-					?>
+				<? if ($lastNew != null && $lastNew != $new && !$new): ?>
 					</tbody>
 					<tbody>
 					<tr class="hidden-rows"><td colspan="4">
-						... Show <?= count($changes) - $i ?> hidden history ...
+						... <?= $hideHiddenChanges ? 'Hiding ' . (count($changes) - $i) . ' history' : 'Show ' . (count($changes) - $i) . ' hidden history' ?> ...
 					</td></tr>
-				<? endif?>
+					<?
+					if ($hideHiddenChanges) break;
+				endif?>
 				<tr
 					class="<?= $fetch->prefix ?> <? if ($fetch->source->description): ?>has-description<? endif ?>"
 					data-search="<?= html(mb_strtolower(trim("{$fetch->source->name} {$fetch->source->description} {$fetch->source->developer}"))) ?>"
@@ -199,7 +201,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 			<? $prevprio = null ?>
 			<? foreach (array_values($sources) as $i => $source): ?>
 				<? if ($prevprio && $source->priority != $prevprio && $source->priority == 0):
-					if ($hideHidden) break;
+					if ($hideHiddenSources) break;
 					?>
 					</tbody>
 					<tbody>
