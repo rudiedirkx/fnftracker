@@ -146,7 +146,7 @@ class Fetcher {
 	}
 
 	protected function getDates(string $text) {
-		$release = $this->getDate($text, 'Release [Dd]ate');
+		$release = $this->getDate($text, '(?:Release [Dd]ate|Game [Uu]pdated)');
 		$thread = $this->getDate($text, 'Thread [Uu]pdated') ?? $this->getDate($text, 'Updated');
 		return [$release, $thread];
 	}
