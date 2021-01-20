@@ -1,5 +1,13 @@
 <?php
 
+function aro_group( array $objects, string $property ) : array {
+	$groups = [];
+	foreach ($objects as $object) {
+		$groups[$object->$property][] = $object;
+	}
+	return $groups;
+}
+
 function get_url( $path, $query = array() ) {
 	$query = $query ? '?' . http_build_query($query) : '';
 	$path = $path ? $path . '.php' : basename($_SERVER['SCRIPT_NAME']);

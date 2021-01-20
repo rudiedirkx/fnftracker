@@ -6,8 +6,12 @@ class Fetch extends Model {
 
 	static public $_table = 'fetches';
 
-	protected function get_is_recent_fetch() {
-		return $this->recent_fetch == 1;
+	protected function get_fetch_recency() {
+		if (date($this->created_on) >= date(strtotime('-1 day'))) {
+			return 2;
+		}
+
+		return $this->recent_fetch == 1 ? 1 : 0;
 	}
 
 	protected function get_recent_release() {

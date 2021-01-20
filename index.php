@@ -63,9 +63,9 @@ include 'tpl.header.php';
 
 $sources = Source::all("1=1 ORDER BY priority DESC, (CASE WHEN LOWER(SUBSTR(name, 1, 4)) = 'the ' THEN SUBSTR(name, 5) ELSE name END) ASC");
 Source::eager('last_fetch', $sources);
-$activeSources = count(array_filter($sources, function($source) {
-	return $source->priority > 0;
-}));
+$sourcesGrouped = aro_group($sources, 'priority');
+$inactiveSources = count($sourcesGrouped[0] ?? []);
+$activeSources = count($sources) - $inactiveSources;
 
 $developers = array_values(array_unique(array_filter(array_column($sources, 'developer'))));
 
@@ -83,9 +83,9 @@ $changes = Fetch::query("
 	group by source_id, release_date, version
 	order by change_on desc
 ");
-$recentChanges = count(array_filter($changes, function($fetch) {
-	return $fetch->is_recent_fetch;
-}));
+$changesGrouped = aro_group($changes, 'fetch_recency');
+$unrecentChanges = count($changesGrouped[0]);
+$recentChanges = count($changes) - $unrecentChanges;
 
 $releaseStats = $db->fetch("
 	select priority, releases, count(1) titles
@@ -106,18 +106,17 @@ $releaseStatsGroups = array_reduce($releaseStats, function($grid, $stat) {
 	$grid[$stat->priority][$stat->releases] = $stat->titles;
 	return $grid;
 }, []);
-// print_r($releaseStatsGroups);exit;
 
 $mobile = stripos($_SERVER['HTTP_USER_AGENT'], 'mobile') !== false;
-$hideHiddenChanges = $mobile;
-$hideHiddenSources = false;
+$hideUnrecentChanges = $mobile;
+$hideInactiveSources = false;
 
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 ?>
 <p><input type="search" placeholder="Name &amp; developer..." value="<?= html($_GET['search'] ?? '') ?>" /></p>
 
-<h2>Recent changes (<?= $recentChanges ?> + <?= count($changes) - $recentChanges ?>)</h2>
+<h2>Recent changes (<?= $recentChanges ?> + <?= $unrecentChanges ?>)</h2>
 
 <div class="table-wrapper">
 	<table class="changes">
@@ -129,60 +128,56 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<th data-sortable="asc">Version</th>
 			</tr>
 		</thead>
-		<tbody>
-			<? $lastNew = null ?>
-			<? foreach (array_values($changes) as $i => $fetch): ?>
-				<? $new = $fetch->is_recent_fetch ?>
-				<? if ($lastNew != null && $lastNew != $new && !$new): ?>
-					</tbody>
-					<tbody>
+		<? foreach ($changesGrouped as $group => $objects): ?>
+			<tbody>
+				<? if ($group == 0): ?>
 					<tr class="hidden-rows"><td colspan="4">
-						... <?= $hideHiddenChanges ? 'Hiding ' . (count($changes) - $i) . ' history' : 'Show ' . (count($changes) - $i) . ' hidden history' ?> ...
+						... <?= $hideUnrecentChanges ? 'Hiding ' . $unrecentChanges . ' history' : 'Show ' . $unrecentChanges . ' hidden history' ?> ...
 					</td></tr>
-					<?
-					if ($hideHiddenChanges) break;
-				endif?>
-				<tr
-					class="<?= $fetch->prefix ?> <? if ($fetch->source->description): ?>has-description<? endif ?>"
-					data-search="<?= html(mb_strtolower(trim("{$fetch->source->name} {$fetch->source->description} {$fetch->source->developer}"))) ?>"
-					data-banner="<?= html($fetch->source->banner_url) ?>"
-					data-priority="<?= $fetch->source->priority ?>"
-				>
-					<td class="with-priority title">
-						<span class="title-name"><?= html($fetch->source->name) ?></span>
-						<? if ($fetch->source->installed): ?>
-							<span class="installed-version">(<?= html($fetch->source->installed) ?>)</span>
-						<? endif ?>
-						<a class="search-icon" href>&#128270;</a>
-						<a class="edit-icon" href="?edit=<?= $fetch->source_id ?>">&#9998;</a>
-						<?if ($fetch->source->developer): ?>
-							<span class="developer"><?= html($fetch->source->pretty_developer) ?></span>
-							<a class="search-icon" href data-query="<?= html($fetch->source->pretty_developer) ?>">&#128270;</a>
-						<? endif ?>
-					</td>
-					<td nowrap class="recent-<?= $fetch->recent_release ?>"><?= $fetch->release_date ?></td>
-					<td nowrap>
-						<div class="cols">
-							<span><?= date('Y-m-d', $fetch->change_on) ?></span>
-							<a class="goto" target="_blank" href="<?= html($fetch->url) ?>">&#10132;</a>
-						</div>
-					</td>
-					<td nowrap class="version" tabindex="0">
-						<span><?= $fetch->cleaned_version ?></span>
-					</td>
-				</tr>
-				<? if ($fetch->source->description): ?>
-					<tr class="description">
-						<td colspan="11"><?= html($fetch->source->description) ?></td>
-					</tr>
+					<? if ($hideUnrecentChanges) break ?>
 				<? endif ?>
-				<? $lastNew = $new ?>
-			<? endforeach ?>
-		</tbody>
+				<? foreach ($objects as $fetch): ?>
+					<tr
+						class="<?= $fetch->prefix ?> <? if ($fetch->source->description): ?>has-description<? endif ?>"
+						data-search="<?= html(mb_strtolower(trim("{$fetch->source->name} {$fetch->source->description} {$fetch->source->developer}"))) ?>"
+						data-banner="<?= html($fetch->source->banner_url) ?>"
+						data-priority="<?= $fetch->source->priority ?>"
+					>
+						<td class="with-priority title">
+							<span class="title-name"><?= html($fetch->source->name) ?></span>
+							<? if ($fetch->source->installed): ?>
+								<span class="installed-version">(<?= html($fetch->source->installed) ?>)</span>
+							<? endif ?>
+							<a class="search-icon" href>&#128270;</a>
+							<a class="edit-icon" href="?edit=<?= $fetch->source_id ?>">&#9998;</a>
+							<?if ($fetch->source->developer): ?>
+								<span class="developer"><?= html($fetch->source->pretty_developer) ?></span>
+								<a class="search-icon" href data-query="<?= html($fetch->source->pretty_developer) ?>">&#128270;</a>
+							<? endif ?>
+						</td>
+						<td nowrap class="recent-<?= $fetch->recent_release ?>"><?= $fetch->release_date ?></td>
+						<td nowrap>
+							<div class="cols">
+								<span><?= date('Y-m-d', $fetch->change_on) ?></span>
+								<a class="goto" target="_blank" href="<?= html($fetch->url) ?>">&#10132;</a>
+							</div>
+						</td>
+						<td nowrap class="version" tabindex="0">
+							<span><?= $fetch->cleaned_version ?></span>
+						</td>
+					</tr>
+					<? if ($fetch->source->description): ?>
+						<tr class="description">
+							<td colspan="11"><?= html($fetch->source->description) ?></td>
+						</tr>
+					<? endif ?>
+				<? endforeach ?>
+			</tbody>
+		<? endforeach ?>
 	</table>
 </div>
 
-<h2>Sources (<?= $activeSources ?> + <?= count($sources) - $activeSources ?>)</h2>
+<h2>Sources (<?= $activeSources ?> + <?= $inactiveSources ?>)</h2>
 
 <form method="post" action class="table-wrapper">
 	<table class="sources">
@@ -197,73 +192,69 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<th data-sortable class="finished">Finished</th>
 			</tr>
 		</thead>
-		<tbody>
-			<? $prevprio = null ?>
-			<? foreach (array_values($sources) as $i => $source): ?>
-				<? if ($prevprio && $source->priority != $prevprio && $source->priority == 0):
-					if ($hideHiddenSources) break;
-					?>
-					</tbody>
-					<tbody>
+		<? foreach ($sourcesGrouped as $group => $objects): ?>
+			<tbody>
+				<? if ($group == 0): ?>
 					<tr class="hidden-rows"><td colspan="7">
-						... Show <?= count($sources) - $i ?> hidden sources ...
+						... Show <?= $inactiveSources ?> hidden sources ...
 					</td></tr>
 				<? endif ?>
-				<tr
-					class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->prefix_class ?> <? if ($source->description): ?>has-description<? endif ?>"
-					data-id="<?= $source->id ?>"
-					data-search="<?= html(mb_strtolower(trim("$source->name $source->description $source->developer"))) ?>"
-					data-banner="<?= html($source->banner_url) ?>"
-					data-priority="<?= $source->priority ?>"
-				>
-					<td class="priority">
-						<input type="hidden" name="priorities[<?= $source->id ?>]" value="<?= $source->priority ?>" />
-						<output><?= $source->priority ?></output>
-					</td>
-					<td class="title">
-						<span class="title-name"><?= html($source->name) ?></span>
-						<? if ($source->installed): ?>
-							<span class="installed-version">(<?= html($source->installed) ?>)</span>
-						<? endif ?>
-						<a class="search-icon" href>&#128270;</a>
-						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
-						<?if ($source->developer): ?>
-							<span class="developer"><?= html($source->pretty_developer) ?></span>
-							<a class="search-icon" href data-query="<?= html($source->pretty_developer) ?>">&#128270;</a>
-						<? endif ?>
-					</td>
-					<td nowrap class="recent-<?= $source->last_fetch->recent_release ?? '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?> old-last-change-<?= $source->old_last_change ?>">
-						<div class="cols">
-							<span><?= $source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '' ?></span>
-							<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>
-						</div>
-					</td>
-					<td nowrap class="version" tabindex="0">
-						<span><?= $source->last_fetch->cleaned_version ?? '' ?></span>
-					</td>
-					<td nowrap>
-						<? if ($source->last_fetch): ?>
+				<? foreach ($objects as $source): ?>
+					<tr
+						class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->prefix_class ?> <? if ($source->description): ?>has-description<? endif ?>"
+						data-id="<?= $source->id ?>"
+						data-search="<?= html(mb_strtolower(trim("$source->name $source->description $source->developer"))) ?>"
+						data-banner="<?= html($source->banner_url) ?>"
+						data-priority="<?= $source->priority ?>"
+					>
+						<td class="priority">
+							<input type="hidden" name="priorities[<?= $source->id ?>]" value="<?= $source->priority ?>" />
+							<output><?= $source->priority ?></output>
+						</td>
+						<td class="title">
+							<span class="title-name"><?= html($source->name) ?></span>
+							<? if ($source->installed): ?>
+								<span class="installed-version">(<?= html($source->installed) ?>)</span>
+							<? endif ?>
+							<a class="search-icon" href>&#128270;</a>
+							<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
+							<?if ($source->developer): ?>
+								<span class="developer"><?= html($source->pretty_developer) ?></span>
+								<a class="search-icon" href data-query="<?= html($source->pretty_developer) ?>">&#128270;</a>
+							<? endif ?>
+						</td>
+						<td nowrap class="recent-<?= $source->last_fetch->recent_release ?? '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?> old-last-change-<?= $source->old_last_change ?>">
 							<div class="cols">
-								<span><?= date('Y-m-d', $source->last_fetch->created_on) ?></span>
-								<a class="goto" target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
+								<span><?= $source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '' ?></span>
+								<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>
 							</div>
-						<? endif ?>
-					</td>
-					<td nowrap>
-						<?= date('Y-m-d', $source->created_on) ?>
-					</td>
-					<td class="finished" nowrap>
-						<?= $source->finished ?>
-					</td>
-				</tr>
-				<? if ($source->description): ?>
-					<tr class="description">
-						<td colspan="11"><?= html($source->description) ?></td>
+						</td>
+						<td nowrap class="version" tabindex="0">
+							<span><?= $source->last_fetch->cleaned_version ?? '' ?></span>
+						</td>
+						<td nowrap>
+							<? if ($source->last_fetch): ?>
+								<div class="cols">
+									<span><?= date('Y-m-d', $source->last_fetch->created_on) ?></span>
+									<a class="goto" target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
+								</div>
+							<? endif ?>
+						</td>
+						<td nowrap>
+							<?= date('Y-m-d', $source->created_on) ?>
+						</td>
+						<td class="finished" nowrap>
+							<?= $source->finished ?>
+						</td>
 					</tr>
-				<? endif ?>
-				<? $prevprio = $source->priority ?>
-			<? endforeach ?>
-		</tbody>
+					<? if ($source->description): ?>
+						<tr class="description">
+							<td colspan="11"><?= html($source->description) ?></td>
+						</tr>
+					<? endif ?>
+				<? endforeach ?>
+			</tbody>
+		<? endforeach ?>
 	</table>
 	<p><button>Save</button></p>
 </form>
