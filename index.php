@@ -124,7 +124,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 			<tr>
 				<th class="title">Title</th>
 				<th data-sortable>Released</th>
-				<th data-sortable>Detected</th>
+				<th data-sortable class="sorted">Detected</th>
 				<th data-sortable="asc">Version</th>
 			</tr>
 		</thead>
@@ -184,7 +184,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 		<thead>
 			<tr>
 				<th></th>
-				<th class="title">Title</th>
+				<th class="title sorted">Title</th>
 				<th data-sortable>Latest release</th>
 				<th data-sortable="asc">Version</th>
 				<th data-sortable="asc">Last checked</th>
@@ -332,10 +332,13 @@ window.addEventListener('load', e => setTimeout(() => {
 
 	const sortHandle = function(e) {
 		const i = this.cellIndex;
-		let rows = Array.from(this.closest('table').querySelectorAll('tbody > tr:not(.hidden-rows):not(.description)'));
+		const tbl = this.closest('table');
+		let rows = Array.from(tbl.querySelectorAll('tbody > tr:not(.hidden-rows):not(.description)'));
 		rows.sort((a, b) => a.cells[i].textContent < b.cells[i].textContent ? 1 : -1);
 		this.dataset.sortable === 'asc' && (rows = rows.reverse());
 		rows.forEach(tr => (tr.nextElementSibling && tr.nextElementSibling.classList.contains('description') ? [tr, tr.nextElementSibling] : [tr]).forEach(tr => tr.parentNode.append(tr)));
+		tbl.querySelectorAll('.sorted').forEach(th => th.classList.remove('sorted'));
+		this.classList.add('sorted');
 	};
 	document.querySelectorAll('th[data-sortable]').forEach(el => el.addEventListener('click', sortHandle));
 

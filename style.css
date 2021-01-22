@@ -39,6 +39,12 @@ tr.hilited,
 legend.hilited {
 	background: #c8e5ee;
 }
+th.sorted {
+	color: blue;
+}
+th.sorted:after {
+	content: " \21F3";
+}
 tr.played td.title:before,
 tr.completed td.title:before,
 tr.onhold td.title:before,
