@@ -125,7 +125,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<? endif ?>
 				<? foreach ($objects as $fetch): ?>
 					<tr
-						class="<?= $fetch->prefix ?> <? if ($fetch->source->description): ?>has-description<? endif ?>"
+						class="<?= $fetch->prefix_classes ?> <? if ($fetch->source->description): ?>has-description<? endif ?>"
 						data-search="<?= html(mb_strtolower(trim("{$fetch->source->name} {$fetch->source->description} {$fetch->source->developer}"))) ?>"
 						data-banner="<?= html($fetch->source->banner_url) ?>"
 						data-priority="<?= $fetch->source->priority ?>"
@@ -188,7 +188,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<? endif ?>
 				<? foreach ($objects as $source): ?>
 					<tr
-						class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->prefix_class ?> <? if ($source->description): ?>has-description<? endif ?>"
+						class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_release->prefix_classes ?? '' ?> <? if ($source->description): ?>has-description<? endif ?>"
 						data-id="<?= $source->id ?>"
 						data-search="<?= html(mb_strtolower(trim("$source->name $source->description $source->developer"))) ?>"
 						data-banner="<?= html($source->banner_url) ?>"

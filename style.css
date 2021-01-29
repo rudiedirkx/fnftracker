@@ -46,9 +46,9 @@ th.sorted:after {
 	content: " \21F3";
 }
 tr.played td.title:before,
-tr.completed td.title:before,
-tr.onhold td.title:before,
-tr.abandoned td.title:before {
+tr.prefix-completed td.title:before,
+tr.prefix-onhold td.title:before,
+tr.prefix-abandoned td.title:before {
 	content: "C";
 	float: right;
 	color: royalblue;
@@ -59,10 +59,10 @@ tr.played td.title:before {
 	content: "P";
 	color: orange;
 }
-tr.onhold td.title:before {
+tr.prefix-onhold td.title:before {
 	content: "H";
 }
-tr.abandoned td.title:before {
+tr.prefix-abandoned td.title:before {
 	content: "A";
 }
 body:not(.searching) table.sources:not(.showing-hidden-rows) .finished {

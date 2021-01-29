@@ -28,7 +28,7 @@ class Source extends Model {
 	}
 
 	protected function relate_versions() {
-		return $this->to_many_scalar('version', Fetch::$_table, 'source_id')
+		return $this->to_many_scalar('version', Release::$_table, 'source_id')
 			->where('version IS NOT NULL GROUP BY source_id, version');
 	}
 

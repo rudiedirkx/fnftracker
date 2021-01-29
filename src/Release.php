@@ -33,8 +33,12 @@ class Release extends Model {
 		return 0;
 	}
 
-	protected function get_prefix() {
-		return $this->prefixes;
+	protected function get_prefix_classes() {
+		if (!$this->prefixes) return '';
+
+		return implode(' ', array_map(function($prefix) {
+			return 'prefix-' . str_replace(' ', '-', $prefix);
+		}, explode(',', $this->prefixes)));
 	}
 
 	protected function get_cleaned_version() {

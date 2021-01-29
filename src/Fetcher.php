@@ -10,7 +10,10 @@ use rdx\jsdom\Node;
 
 class Fetcher {
 
-	const KEEP_PREFIXES = ['completed', 'onhold', 'abandoned'];
+	const KEEP_PREFIXES = [
+		'completed', 'onhold', 'abandoned',
+		'rpgm', 'unity', 'html', 'others', 'flash', 'unreal engine',
+	];
 
 	public $source;
 	public $url;
@@ -65,7 +68,7 @@ class Fetcher {
 		$this->version = $this->getVersion($text);
 		$this->banner = $this->getBanner($doc);
 		$this->developer = $this->getDeveloper($doc, $text);
-		$this->prefixes = implode(' ', $this->getPrefixes($doc)) ?: null;
+		$this->prefixes = implode(',', $this->getPrefixes($doc)) ?: null;
 
 		$update = ['banner_url' => $this->banner];
 		if (!$this->source->custom_developer) {
@@ -75,7 +78,7 @@ class Fetcher {
 
 		$previous = $this->source->last_release;
 		if (!$previous || $this->significantlyDifferent($previous)) {
-			return Fetch::insert([
+			return Release::insert([
 				'source_id' => $this->source->id,
 				'release_date' => $this->release,
 				'thread_date' => $this->thread,
@@ -87,13 +90,17 @@ class Fetcher {
 			]);
 		}
 
-		$previous->update(['last_fetch_on' => time()]);
+		$previous->update([
+			'last_fetch_on' => time(),
+			'prefixes' => $this->prefixes,
+			'thread_date' => $this->thread,
+		]);
 		return $previous->id;
 	}
 
 	protected function significantlyDifferent(Release $release) {
-		$previous = "$release->release_date::$release->thread_date::$release->version::$release->prefixes";
-		$current = "$this->release::$this->thread::$this->version::$this->prefixes";
+		$previous = ($release->release_date ?? $release->thread_date) . "::$release->version"; // ::$release->prefixes";
+		$current = ($this->release ?? $this->thread) . "::$this->version"; // ::$this->prefixes";
 		return $previous !== $current;
 	}
 
