@@ -2,12 +2,12 @@
 
 namespace rdx\f95;
 
-class Fetch extends Model {
+class Release extends Model {
 
-	static public $_table = 'fetches';
+	static public $_table = 'releases';
 
 	protected function get_fetch_recency() {
-		if (date($this->created_on) >= date(strtotime('-1 day'))) {
+		if (date($this->first_fetch_on) >= date(strtotime('-1 day'))) {
 			return 2;
 		}
 
@@ -19,7 +19,7 @@ class Fetch extends Model {
 	}
 
 	protected function get_recent_fetch() {
-		return $this->getRecentness($this->created_on);
+		return $this->getRecentness($this->first_fetch_on);
 	}
 
 	protected function getRecentness($date) {

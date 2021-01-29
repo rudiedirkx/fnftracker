@@ -45,19 +45,19 @@ class Source extends Model {
 			return 'played';
 		}
 
-		return $this->last_fetch->prefixes ?? '';
+		return $this->last_release->prefixes ?? '';
 	}
 
 	protected function get_not_release_date() {
-		return $this->last_fetch && !$this->last_fetch->release_date && $this->last_fetch->thread_date;
+		return $this->last_release && !$this->last_release->release_date && $this->last_release->thread_date;
 	}
 
 	protected function get_old_last_change() {
-		if (!$this->last_fetch) {
+		if (!$this->last_release) {
 			return 0;
 		}
 
-		if ($date = ($this->last_fetch->release_date ?? $this->last_fetch->thread_date)) {
+		if ($date = ($this->last_release->release_date ?? $this->last_release->thread_date)) {
 			if ($date <= date('Y-m-d', strtotime('-2 years'))) {
 				return 2;
 			}
@@ -69,9 +69,9 @@ class Source extends Model {
 		return 0;
 	}
 
-	protected function relate_last_fetch() {
-		return $this->to_first(Fetch::class, 'source_id')
-			->where('id in (select max(id) from fetches group by source_id)');
+	protected function relate_last_release() {
+		return $this->to_first(Release::class, 'source_id')
+			->where('id in (select max(id) from releases group by source_id)');
 	}
 
 }

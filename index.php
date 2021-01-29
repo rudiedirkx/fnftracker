@@ -1,6 +1,6 @@
 <?php
 
-use rdx\f95\Fetch;
+use rdx\f95\Release;
 use rdx\f95\Source;
 
 require 'inc.bootstrap.php';
@@ -62,7 +62,7 @@ setcookie('hilite_source', 0, 1);
 include 'tpl.header.php';
 
 $sources = Source::all("1=1 ORDER BY priority DESC, (CASE WHEN LOWER(SUBSTR(name, 1, 4)) = 'the ' THEN SUBSTR(name, 5) ELSE name END) ASC");
-Source::eager('last_fetch', $sources);
+Source::eager('last_release', $sources);
 $sourcesGrouped = aro_group($sources, 'priority');
 $inactiveSources = count($sourcesGrouped[0] ?? []);
 $activeSources = count($sources) - $inactiveSources;
@@ -70,18 +70,9 @@ $activeSources = count($sources) - $inactiveSources;
 $developers = array_values(array_unique(array_filter(array_column($sources, 'developer'))));
 
 $notNulls = "coalesce(release_date, thread_date) is not null and version is not null";
-$changes = Fetch::query("
-	select
-		f.*,
-		cast(min(created_on) as int) change_on
-	from fetches f
-	where $notNulls and source_id in (
-		select source_id from (
-			select source_id, release_date, version from fetches where $notNulls group by source_id, release_date, version
-		) x group by source_id having count(1) > 1
-	)
-	group by source_id, release_date, version
-	order by change_on desc
+$changes = Release::all("
+	source_id in (select source_id from releases group by source_id having count(1) > 1)
+	order by first_fetch_on desc
 ");
 $changesGrouped = aro_group($changes, 'fetch_recency');
 $unrecentChanges = count($changesGrouped[0]);
@@ -90,15 +81,11 @@ $recentChanges = count($changes) - $unrecentChanges;
 $releaseStats = $db->fetch("
 	select priority, releases, count(1) titles
 	from (
-		select priority, source_id, name, count(1) releases
-		from (
-			select s.priority, s.id source_id, s.name, coalesce(f.release_date, f.thread_date) title_date, version
-			from sources s
-			left join fetches f on f.source_id = s.id and coalesce(f.release_date, f.thread_date) is not null and f.version is not null
-			group by s.id, title_date, version
-		) x
+		select source_id, priority, count(1) releases
+		from releases r
+		join sources s on s.id = r.source_id
 		group by source_id
-	) y
+	) x
 	group by priority, releases
 	order by priority desc, releases asc
 ")->all();
@@ -158,7 +145,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						<td nowrap class="recent-<?= $fetch->recent_release ?>"><?= $fetch->release_date ?></td>
 						<td nowrap>
 							<div class="cols">
-								<span><?= date('Y-m-d', $fetch->change_on) ?></span>
+								<span><?= date('Y-m-d', $fetch->first_fetch_on) ?></span>
 								<a class="goto" target="_blank" href="<?= html($fetch->url) ?>">&#10132;</a>
 							</div>
 						</td>
@@ -223,20 +210,20 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 								<a class="search-icon" href data-query="<?= html($source->pretty_developer) ?>">&#128270;</a>
 							<? endif ?>
 						</td>
-						<td nowrap class="recent-<?= $source->last_fetch->recent_release ?? '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?> old-last-change-<?= $source->old_last_change ?>">
+						<td nowrap class="recent-<?= $source->last_release->recent_release ?? '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?> old-last-change-<?= $source->old_last_change ?>">
 							<div class="cols">
-								<span><?= $source->last_fetch->release_date ?? $source->last_fetch->thread_date ?? '' ?></span>
+								<span><?= $source->last_release->release_date ?? $source->last_release->thread_date ?? '' ?></span>
 								<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>
 							</div>
 						</td>
 						<td nowrap class="version" tabindex="0">
-							<span><?= $source->last_fetch->cleaned_version ?? '' ?></span>
+							<span><?= $source->last_release->cleaned_version ?? '' ?></span>
 						</td>
 						<td nowrap>
-							<? if ($source->last_fetch): ?>
+							<? if ($source->last_release): ?>
 								<div class="cols">
-									<span><?= date('Y-m-d', $source->last_fetch->created_on) ?></span>
-									<a class="goto" target="_blank" href="<?= html($source->last_fetch->url) ?>">&#10132;</a>
+									<span><?= date('Y-m-d', $source->last_release->last_fetch_on) ?></span>
+									<a class="goto" target="_blank" href="<?= html($source->last_release->url) ?>">&#10132;</a>
 								</div>
 							<? endif ?>
 						</td>

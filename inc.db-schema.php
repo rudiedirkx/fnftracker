@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'version' => 13,
+	'version' => 15,
 	'tables' => [
 		'sources' => [
 			'id' => ['pk' => true],
@@ -15,10 +15,11 @@ return [
 			'finished' => ['type' => 'date'],
 			'installed',
 		],
-		'fetches' => [
+		'releases' => [
 			'id' => ['pk' => true],
 			'source_id' => ['unsigned' => true, 'references' => ['sources', 'id', 'cascade']],
-			'created_on' => ['unsigned' => true, 'null' => false, 'default' => 0],
+			'first_fetch_on' => ['unsigned' => true, 'null' => false, 'default' => 0],
+			'last_fetch_on' => ['unsigned' => true, 'null' => false, 'default' => 0],
 			'url',
 			'release_date',
 			'thread_date',

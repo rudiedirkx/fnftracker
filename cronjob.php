@@ -1,7 +1,7 @@
 <?php
 
-use rdx\f95\Fetch;
 use rdx\f95\Fetcher;
+use rdx\f95\Release;
 use rdx\f95\Source;
 
 require 'inc.bootstrap.php';
@@ -13,13 +13,14 @@ $priomap = array_filter(array_map(function($days) {
 }, Source::PRIORITIES));
 
 $sources = Source::all('priority > 0');
+Source::eager('last_release', $sources);
 
 echo date('c') . "\n\n";
 
 $skipped = [];
 foreach ( $sources as $source ) {
 	$anyway = false;
-	if ( $source->last_fetch->created_on > $priomap[$source->priority] ) {
+	if ( $source->last_release->last_fetch_on > $priomap[$source->priority] ) {
 		if ( rand(0, 100)/100 < CRON_DO_ANYWAY ) {
 			$anyway = true;
 		}
@@ -35,7 +36,7 @@ foreach ( $sources as $source ) {
 	echo "[$source->id.] $source->name$anyway\n";
 
 	$developer = $source->developer;
-	$fetch = Fetch::find($fetcher->sync($guzzle, true));
+	$fetch = Release::find($fetcher->sync($guzzle, true));
 
 	if (!$fetch) {
 		echo "- CONNECTION EXCEPTION\n";

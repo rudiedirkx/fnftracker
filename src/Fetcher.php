@@ -15,6 +15,11 @@ class Fetcher {
 	public $source;
 	public $url;
 
+	public $release;
+	public $thread;
+	public $version;
+	public $prefixes;
+
 	public $developer;
 	public $banner;
 
@@ -56,11 +61,11 @@ class Fetcher {
 
 		$text = $this->getLdText($doc);
 
-		[$release, $thread] = $this->getDates($text);
-		$version = $this->getVersion($text);
+		[$this->release, $this->thread] = $this->getDates($text);
+		$this->version = $this->getVersion($text);
 		$this->banner = $this->getBanner($doc);
 		$this->developer = $this->getDeveloper($doc, $text);
-		$prefixes = $this->getPrefixes($doc);
+		$this->prefixes = implode(' ', $this->getPrefixes($doc)) ?: null;
 
 		$update = ['banner_url' => $this->banner];
 		if (!$this->source->custom_developer) {
@@ -68,15 +73,28 @@ class Fetcher {
 		}
 		$this->source->update($update);
 
-		return Fetch::insert([
-			'source_id' => $this->source->id,
-			'release_date' => $release,
-			'thread_date' => $thread,
-			'version' => $version,
-			'prefixes' => implode(',', $prefixes) ?: null,
-			'url' => end($redirects),
-			'created_on' => time(),
-		]);
+		$previous = $this->source->last_release;
+		if (!$previous || $this->significantlyDifferent($previous)) {
+			return Fetch::insert([
+				'source_id' => $this->source->id,
+				'release_date' => $this->release,
+				'thread_date' => $this->thread,
+				'version' => $this->version,
+				'prefixes' => $this->prefixes,
+				'url' => end($redirects),
+				'first_fetch_on' => time(),
+				'last_fetch_on' => time(),
+			]);
+		}
+
+		$previous->update(['last_fetch_on' => time()]);
+		return $previous->id;
+	}
+
+	protected function significantlyDifferent(Release $release) {
+		$previous = "$release->release_date::$release->thread_date::$release->version::$release->prefixes";
+		$current = "$this->release::$this->thread::$this->version::$this->prefixes";
+		return $previous !== $current;
 	}
 
 	protected function getPrefixes(Node $doc) {
