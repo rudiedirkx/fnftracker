@@ -396,8 +396,7 @@ window.addEventListener('load', e => setTimeout(() => {
 		});
 	});
 
-	const el = document.querySelector('.hilited');
-	el && el.scrollIntoViewIfNeeded();
+	Array.from(document.querySelectorAll('.hilited, .hilited *')).some(el => el.focus() || el == document.activeElement);
 }, 200));
 </script>
 <?php
