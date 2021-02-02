@@ -45,25 +45,55 @@ th.sorted {
 th.sorted:after {
 	content: " \21F3";
 }
-tr.played td.title:before,
-tr.prefix-completed td.title:before,
-tr.prefix-onhold td.title:before,
-tr.prefix-abandoned td.title:before {
+.status-prefix,
+.software-prefix {
+	float: right;
+}
+tr.played .status-prefix:before,
+tr.prefix-completed .status-prefix:before,
+tr.prefix-onhold .status-prefix:before,
+tr.prefix-abandoned .status-prefix:before {
 	content: "C";
 	float: right;
 	color: royalblue;
 	font-weight: bold;
 	margin-left: .5em;
 }
-tr.played td.title:before {
+tr.played .status-prefix:before {
 	content: "P";
 	color: orange;
 }
-tr.prefix-onhold td.title:before {
+tr.prefix-onhold .status-prefix:before {
 	content: "H";
 }
-tr.prefix-abandoned td.title:before {
+tr.prefix-abandoned .status-prefix:before {
 	content: "A";
+}
+tr.prefix-rpgm .software-prefix:before,
+tr.prefix-unity .software-prefix:before,
+tr.prefix-html .software-prefix:before,
+tr.prefix-others .software-prefix:before,
+tr.prefix-flash .software-prefix:before,
+tr.prefix-unreal-engine .software-prefix:before {
+	content: "OTHER";
+	float: right;
+	color: orange;
+	margin-left: .5em;
+}
+tr.prefix-rpgm .software-prefix:before {
+	content: "RPGM";
+}
+tr.prefix-unity .software-prefix:before {
+	content: "UNITY";
+}
+tr.prefix-html .software-prefix:before {
+	content: "HTML";
+}
+tr.prefix-flash .software-prefix:before {
+	content: "SWF";
+}
+tr.prefix-unreal-engine .software-prefix:before {
+	content: "UNREAL";
 }
 body:not(.searching) table.sources:not(.showing-hidden-rows) .finished {
 	display: none;

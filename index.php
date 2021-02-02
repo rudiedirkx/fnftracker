@@ -141,6 +141,8 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 								<span class="developer"><?= html($fetch->source->pretty_developer) ?></span>
 								<a class="search-icon" href data-query="<?= html($fetch->source->pretty_developer) ?>">&#128270;</a>
 							<? endif ?>
+							<span class="status-prefix"></span>
+							<span class="software-prefix"></span>
 						</td>
 						<td nowrap class="recent-<?= $fetch->recent_release ?>"><?= $fetch->release_date ?></td>
 						<td nowrap>
@@ -209,6 +211,8 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 								<span class="developer"><?= html($source->pretty_developer) ?></span>
 								<a class="search-icon" href data-query="<?= html($source->pretty_developer) ?>">&#128270;</a>
 							<? endif ?>
+							<span class="status-prefix"></span>
+							<span class="software-prefix"></span>
 						</td>
 						<td nowrap class="recent-<?= $source->last_release->recent_release ?? '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?> old-last-change-<?= $source->old_last_change ?>">
 							<div class="cols">
