@@ -125,7 +125,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<? endif ?>
 				<? foreach ($objects as $fetch): ?>
 					<tr
-						class="<?= $fetch->prefix_classes ?> <? if ($fetch->source->description): ?>has-description<? endif ?>"
+						class="<?= $fetch->status_prefix_class ?> <? if ($fetch->source->description): ?>has-description<? endif ?>"
 						data-search="<?= html(mb_strtolower(trim("{$fetch->source->name} {$fetch->source->description} {$fetch->source->developer}"))) ?>"
 						data-banner="<?= html($fetch->source->banner_url) ?>"
 						data-priority="<?= $fetch->source->priority ?>"
@@ -141,8 +141,10 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 								<span class="developer"><?= html($fetch->source->pretty_developer) ?></span>
 								<a class="search-icon" href data-query="<?= html($fetch->source->pretty_developer) ?>">&#128270;</a>
 							<? endif ?>
-							<span class="status-prefix"></span>
-							<span class="software-prefix"></span>
+							<span class="pstatus"></span>
+							<? if ($fetch->software_prefix_label): ?>
+								<span class="psoftware"><?= $fetch->software_prefix_label ?></span>
+							<? endif ?>
 						</td>
 						<td nowrap class="recent-<?= $fetch->recent_release ?>"><?= $fetch->release_date ?></td>
 						<td nowrap>
@@ -190,7 +192,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<? endif ?>
 				<? foreach ($objects as $source): ?>
 					<tr
-						class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->last_release->prefix_classes ?? '' ?> <? if ($source->description): ?>has-description<? endif ?>"
+						class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->status_prefix_class ?? '' ?> <? if ($source->description): ?>has-description<? endif ?>"
 						data-id="<?= $source->id ?>"
 						data-search="<?= html(mb_strtolower(trim("$source->name $source->description $source->developer"))) ?>"
 						data-banner="<?= html($source->banner_url) ?>"
@@ -211,8 +213,10 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 								<span class="developer"><?= html($source->pretty_developer) ?></span>
 								<a class="search-icon" href data-query="<?= html($source->pretty_developer) ?>">&#128270;</a>
 							<? endif ?>
-							<span class="status-prefix"></span>
-							<span class="software-prefix"></span>
+							<span class="pstatus"></span>
+							<? if ($source->last_release->software_prefix_label): ?>
+								<span class="psoftware"><?= $source->last_release->software_prefix_label ?></span>
+							<? endif ?>
 						</td>
 						<td nowrap class="recent-<?= $source->last_release->recent_release ?? '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?> old-last-change-<?= $source->old_last_change ?>">
 							<div class="cols">

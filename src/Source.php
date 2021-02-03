@@ -40,12 +40,12 @@ class Source extends Model {
 		return ltrim($this->developer, '=');
 	}
 
-	protected function get_prefix_class() {
+	protected function get_status_prefix_class() {
 		if ($this->finished) {
 			return 'played';
 		}
 
-		return $this->last_release->prefixes ?? '';
+		return $this->last_release->status_prefix_class ?? '';
 	}
 
 	protected function get_not_release_date() {

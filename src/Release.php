@@ -4,6 +4,8 @@ namespace rdx\f95;
 
 class Release extends Model {
 
+	const STATUS_PREFIXES = ['completed', 'onhold', 'abandoned'];
+
 	static public $_table = 'releases';
 
 	protected function get_fetch_recency() {
@@ -33,12 +35,20 @@ class Release extends Model {
 		return 0;
 	}
 
-	protected function get_prefix_classes() {
-		if (!$this->prefixes) return '';
+	protected function get_status_prefix_class() {
+		foreach (explode(',', $this->prefixes) as $prefix) {
+			if (in_array($prefix, self::STATUS_PREFIXES)) {
+				return $prefix;
+			}
+		}
+	}
 
-		return implode(' ', array_map(function($prefix) {
-			return 'prefix-' . str_replace(' ', '-', $prefix);
-		}, explode(',', $this->prefixes)));
+	protected function get_software_prefix_label() {
+		foreach (explode(',', $this->prefixes) as $prefix) {
+			if (!in_array($prefix, self::STATUS_PREFIXES)) {
+				return explode(' ', $prefix)[0];
+			}
+		}
 	}
 
 	protected function get_cleaned_version() {
