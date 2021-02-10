@@ -61,7 +61,7 @@ setcookie('hilite_source', 0, 1);
 
 include 'tpl.header.php';
 
-$sources = Source::all("1=1 ORDER BY priority DESC, (CASE WHEN LOWER(SUBSTR(name, 1, 4)) = 'the ' THEN SUBSTR(name, 5) ELSE name END) ASC");
+$sources = Source::all("1=1 ORDER BY priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
 Source::eager('last_release', $sources);
 $sourcesGrouped = aro_group($sources, 'priority');
 $inactiveSources = count($sourcesGrouped[0] ?? []);
