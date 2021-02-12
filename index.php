@@ -153,9 +153,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 								<a class="goto" target="_blank" href="<?= html($fetch->url) ?>">&#10132;</a>
 							</div>
 						</td>
-						<td nowrap class="version" tabindex="0">
-							<span><?= $fetch->cleaned_version ?></span>
-						</td>
+						<td nowrap class="version"><?= $fetch->cleaned_version ?></td>
 					</tr>
 					<? if ($fetch->source->description): ?>
 						<tr class="description">
