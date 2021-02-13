@@ -118,7 +118,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 		<? foreach ($changesGrouped as $group => $objects): ?>
 			<tbody>
 				<? if ($group == 0): ?>
-					<tr class="hidden-rows"><td colspan="4">
+					<tr class="hidden-rows <?= $hideUnrecentChanges ? 'always' : '' ?>"><td colspan="4">
 						... <?= $hideUnrecentChanges ? 'Hiding ' . $unrecentChanges . ' history' : 'Show ' . $unrecentChanges . ' hidden history' ?> ...
 					</td></tr>
 					<? if ($hideUnrecentChanges) break ?>
@@ -348,7 +348,7 @@ window.addEventListener('load', e => setTimeout(() => {
 		this.closest('table').classList.add('showing-hidden-rows');
 		this.closest('tr').remove();
 	};
-	document.querySelectorAll('tr.hidden-rows td').forEach(el => el.addEventListener('click', hiddenHandle));
+	document.querySelectorAll('tr.hidden-rows:not(.always) td').forEach(el => el.addEventListener('click', hiddenHandle));
 
 	const over = function(e) {
 		const url = this.closest('tr').dataset.banner;

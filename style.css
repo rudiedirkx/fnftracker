@@ -94,15 +94,15 @@ tr.has-description .title-name {
 tr.hidden-rows td {
 	text-align: center;
 	background-color: #eee;
+}
+tr.hidden-rows:not(.always) td {
 	cursor: pointer;
 }
-tr.hidden-rows td:hover {
+tr.hidden-rows:not(.always) td:hover {
 	background-color: #ddd;
 }
-body:not(.searching) tr.hidden-rows ~ tr {
-	display: none;
-}
-body.searching tr.hidden-rows {
+body:not(.searching) tr.hidden-rows ~ tr,
+body.searching tr.hidden-rows:not(.always) {
 	display: none;
 }
 table.release-stats tr > * {
