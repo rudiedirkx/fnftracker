@@ -222,9 +222,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 								<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>
 							</div>
 						</td>
-						<td nowrap class="version" tabindex="0">
-							<span><?= $source->last_release->cleaned_version ?? '' ?></span>
-						</td>
+						<td nowrap class="version"><?= $source->last_release->cleaned_version ?? '' ?></td>
 						<td nowrap>
 							<? if ($source->last_release): ?>
 								<div class="cols">
