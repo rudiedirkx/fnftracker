@@ -6,12 +6,16 @@ use GuzzleHttp\Exception\TransferException;
 
 class Source extends Model {
 
+	const DRAFT_PRIORITY = 80;
+
 	const RECENTS = [RECENT0, RECENT1, RECENT2];
 	const PRIORITIES = [0 => null, 1 => 8, 2 => 4, 3 => 2];
 
 	static public $_table = 'sources';
 
 	public function sync(int $attempts = 1) {
+		if (!$this->f95_id) return;
+
 		$fetcher = new Fetcher($this);
 		$throw = null;
 		for ($i = 0; $i < $attempts; $i++) {
@@ -25,6 +29,10 @@ class Source extends Model {
 		}
 
 		throw $throw;
+	}
+
+	protected function get_draft_or_priority() {
+		return $this->f95_id ? $this->priority : self::DRAFT_PRIORITY;
 	}
 
 	protected function relate_versions() {

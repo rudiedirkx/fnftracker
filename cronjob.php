@@ -12,7 +12,7 @@ $priomap = array_filter(array_map(function($days) {
 	return $days ? strtotime('+1 hour', strtotime("-$days days")) : null;
 }, Source::PRIORITIES));
 
-$sources = Source::all('priority > 0');
+$sources = Source::all('priority > 0 AND f95_id is not null');
 Source::eager('last_release', $sources);
 
 echo date('c') . "\n\n";

@@ -21,7 +21,7 @@ if ( isset($_POST['priorities']) ) {
 if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['installed'], $_POST['finished'], $_POST['description']) ) {
 	$data = [
 		'name' => trim($_POST['name']),
-		'f95_id' => trim($_POST['f95_id']),
+		'f95_id' => trim($_POST['f95_id']) ?: null,
 		'developer' => trim($_POST['developer']),
 		'installed' => trim($_POST['installed']) ?: null,
 		'description' => trim($_POST['description']) ?: null,
@@ -61,9 +61,9 @@ setcookie('hilite_source', 0, 1);
 
 include 'tpl.header.php';
 
-$sources = Source::all("1=1 ORDER BY priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
+$sources = Source::all("1=1 ORDER BY (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
 Source::eager('last_release', $sources);
-$sourcesGrouped = aro_group($sources, 'priority');
+$sourcesGrouped = aro_group($sources, 'draft_or_priority');
 $inactiveSources = count($sourcesGrouped[0] ?? []);
 $activeSources = count($sources) - $inactiveSources;
 
@@ -212,7 +212,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 								<a class="search-icon" href data-query="<?= html($source->pretty_developer) ?>">&#128270;</a>
 							<? endif ?>
 							<span class="pstatus"></span>
-							<? if ($source->last_release->software_prefix_label): ?>
+							<? if ($source->last_release->software_prefix_label ?? null): ?>
 								<span class="psoftware"><?= $source->last_release->software_prefix_label ?></span>
 							<? endif ?>
 						</td>
@@ -262,7 +262,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 			<legend>Add source</legend>
 		<? endif ?>
 		<p>Name: <input name="name" required value="<?= html($edit->name ?? '') ?>" <?= $edit ? 'autofocus' : '' ?> /></p>
-		<p>F95 ID: <input name="f95_id" required pattern="^\d+$" value="<?= html($edit->f95_id ?? '') ?>" /></p>
+		<p>F95 ID: <input name="f95_id" pattern="^\d+$" value="<?= html($edit->f95_id ?? '') ?>" /></p>
 		<p>Developer: <input name="developer" value="<?= html($edit->developer ?? '') ?>" list="dl-developers" /></p>
 		<p>Installed version: <input name="installed" value="<?= html($edit->installed ?? '') ?>" autocomplete="off" list="dl-versions" /></p>
 		<p>Finished: <input name="finished" type="date" value="<?= html($edit->finished ?? '') ?>" /></p>
