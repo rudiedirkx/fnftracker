@@ -119,7 +119,7 @@ class Fetcher {
 
 	protected function getBanner(Node $doc) {
 		$banner = $doc->query('.message-threadStarterPost a > .bbImage');
-		return $banner->parent()['href'];
+		return $banner ? $banner->parent()['href'] : null;
 	}
 
 	protected function getDeveloper(Node $doc, string $text) {
