@@ -99,8 +99,8 @@ class Fetcher {
 	}
 
 	protected function significantlyDifferent(Release $release) {
-		$previous = ($release->release_date ?? $release->thread_date) . "::$release->version"; // ::$release->prefixes";
-		$current = ($this->release ?? $this->thread) . "::$this->version"; // ::$this->prefixes";
+		$previous = ($release->release_date ?? $release->thread_date) . "::$release->version::$release->prefixes";
+		$current = ($this->release ?? $this->thread) . "::$this->version::$this->prefixes";
 		return $previous !== $current;
 	}
 
