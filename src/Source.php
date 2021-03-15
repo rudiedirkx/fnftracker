@@ -82,4 +82,8 @@ class Source extends Model {
 			->where('id in (select max(id) from releases group by source_id)');
 	}
 
+	protected function relate_characters() {
+		return $this->to_many(Character::class, 'source_id');
+	}
+
 }

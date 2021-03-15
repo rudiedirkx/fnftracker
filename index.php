@@ -63,6 +63,7 @@ include 'tpl.header.php';
 
 $sources = Source::all("1=1 ORDER BY (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
 Source::eager('last_release', $sources);
+Source::eager('characters', $sources);
 $sourcesGrouped = aro_group($sources, 'draft_or_priority');
 $inactiveSources = count($sourcesGrouped[0] ?? []);
 $activeSources = count($sources) - $inactiveSources;
@@ -125,7 +126,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<? endif ?>
 				<? foreach ($objects as $fetch): ?>
 					<tr
-						class="<?= $fetch->status_prefix_class ?> <? if ($fetch->source->description): ?>has-description<? endif ?>"
+						class="<?= $fetch->status_prefix_class ?> <? if ($fetch->source->description || count($fetch->source->characters)): ?>has-description<? endif ?>"
 						data-search="<?= html(mb_strtolower(trim("{$fetch->source->name} {$fetch->source->description} {$fetch->source->developer}"))) ?>"
 						data-banner="<?= html($fetch->source->banner_url) ?>"
 						data-priority="<?= $fetch->source->priority ?>"
@@ -155,11 +156,6 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 						</td>
 						<td nowrap class="version"><?= $fetch->cleaned_version ?></td>
 					</tr>
-					<? if ($fetch->source->description): ?>
-						<tr class="description">
-							<td colspan="11"><?= html($fetch->source->description) ?></td>
-						</tr>
-					<? endif ?>
 				<? endforeach ?>
 			</tbody>
 		<? endforeach ?>
@@ -190,7 +186,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 				<? endif ?>
 				<? foreach ($objects as $source): ?>
 					<tr
-						class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->status_prefix_class ?? '' ?> <? if ($source->description): ?>has-description<? endif ?>"
+						class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->status_prefix_class ?? '' ?> <? if ($source->description || count($source->characters)): ?>has-description<? endif ?>"
 						data-id="<?= $source->id ?>"
 						data-search="<?= html(mb_strtolower(trim("$source->name $source->description $source->developer"))) ?>"
 						data-banner="<?= html($source->banner_url) ?>"
@@ -238,9 +234,18 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 							<?= $source->finished ?>
 						</td>
 					</tr>
-					<? if ($source->description): ?>
+					<? if ($source->description || count($source->characters)): ?>
 						<tr class="description">
-							<td colspan="11"><?= html($source->description) ?></td>
+							<td colspan="11">
+								<?= html($source->description) ?>
+								<? foreach ($source->characters as $char): ?>
+									|
+									<!-- <? if ($char->url): ?><a target="_blank" href="<?= html($char->url) ?>"><? endif ?> -->
+										<?= html($char->name) ?>
+										<? if ($char->role): ?> (<?= html($char->role) ?>)<? endif ?>
+									<!-- <? if ($char->url): ?></a><? endif ?> -->
+								<? endforeach ?>
+							</td>
 						</tr>
 					<? endif ?>
 				<? endforeach ?>

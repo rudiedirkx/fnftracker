@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'version' => 15,
+	'version' => 16,
 	'tables' => [
 		'sources' => [
 			'id' => ['pk' => true],
@@ -25,6 +25,13 @@ return [
 			'thread_date',
 			'version',
 			'prefixes',
+		],
+		'characters' => [
+			'id' => ['pk' => true],
+			'source_id' => ['unsigned' => true, 'references' => ['sources', 'id', 'cascade']],
+			'name',
+			'role',
+			'url',
 		],
 	],
 ];
