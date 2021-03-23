@@ -154,7 +154,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 								<a class="goto" target="_blank" href="<?= html($fetch->url) ?>">&#10132;</a>
 							</div>
 						</td>
-						<td nowrap class="version"><?= $fetch->cleaned_version ?></td>
+						<td nowrap tabindex="0" class="version"><span><?= $fetch->cleaned_version ?></span></td>
 					</tr>
 				<? endforeach ?>
 			</tbody>
@@ -218,7 +218,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 								<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>
 							</div>
 						</td>
-						<td nowrap class="version"><?= $source->last_release->cleaned_version ?? '' ?></td>
+						<td nowrap tabindex="0" class="version"><span><?= $source->last_release->cleaned_version ?? '' ?></span></td>
 						<td nowrap>
 							<? if ($source->last_release): ?>
 								<div class="cols">

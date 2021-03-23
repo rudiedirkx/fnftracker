@@ -166,6 +166,11 @@ td.title {
 .version {
 	font-family: monospace;
 }
+.version:not(:focus) {
+	max-width: 14em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 a.goto, a.sync, a.edit-icon, a.search-icon {
 	line-height: 1;
 	text-decoration: none;
