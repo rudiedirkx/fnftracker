@@ -107,7 +107,7 @@ body.searching tr.hidden-rows:not(.always) {
 }
 table.release-stats tr > * {
 	text-align: right;
-	width: 2em;
+	width: 2.2em;
 }
 [data-priority] {
 	--prio-color: pink;

@@ -71,6 +71,7 @@ Source::eager('characters', $sources);
 $sourcesGrouped = aro_group($sources, 'draft_or_priority');
 $inactiveSources = count($sourcesGrouped[0] ?? []);
 $activeSources = count($sources) - $inactiveSources;
+$sourcesPriorities = array_map('count', aro_group($sources, 'priority'));
 
 $developers = array_values(array_unique(array_filter(array_column($sources, 'developer'))));
 
@@ -300,6 +301,14 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 	<legend>Release stats</legend>
 	<? $mr = max(array_column($releaseStats, 'releases')) ?>
 	<table class="release-stats">
+		<thead>
+			<tr>
+				<th></th>
+				<? foreach (array_reverse(array_keys(Source::PRIORITIES)) as $prio): ?>
+					<th><?= $sourcesPriorities[$prio] ?? 0 ?></th>
+				<? endforeach ?>
+			</tr>
+		</thead>
 		<tbody>
 			<? for ($r = 1; $r <= $mr; $r++): ?>
 				<tr>
