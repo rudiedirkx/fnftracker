@@ -74,6 +74,7 @@ $activeSources = count($sources) - $inactiveSources;
 $sourcesPriorities = array_map('count', aro_group($sources, 'priority'));
 
 $developers = array_values(array_unique(array_filter(array_column($sources, 'developer'))));
+natcasesort($developers);
 
 $notNulls = "coalesce(release_date, thread_date) is not null and version is not null";
 $changes = Release::all("
