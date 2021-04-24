@@ -3,6 +3,7 @@
 const DB_FILE = __DIR__ . '/db/db.sqlite3';
 
 const F95_URL = 'https://example.com/{id}/{name}/';
+const F95_FETCHER_UA = 'FnfTracker';
 
 const RECENT0 = 5;
 const RECENT1 = 10;

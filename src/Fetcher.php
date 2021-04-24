@@ -42,7 +42,7 @@ class Fetcher {
 			'timeout' => 3,
 			'http_errors' => true,
 			'cookies' => $cookies = new CookieJar(),
-			'headers' => ['User-Agent' => 'FnfTracker'],
+			'headers' => ['User-Agent' => F95_FETCHER_UA],
 			'allow_redirects' => [
 				'track_redirects' => true,
 			] + RedirectMiddleware::$defaultSettings,
