@@ -49,11 +49,11 @@ class Fetcher {
 		]);
 	}
 
-	public function sync(Guzzle $guzzle = null, $catch = false) {
+	public function sync(Guzzle $guzzle = null, $catch = false) : int {
 		$guzzle or $guzzle = self::makeGuzzle();
 
 		try {
-			[$doc, $redirects] = $this->getRemote($guzzle, $this->url);
+			[$html, $url] = $this->getRemote($guzzle, $this->url);
 		}
 		catch (TransferException $ex) {
 			if (!$catch) {
@@ -61,6 +61,12 @@ class Fetcher {
 			}
 			return 0;
 		}
+
+		return $this->syncFromHtml($html, $url);
+	}
+
+	public function syncFromHtml(string $html, string $url = null) : int {
+		$doc = Node::create($html);
 
 		$text = $this->getLdText($doc);
 
@@ -84,7 +90,7 @@ class Fetcher {
 				'thread_date' => $this->thread,
 				'version' => $this->version,
 				'prefixes' => $this->prefixes,
-				'url' => end($redirects),
+				'url' => $url,
 				'first_fetch_on' => time(),
 				'last_fetch_on' => time(),
 			]);
@@ -126,6 +132,11 @@ class Fetcher {
 		$clean = function($name) {
 			return explode(' - ', trim(preg_replace('#\s+f95zone$#i', '', trim($name, '- '))))[0];
 		};
+
+		$title = $doc->query('head title');
+		if ($title && preg_match('#\[([^\]]+)\] \| F95zone$#i', $title->innerText, $match)) {
+			return $match[1];
+		}
 
 		$body = $doc->query('.message-threadStarterPost .message-body > .bbWrapper')->innerText;
 		if (preg_match('#\sDeveloper(?:/[Pp]ublisher)?: *([^\r\n]+)#', $body, $match)) {
@@ -180,10 +191,7 @@ class Fetcher {
 		$rsp = $guzzle->get($url);
 		$redirects = $rsp->getHeader(RedirectMiddleware::HISTORY_HEADER);
 		$html = (string) $rsp->getBody();
-		return [
-			Node::create($html),
-			$redirects,
-		];
+		return [$html, end($redirects)];
 	}
 
 	protected function getLdText(Node $doc) {
