@@ -123,9 +123,18 @@ class Fetcher {
 		return $prefixes;
 	}
 
-	protected function getBanner(Node $doc) {
+	protected function getBanner(Node $doc) : ?string {
+		$img = $doc->query('.message-threadStarterPost .lbContainer [data-src]');
+		if ($img) {
+			return $img['data-src'];
+		}
+
 		$banner = $doc->query('.message-threadStarterPost a > .bbImage');
-		return $banner ? $banner->parent()['href'] : null;
+		if ($banner) {
+			return $banner->parent()['href'];
+		}
+
+		return null;
 	}
 
 	protected function getDeveloper(Node $doc, string $text) {

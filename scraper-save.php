@@ -9,7 +9,7 @@ require 'inc.bootstrap.php';
 header('Access-Control-Allow-Origin: https://f95zone.to');
 header('Content-type: application/json; charset=utf-8');
 
-$source = Source::find($_REQUEST['id'] ?? 0);
+$source = Source::find($_REQUEST['id'] ?? 0) ?? Source::first(['f95_id' => $_REQUEST['f95_id'] ?? 'xxx']);
 if (!$source) {
 	echo json_encode(['error' => "Invalid source"]);
 	exit;

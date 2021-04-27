@@ -10,7 +10,7 @@ class Cronjob {
 
 	public function __construct() {
 		$this->priomap = array_filter(array_map(function($days) {
-			return $days ? strtotime('+1 hour', strtotime("-$days days")) : null;
+			return $days ? strtotime('+5 hours', strtotime("-$days days")) : null;
 		}, Source::PRIORITIES));
 
 		$this->sources = Source::all('priority > 0 AND f95_id is not null');
