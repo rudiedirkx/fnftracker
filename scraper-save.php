@@ -25,12 +25,14 @@ $html = file_get_contents($file['tmp_name']);
 
 $url = $_REQUEST['url'] ?? null;
 
+$lastReleaseId = $source->last_release->id ?? 0;
 $fetcher = new Fetcher($source);
 $releaseId = $fetcher->syncFromHtml($html, $url);
 
 echo json_encode([
 	'source' => $source->name,
-	'id' => (int) $source->id,
-	'release' => $releaseId,
-	'date' => $fetcher->release,
+	'source_id' => (int) $source->id,
+	'release_id' => $releaseId,
+	'release_date' => $fetcher->release,
+	'new' => $releaseId != $lastReleaseId,
 ]);
