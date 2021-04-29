@@ -141,19 +141,22 @@ class Fetcher {
 		$clean = function($name) {
 			return explode(' - ', trim(preg_replace('#\s+f95zone$#i', '', trim($name, '- '))))[0];
 		};
+		$trim = function($name) {
+			return trim(preg_replace('# (games|studios?)$#i', '', $name));
+		};
 
 		$title = $doc->query('head title');
 		if ($title && preg_match('#\[([^\]]+)\] \| F95zone$#i', $title->innerText, $match)) {
-			return $match[1];
+			return $trim($match[1]);
 		}
 
 		$body = $doc->query('.message-threadStarterPost .message-body > .bbWrapper')->innerText;
 		if (preg_match('#\sDeveloper(?:/[Pp]ublisher)?: *([^\r\n]+)#', $body, $match)) {
-			return $clean($match[1]);
+			return $trim($clean($match[1]));
 		}
 
 		if (preg_match('#\sDeveloper(?:/[Pp]ublisher)?: *([^\r\n]+)#', $text, $match)) {
-			return $clean($match[1]);
+			return $trim($clean($match[1]));
 		}
 	}
 

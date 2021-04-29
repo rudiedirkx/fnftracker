@@ -9,7 +9,7 @@ require 'inc.bootstrap.php';
 header('Access-Control-Allow-Origin: https://f95zone.to');
 header('Content-type: application/json; charset=utf-8');
 
-$source = Source::find($_REQUEST['id'] ?? 0) ?? Source::first(['f95_id' => $_REQUEST['f95_id'] ?? 'xxx']);
+$source = Source::findFromIds($_REQUEST['id'] ?? 0, $_REQUEST['f95_id'] ?? 0);
 if (!$source) {
 	echo json_encode(['error' => "Invalid source"]);
 	exit;
@@ -32,6 +32,7 @@ $releaseId = $fetcher->syncFromHtml($html, $url);
 echo json_encode([
 	'source' => $source->name,
 	'source_id' => (int) $source->id,
+	'developer' => $source->developer,
 	'release_id' => $releaseId,
 	'release_date' => $fetcher->release,
 	'new' => $releaseId != $lastReleaseId,
