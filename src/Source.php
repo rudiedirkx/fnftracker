@@ -13,16 +13,13 @@ class Source extends Model {
 
 	static public $_table = 'sources';
 
-	static public function findFromIds($id, $f95_id) {
+	static public function findForScraper($id, $f95_id) {
 		if ($id) {
 			return self::find($id);
 		}
 
 		if ($f95_id) {
-			return self::first([
-				'priority != 0',
-				'f95_id' => $f95_id,
-			]);
+			return self::first("f95_id = ? order by priority desc", [$f95_id]);
 		}
 	}
 
