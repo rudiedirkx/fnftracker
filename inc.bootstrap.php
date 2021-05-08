@@ -16,3 +16,5 @@ if ( !$db ) {
 $db->ensureSchema(require 'inc.db-schema.php');
 
 Model::$_db = $db;
+
+define('TODAY', date('Y-m-d'));

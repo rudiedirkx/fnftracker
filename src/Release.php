@@ -9,7 +9,7 @@ class Release extends Model {
 	static public $_table = 'releases';
 
 	protected function get_fetch_recency() {
-		if (date('Y-m-d', $this->first_fetch_on) == date('Y-m-d')) {
+		if (date('Y-m-d', $this->first_fetch_on) == TODAY) {
 			return 2;
 		}
 
