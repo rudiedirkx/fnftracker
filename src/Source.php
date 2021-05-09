@@ -92,6 +92,10 @@ class Source extends Model {
 			->where('id in (select max(id) from releases group by source_id)');
 	}
 
+	protected function relate_num_releases() {
+		return $this->to_count(Release::$_table, 'source_id');
+	}
+
 	protected function relate_characters() {
 		return $this->to_many(Character::class, 'source_id');
 	}

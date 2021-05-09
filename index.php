@@ -67,6 +67,7 @@ include 'tpl.header.php';
 
 $sources = Source::all("1=1 ORDER BY (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
 Source::eager('last_release', $sources);
+Source::eager('num_releases', $sources);
 Source::eager('characters', $sources);
 $sourcesGrouped = aro_group($sources, 'draft_or_priority');
 $inactiveSources = count($sourcesGrouped[0] ?? []);
@@ -85,19 +86,11 @@ $changesGrouped = aro_group($changes, 'fetch_recency');
 $unrecentChanges = count($changesGrouped[0]);
 $recentChanges = count($changes) - $unrecentChanges;
 
-$releaseStats = $db->fetch("
-	select priority, releases, count(1) titles
-	from (
-		select source_id, priority, count(1) releases
-		from releases r
-		join sources s on s.id = r.source_id
-		group by source_id
-	) x
-	group by priority, releases
-	order by priority desc, releases asc
-")->all();
-$releaseStatsGroups = array_reduce($releaseStats, function($grid, $stat) {
-	$grid[$stat->priority][$stat->releases] = $stat->titles;
+$releaseStatsGroups = array_reduce($sources, function(array $grid, Source $source) {
+	if ($source->num_releases) {
+		isset($grid[$source->priority][$source->num_releases]) or $grid[$source->priority][$source->num_releases] = 0;
+		$grid[$source->priority][$source->num_releases]++;
+	}
 	return $grid;
 }, []);
 
@@ -194,9 +187,10 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 					<tr
 						class="<?= $hilite == $source->id ? 'hilited' : '' ?> <?= $source->status_prefix_class ?? '' ?> <? if ($source->description || count($source->characters)): ?>has-description<? endif ?>"
 						data-id="<?= $source->id ?>"
-						data-search="<?= html(mb_strtolower(trim("$source->name $source->description $source->developer"))) ?>"
+						data-search="_p<?= $source->priority ?>_r<?= $source->num_releases ?? 0 ?>_ <?= html(mb_strtolower(trim("$source->name $source->description $source->developer"))) ?>"
 						data-banner="<?= html($source->banner_url) ?>"
 						data-priority="<?= $source->priority ?>"
+						data-releases="<?= $source->num_releases ?? 0 ?>"
 					>
 						<td class="priority">
 							<input type="hidden" name="priorities[<?= $source->id ?>]" value="<?= $source->priority ?>" />
@@ -300,7 +294,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 <fieldset>
 	<legend>Release stats</legend>
-	<? $mr = max(array_column($releaseStats, 'releases')) ?>
+	<? $mr = max(array_keys(array_replace(...$releaseStatsGroups))) ?>
 	<table class="release-stats">
 		<thead>
 			<tr>
@@ -312,7 +306,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 		</thead>
 		<tbody>
 			<? for ($r = 1; $r <= $mr; $r++): ?>
-				<tr>
+				<tr data-releases="<?= $r ?>">
 					<th><?= $r ?>x</th>
 					<? foreach (array_reverse(array_keys(Source::PRIORITIES)) as $prio): ?>
 						<td data-priority="<?= $prio ?>" class="priority">
@@ -359,7 +353,7 @@ window.addEventListener('load', e => setTimeout(() => {
 		const nxt = PRIORITIES[(i-1+PRIORITIES.length) % PRIORITIES.length];
 		this.querySelector('output').value = this.querySelector('input').value = tr.dataset.priority = nxt;
 	};
-	document.querySelectorAll('td.priority').forEach(el => el.addEventListener('click', priorityHandle));
+	document.querySelectorAll('.sources td.priority').forEach(el => el.addEventListener('click', priorityHandle));
 
 	const hiddenHandle = function(e) {
 		this.closest('table').classList.add('showing-hidden-rows');
@@ -417,6 +411,13 @@ window.addEventListener('load', e => setTimeout(() => {
 			clearTimeout(timer);
 			document.querySelectorAll('tr.show-description').forEach(el => el.classList.remove('show-description'));
 		});
+	});
+
+	document.querySelector('.release-stats').addEventListener('click', e => {
+		const td = e.target.closest('tr[data-releases] td[data-priority]');
+		search.value = `_p${td.dataset.priority}_r${td.parentNode.dataset.releases}_`;
+		search.focus();
+		search.dispatchEvent(new CustomEvent('input'));
 	});
 
 	Array.from(document.querySelectorAll('.hilited, .hilited *')).some(el => el.focus() || el == document.activeElement);
