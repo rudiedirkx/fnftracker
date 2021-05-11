@@ -323,6 +323,14 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 window.addEventListener('load', e => setTimeout(() => {
 	const body = document.body;
 
+	const debouce = function(delay, callback) {
+		var timer = -1;
+		return function(...args) {
+			clearTimeout(timer);
+			timer = setTimeout(() => callback.apply(this, args), delay);
+		};
+	};
+
 	const URL_PATTERN = /^<?= strtr(preg_quote(F95_URL, '/'), [
 		preg_quote('{name}') => '[^\/\.]+',
 		preg_quote('{id}') => '(\d+)',
@@ -376,13 +384,13 @@ window.addEventListener('load', e => setTimeout(() => {
 	});
 
 	const search = document.querySelector('input[type="search"]');
-	search.addEventListener('input', function(e) {
+	search.addEventListener('input', debouce(200, function(e) {
 		const q = this.value.toLowerCase().replace(/(^[\s|]+|[\s|]+$)/g, '');
 		const re = new RegExp(q, 'i');
 		document.body.classList.toggle('searching', q != '');
 		const rows = document.querySelectorAll('tr[data-search]');
 		rows.forEach(tr => tr.hidden = q && !re.test(tr.dataset.search));
-	});
+	}));
 	search.dispatchEvent(new CustomEvent('input'));
 	document.addEventListener('keyup', function(e) {
 		if (e.code == 'Slash' && document.activeElement.matches('body, a, button')) {
