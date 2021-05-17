@@ -393,7 +393,7 @@ window.addEventListener('load', e => setTimeout(() => {
 	}));
 	search.dispatchEvent(new CustomEvent('input'));
 	document.addEventListener('keyup', function(e) {
-		if (e.code == 'Slash' && document.activeElement.matches('body, a, button')) {
+		if (e.code == 'Slash' && document.activeElement.matches('body, a, button, td[tabindex]')) {
 			search.focus();
 			search.select();
 		}
