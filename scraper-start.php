@@ -13,7 +13,7 @@ $cronjob = new Cronjob();
 $urls = [];
 foreach ($cronjob->getSources() as [$source, $anyway]) {
 	$fetcher = new Fetcher($source);
-	$urls[] = [(int) $source->id, $fetcher->url, $anyway];
+	$urls[] = [(int) $source->id, $fetcher->url];
 }
 
 echo json_encode(['urls' => $urls]);
