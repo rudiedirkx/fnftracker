@@ -146,7 +146,7 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 								<span class="psoftware"><?= $fetch->software_prefix_label ?></span>
 							<? endif ?>
 						</td>
-						<td nowrap class="recent-<?= $fetch->recent_release ?>"><?= $fetch->release_date ?></td>
+						<td nowrap class="recent-<?= $fetch->recent_release ?>"><?= $fetch->release_date ?? $fetch->thread_date ?></td>
 						<td nowrap title="<?= date('H:i', $fetch->first_fetch_on) ?>">
 							<div class="cols">
 								<span><?= date('Y-m-d', $fetch->first_fetch_on) ?></span>
