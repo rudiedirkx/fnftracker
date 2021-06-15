@@ -101,7 +101,7 @@ $hideInactiveSources = false;
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 
 ?>
-<p><input type="search" placeholder="Name &amp; developer..." value="<?= html($_GET['search'] ?? '') ?>" /></p>
+<p><input <?= $edit ? '' : 'autofocus' ?> type="search" placeholder="Name &amp; developer..." value="<?= html($_GET['search'] ?? '') ?>" /></p>
 
 <h2>Recent changes (<?= $recentChanges ?> + <?= $unrecentChanges ?>)</h2>
 
