@@ -54,23 +54,25 @@ th.sorted:after {
 	color: orange;
 	text-transform: uppercase;
 }
-tr.played .pstatus:before,
-tr.completed .pstatus:before,
-tr.onhold .pstatus:before,
+tr.played .pstatus:before {
+	content: "P";
+}
+tr.onhold .pstatus:before {
+	content: "H";
+	font-weight: bold;
+}
 tr.abandoned .pstatus:before {
+	content: "A";
+	font-weight: bold;
+}
+tr.completed .pstatus:before {
 	content: "C";
 	color: royalblue;
 	font-weight: bold;
 }
 tr.played .pstatus:before {
-	content: "P";
 	color: orange;
-}
-tr.onhold .pstatus:before {
-	content: "H";
-}
-tr.abandoned .pstatus:before {
-	content: "A";
+	font-weight: bold;
 }
 body:not(.searching) table.sources:not(.showing-hidden-rows) .finished {
 	display: none;

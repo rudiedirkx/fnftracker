@@ -59,11 +59,8 @@ class Source extends Model {
 	}
 
 	protected function get_status_prefix_class() {
-		if ($this->finished) {
-			return 'played';
-		}
-
-		return $this->last_release->status_prefix_class ?? '';
+		$played = $this->finished ? ' played' : '';
+		return ($this->last_release->status_prefix_class ?? '') . $played;
 	}
 
 	protected function get_not_release_date() {
