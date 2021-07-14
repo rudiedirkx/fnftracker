@@ -52,10 +52,10 @@ function sendResponse(id, html , url) {
 }
 
 (async () => {
-console.time('getUrls');
-	// await sendResponse(9999, 'xxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'https://oele.boele/bla');
-	// process.exit();
+	console.log(`${base}/`);
+	console.log('');
 
+console.time('getUrls');
 	const urls = await getUrls();
 	console.log('urls', urls.length);
 console.timeEnd('getUrls');
@@ -95,6 +95,7 @@ console.timeEnd('logIn');
 	console.log('loggedIn', loggedIn);
 
 	const total = urls.length;
+	var news = 0;
 	for ( let i = 0; i < urls.length; i++ ) {
 		const [id, url] = urls[i];
 console.log(id, url);
@@ -102,11 +103,13 @@ console.log(id, url);
 		const body = await page.content();
 
 		const saved = await sendResponse(id, body, page.url());
-
-console.log(`${i+1} / ${total}`, saved);
+		if ( saved && saved.new ) news++;
+		console.log(`${i+1} / ${total}`);
 
 		await wait(Math.random() * 5000);
 	}
+
+	console.log(`^ ${news} new releases`);
 
 	await browser.close();
 })();
