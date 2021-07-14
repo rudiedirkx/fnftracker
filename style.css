@@ -60,10 +60,12 @@ tr.played .pstatus:before {
 tr.onhold .pstatus:before {
 	content: "H";
 	font-weight: bold;
+	color: royalblue;
 }
 tr.abandoned .pstatus:before {
 	content: "A";
 	font-weight: bold;
+	color: royalblue;
 }
 tr.completed .pstatus:before {
 	content: "C";
