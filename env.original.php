@@ -1,6 +1,7 @@
 <?php
 
 const DB_FILE = __DIR__ . '/db/db.sqlite3';
+const CHARS_DIR = '_chars';
 
 const F95_URL = 'https://example.com/{id}/{name}/';
 const F95_FETCHER_UA = 'FnfTracker';

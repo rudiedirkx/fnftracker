@@ -4,7 +4,8 @@
     "require": {
         "rdx/db": "^1.20",
         "guzzlehttp/guzzle": "^7.1",
-        "rdx/js-dom": "^1.1"
+        "rdx/js-dom": "^1.1",
+        "intervention/image": "^2.6"
     },
     "autoload": {
         "psr-4": {

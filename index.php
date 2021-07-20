@@ -1,6 +1,8 @@
 <?php
 
 use GuzzleHttp\Exception\TransferException;
+use Intervention\Image\ImageManagerStatic;
+use rdx\f95\Character;
 use rdx\f95\Release;
 use rdx\f95\Source;
 
@@ -49,6 +51,41 @@ if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['instal
 	setcookie('hilite_source', $source->id);
 
 	return do_redirect('index');
+}
+
+if ( isset($_GET['edit'], $_POST['char_name'], $_POST['char_role'], $_FILES['char_file'], $_POST['char_cutout']) ) {
+	$source = Source::find($_GET['edit']);
+
+	$id = null;
+	if (strlen(trim($_POST['char_name']))) {
+		$id = Character::insert([
+			'source_id' => $source->id,
+			'name' => $_POST['char_name'],
+			'role' => $_POST['char_role'],
+		]);
+	}
+
+	if ($id && $_FILES['char_file']['tmp_name'] && !$_FILES['char_file']['error']) {
+		[$x, $y, $s] = explode(',', $_POST['char_cutout'] . ',,');
+		if ($x && $y && $s) {
+			$img = ImageManagerStatic::make($_FILES['char_file']['tmp_name']);
+			$img->crop($s, $s, $x, $y);
+			$img->resize(200, 200);
+			// echo $img->response('jpg', 70);
+			$img->save($filepath = __DIR__ . '/' . CHARS_DIR . '/' . $id . '.jpg');
+			@chmod($filepath, 0666);
+		}
+	}
+
+	$delete = (array) ($_POST['char_delete'] ?? []);
+	foreach ($source->characters as $char) {
+		if (in_array($char->id, $delete)) {
+			$char->deleteImage();
+			$char->delete();
+		}
+	}
+
+	return do_redirect('index', ['edit' => $source->id]);
 }
 
 if ( isset($_GET['sync']) ) {
@@ -241,10 +278,10 @@ $hideInactiveSources = false || $edit;
 								<?= html($source->description) ?>
 								<? foreach ($source->characters as $char): ?>
 									|
-									<!-- <? if ($char->url): ?><a target="_blank" href="<?= html($char->url) ?>"><? endif ?> -->
+									<span class="char <? if ($char->public_path): ?>img<? endif ?>">
 										<?= html($char->name) ?>
 										<? if ($char->role): ?> (<?= html($char->role) ?>)<? endif ?>
-									<!-- <? if ($char->url): ?></a><? endif ?> -->
+									</span>
 								<? endforeach ?>
 							</td>
 						</tr>
@@ -263,7 +300,10 @@ $hideInactiveSources = false || $edit;
 		<? if ($edit): ?>
 			<legend class="hilited">Edit source</legend>
 			<input type="hidden" name="id" value="<?= $edit->id ?>" />
-			<p>Created: <?= date('Y-m-d H:i', $edit->created_on) ?></p>
+			<p>
+				Created: <?= date('Y-m-d H:i', $edit->created_on) ?>
+				<a class="goto" target="_blank" href="<?= html($edit->last_release->url) ?>">&#10132;</a>
+			</p>
 		<? else: ?>
 			<legend>Add source</legend>
 		<? endif ?>
@@ -290,6 +330,46 @@ $hideInactiveSources = false || $edit;
 		</datalist>
 	<? endif ?>
 </form>
+
+<? if ($edit): ?>
+	<br>
+
+	<form method="post" action enctype="multipart/form-data">
+		<fieldset>
+			<legend>Characters</legend>
+
+			<table>
+				<? foreach ($edit->characters as $char): ?>
+					<tr>
+						<td>
+							<? if ($char->public_path): ?>
+								<img src="<?= html($char->public_path) ?>" class="char" />
+							<? endif ?>
+						</td>
+						<td><?= html($char) ?></td>
+						<td><?= html($char->role) ?></td>
+						<td><input type="checkbox" name="char_delete[]" value="<?= $char->id ?>" /></td>
+					</tr>
+				<? endforeach ?>
+			</table>
+
+			<br>
+
+			<fieldset>
+				<legend>Add</legend>
+
+				<p>Name: <input name="char_name" /></p>
+				<p>Role: <input name="char_role" /></p>
+				<p>
+					<input name="char_file" type="file" />
+					<input name="char_cutout" type="hidden" />
+				</p>
+				<p><button>Save</button></p>
+				<div id="char_image"></div>
+			</fieldset>
+		</fieldset>
+	</form>
+<? endif ?>
 
 <br>
 

@@ -106,4 +106,48 @@ document.querySelector('.release-stats').addEventListener('click', e => {
 
 Array.from(document.querySelectorAll('.hilited, .hilited *')).some(el => el.focus() || el == document.activeElement);
 
+const cf = document.querySelector('input[name="char_file"]');
+if (cf) {
+	const ci = document.querySelector('#char_image');
+	const cc = document.querySelector('input[name="char_cutout"]');
+	var co;
+
+	var dragging = false;
+	var x, y, w, h, s;
+	ci.addEventListener('mousedown', function(e) {
+		e.preventDefault();
+		if (e.button != 0) return;
+
+		[x, y] = [e.offsetX, e.offsetY];
+		ci.classList.toggle('dragging', dragging = true);
+	});
+	ci.addEventListener('mousemove', function(e) {
+		e.preventDefault();
+		if (!dragging) return;
+
+		[w, h] = [e.offsetX - x, e.offsetY - y];
+		s = Math.round((w + h) / 2);
+		co.style.left = `${x}px`;
+		co.style.top = `${y}px`;
+		co.style.width = `${s}px`;
+		co.style.height = `${s}px`;
+		cc.value = ([x, y, s]).join(',');
+	});
+	document.addEventListener('mouseup', function(e) {
+		e.preventDefault();
+		ci.classList.toggle('dragging', dragging = false);
+	});
+
+	cf.addEventListener('change', function(e) {
+		const f = this.files[0];
+		const img = document.createElement('img');
+		img.src = URL.createObjectURL(f);
+		// this.value = '';
+
+		ci.innerHTML = '<div class="cutout"></div>';
+		ci.append(img);
+		co = ci.querySelector('.cutout');
+	});
+}
+
 // }, 200));
