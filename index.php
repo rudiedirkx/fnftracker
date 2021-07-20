@@ -94,11 +94,11 @@ $releaseStatsGroups = array_reduce($sources, function(array $grid, Source $sourc
 	return $grid;
 }, []);
 
-$mobile = stripos($_SERVER['HTTP_USER_AGENT'], 'mobile') !== false;
-$hideUnrecentChanges = $mobile;
-$hideInactiveSources = false;
-
 $edit = $sources[$_GET['edit'] ?? 0] ?? null;
+
+$mobile = stripos($_SERVER['HTTP_USER_AGENT'], 'mobile') !== false;
+$hideUnrecentChanges = $mobile || $edit;
+$hideInactiveSources = false || $edit;
 
 ?>
 <p><input <?= $edit ? '' : 'autofocus' ?> type="search" placeholder="Name &amp; developer..." value="<?= html($_GET['search'] ?? '') ?>" /></p>
@@ -179,9 +179,10 @@ $edit = $sources[$_GET['edit'] ?? 0] ?? null;
 		<? foreach ($sourcesGrouped as $group => $objects): ?>
 			<tbody>
 				<? if ($group == 0): ?>
-					<tr class="hidden-rows"><td colspan="7">
-						... Show <?= $inactiveSources ?> hidden sources ...
+					<tr class="hidden-rows <?= $hideInactiveSources ? 'always' : '' ?>"><td colspan="7">
+						... <?= $hideInactiveSources ? "Hiding $inactiveSources sources" : "Show $inactiveSources hidden sources" ?> ...
 					</td></tr>
+					<? if ($hideInactiveSources) break ?>
 				<? endif ?>
 				<? foreach ($objects as $source): ?>
 					<tr
