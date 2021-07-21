@@ -2,6 +2,7 @@
 
 namespace rdx\f95;
 
+use DOMText;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\TransferException;
@@ -18,6 +19,7 @@ class Fetcher {
 	public $source;
 	public $url;
 
+	public $name;
 	public $release;
 	public $thread;
 	public $version;
@@ -67,14 +69,16 @@ class Fetcher {
 
 	public function syncFromHtml(string $html, string $url = null) : int {
 		$doc = Node::create($html);
-
 		$text = $this->getLdText($doc);
 
+		$this->name = $this->getName($doc);
 		[$this->release, $this->thread] = $this->getDates($text);
 		$this->version = $this->getVersion($text);
 		$this->banner = $this->getBanner($doc);
 		$this->developer = $this->getDeveloper($doc, $text);
 		$this->prefixes = implode(',', $this->getPrefixes($doc)) ?: null;
+
+		$this->persistSource();
 
 		$update = ['banner_url' => $this->banner];
 		if (!$this->source->custom_developer) {
@@ -104,10 +108,33 @@ class Fetcher {
 		return $previous->id;
 	}
 
+	protected function persistSource() {
+		if (!$this->source->id) {
+			$data = [
+				'f95_id' => $this->source->f95_id,
+				'name' => $this->name,
+				'created_on' => time(),
+				'priority' => max(array_keys(Source::PRIORITIES)),
+			];
+			$this->source->id = Source::insert($data);
+		}
+	}
+
 	protected function significantlyDifferent(Release $release) {
 		$previous = ($release->release_date ?? $release->thread_date) . "::$release->version::$release->prefixes";
 		$current = ($this->release ?? $this->thread) . "::$this->version::$this->prefixes";
 		return $previous !== $current;
+	}
+
+	protected function getName(Node $doc) {
+		$h1 = $doc->query('h1');
+		foreach ($h1->childNodes as $node) {
+			if ($node instanceof DOMText) {
+				$name = $node->textContent;
+				$name = preg_replace('#\[.+#', '', $name);
+				return trim($name);
+			}
+		}
 	}
 
 	protected function getPrefixes(Node $doc) {

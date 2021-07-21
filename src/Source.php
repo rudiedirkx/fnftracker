@@ -19,7 +19,13 @@ class Source extends Model {
 		}
 
 		if ($f95_id) {
-			return self::first("f95_id = ? order by priority desc", [$f95_id]);
+			if ($exists = self::first("f95_id = ? order by priority desc", [$f95_id])) {
+				return $exists;
+			}
+
+			return new self([
+				'f95_id' => $f95_id,
+			]);
 		}
 	}
 
