@@ -339,18 +339,28 @@ $hideInactiveSources = false || $edit;
 			<legend>Characters</legend>
 
 			<table>
-				<? foreach ($edit->characters as $char): ?>
+				<thead>
 					<tr>
-						<td>
-							<? if ($char->public_path): ?>
-								<img src="<?= html($char->public_path) ?>" class="char" />
-							<? endif ?>
-						</td>
-						<td><?= html($char) ?></td>
-						<td><?= html($char->role) ?></td>
-						<td><input type="checkbox" name="char_delete[]" value="<?= $char->id ?>" /></td>
+						<th></th>
+						<th>Name</th>
+						<th>Role</th>
+						<th>Delete?</th>
 					</tr>
-				<? endforeach ?>
+				</thead>
+				<tbody>
+					<? foreach ($edit->characters as $char): ?>
+						<tr>
+							<td>
+								<? if ($char->public_path): ?>
+									<img src="<?= html($char->public_path) ?>" class="char" />
+								<? endif ?>
+							</td>
+							<td><?= html($char) ?></td>
+							<td><?= html($char->role) ?></td>
+							<td><input type="checkbox" name="char_delete[]" value="<?= $char->id ?>" /></td>
+						</tr>
+					<? endforeach ?>
+				</tbody>
 			</table>
 
 			<br>
