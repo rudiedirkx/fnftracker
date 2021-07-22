@@ -100,7 +100,7 @@ class Source extends Model {
 	}
 
 	protected function relate_characters() {
-		return $this->to_many(Character::class, 'source_id');
+		return $this->to_many(Character::class, 'source_id')->order('name asc');
 	}
 
 }
