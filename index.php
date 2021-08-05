@@ -120,7 +120,7 @@ $changes = Release::all("
 	order by first_fetch_on desc
 ");
 $changesGrouped = aro_group($changes, 'fetch_recency');
-$unrecentChanges = count($changesGrouped[0]);
+$unrecentChanges = count($changesGrouped[0] ?? []);
 $recentChanges = count($changes) - $unrecentChanges;
 
 $releaseStatsGroups = array_reduce($sources, function(array $grid, Source $source) {
