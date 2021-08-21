@@ -93,6 +93,9 @@ console.time('logIn');
 	const loggedIn = await logIn();
 console.timeEnd('logIn');
 	console.log('loggedIn', loggedIn);
+	if (!loggedIn) {
+		process.exit(1);
+	}
 
 	const total = urls.length;
 	var news = 0;
