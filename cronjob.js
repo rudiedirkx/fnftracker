@@ -3,14 +3,9 @@ const request = require('request');
 // const FormData = require('form-data');
 const fs = require('fs');
 // const {Readable} = require('stream');
+const cfg = require('./env.js');
 
-// console.log(new Readable.from(['xxxxxxxxxxxxxxxxxxxxxxxxxxxx']));
-
-const base = process.argv[2];
-if (!base) {
-	console.log("Missing `base url` argument");
-	process.exit(1);
-}
+const test = process.argv[2] === 'test';
 
 const wait = (ms, out) => new Promise(resolve => {
 	setTimeout(resolve, ms, out);
@@ -18,7 +13,7 @@ const wait = (ms, out) => new Promise(resolve => {
 
 function getUrls() {
 	return new Promise(resolve => {
-		request(`${base}/scraper-start.php`, {json: true}, (err, rsp, body) => {
+		request(`${cfg.baseUrl}/scraper-start.php`, {json: true}, (err, rsp, body) => {
 			resolve(body.urls);
 		});
 	});
@@ -30,7 +25,7 @@ function sendResponse(id, html , url) {
 
 	return new Promise(resolve => {
 		request.post({
-			url: `${base}/scraper-save.php`,
+			url: `${cfg.baseUrl}/scraper-save.php`,
 			formData: {
 				id,
 				url,
@@ -52,13 +47,14 @@ function sendResponse(id, html , url) {
 }
 
 (async () => {
-	console.log(`${base}/`);
+	console.log(`${cfg.baseUrl}/ - ${cfg.f95Url}/`);
 	console.log('');
 
+	console.log('test', test);
 console.time('getUrls');
 	const urls = await getUrls();
-	console.log('urls', urls.length);
 console.timeEnd('getUrls');
+	console.log('urls', urls.length);
 
 	const browser = await puppeteer.launch({
 		defaultViewport: {width: 1218, height: 650},
@@ -72,10 +68,10 @@ console.timeEnd('getUrls');
 	const page = await browser.newPage();
 
 	async function logIn() {
-		await page.goto('https://f95zone.to/login/');
+		await page.goto(`${cfg.f95Url}/login/`);
 
-		await page.type('[name="login"]', 'majdaddin');
-		await page.type('[name="password"]', 'oeleboele1');
+		await page.type('[name="login"]', cfg.username);
+		await page.type('[name="password"]', cfg.password);
 		await page.evaluate(function() {
 			document.querySelector('[name="remember"]').closest('label').click();
 		});
@@ -93,7 +89,7 @@ console.time('logIn');
 	const loggedIn = await logIn();
 console.timeEnd('logIn');
 	console.log('loggedIn', loggedIn);
-	if (!loggedIn) {
+	if (!loggedIn || test) {
 		process.exit(1);
 	}
 
