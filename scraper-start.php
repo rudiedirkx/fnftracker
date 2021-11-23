@@ -5,7 +5,8 @@ use rdx\f95\Fetcher;
 
 require 'inc.bootstrap.php';
 
-header('Access-Control-Allow-Origin: https://f95zone.to');
+header('Access-Control-Allow-Private-Network: true');
+header('Access-Control-Allow-Origin: https://' . F95_HOST);
 header('Content-type: application/json; charset=utf-8');
 
 $cronjob = new Cronjob();

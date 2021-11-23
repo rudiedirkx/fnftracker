@@ -18,3 +18,4 @@ $db->ensureSchema(require 'inc.db-schema.php');
 Model::$_db = $db;
 
 define('TODAY', date('Y-m-d'));
+define('F95_HOST', parse_url(F95_URL, PHP_URL_HOST));

@@ -6,7 +6,8 @@ use rdx\f95\Source;
 
 require 'inc.bootstrap.php';
 
-header('Access-Control-Allow-Origin: https://f95zone.to');
+header('Access-Control-Allow-Private-Network: true');
+header('Access-Control-Allow-Origin: https://' . F95_HOST);
 header('Content-type: application/json; charset=utf-8');
 
 $source = Source::findForScraper($_REQUEST['id'] ?? 0, $_REQUEST['f95_id'] ?? 0);
