@@ -138,7 +138,10 @@ $hideUnrecentChanges = $mobile || $edit;
 $hideInactiveSources = false || $edit;
 
 ?>
-<p><input <?= $edit ? '' : 'autofocus' ?> type="search" placeholder="Name &amp; developer..." value="<?= html($_GET['search'] ?? '') ?>" /></p>
+<p>
+	<input <?= $edit ? '' : 'autofocus' ?> type="search" placeholder="Name &amp; developer..." value="<?= html($_GET['search'] ?? '') ?>" />
+	<button onclick="return window.open('https://google.com/search?q=site:<?= F95_HOST ?>+' + encodeURIComponent(this.previousElementSibling.value)), false">&#128269;</button>
+</p>
 
 <h2>Recent changes (<?= $recentChanges ?> + <?= $unrecentChanges ?>)</h2>
 
@@ -190,7 +193,7 @@ $hideInactiveSources = false || $edit;
 								<a class="goto" target="_blank" href="<?= html($fetch->url) ?>">&#10132;</a>
 							</div>
 						</td>
-						<td nowrap tabindex="0" class="version"><span><?= $fetch->cleaned_version ?></span></td>
+						<td nowrap tabindex="0" class="version" title="<?= html($fetch->version) ?>"><span><?= html($fetch->cleaned_version) ?></span></td>
 					</tr>
 				<? endforeach ?>
 			</tbody>
