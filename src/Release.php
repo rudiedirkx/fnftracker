@@ -56,6 +56,9 @@ class Release extends Model {
 		if (preg_match('#^v[\d\.]+$#', $version)) {
 			$version = substr($version, 1);
 		}
+		if ($version !== $this->version) {
+			$version .= '*';
+		}
 		return $version;
 	}
 
