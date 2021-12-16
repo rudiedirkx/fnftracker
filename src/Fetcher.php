@@ -26,6 +26,7 @@ class Fetcher {
 	public $prefixes;
 
 	public $developer;
+	public $patreon;
 	public $banner;
 
 	public function __construct(Source $source) {
@@ -76,6 +77,7 @@ class Fetcher {
 		$this->version = $this->getVersion($text);
 		$this->banner = $this->getBanner($doc);
 		$this->developer = $this->getDeveloper($doc, $text);
+		$this->patreon = $this->getPatreon($doc, $text);
 		$this->prefixes = implode(',', $this->getPrefixes($doc)) ?: null;
 
 		$this->persistSource();
@@ -83,6 +85,9 @@ class Fetcher {
 		$update = ['banner_url' => $this->banner];
 		if (!$this->source->custom_developer) {
 			$update['developer'] = $this->developer;
+		}
+		if (!$this->source->custom_patreon) {
+			$update['patreon'] = $this->patreon;
 		}
 		$this->source->update($update);
 
@@ -162,6 +167,23 @@ class Fetcher {
 		}
 
 		return null;
+	}
+
+	protected function getPatreon(Node $doc, string $text) {
+		$base = 'https://www.patreon.com/';
+		$link = $doc->query('a[href^="' . $base . '"]');
+		if ($link) {
+			$path = substr($link['href'], strlen($base));
+			if ($path) {
+				if (preg_match('#^user\?u=(\d+)$#', $path, $match)) {
+					return 'u:' . $match[1];
+				}
+
+				if (strpos($path, '/') === false) {
+					return $path;
+				}
+			}
+		}
 	}
 
 	protected function getDeveloper(Node $doc, string $text) {

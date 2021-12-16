@@ -146,9 +146,6 @@ if ( ($_SERVER['HTTP_ACCEPT'] ?? '') == 'html/partial' ) {
 
 include 'tpl.header.php';
 
-$developers = array_values(array_unique(array_filter(array_column($sources, 'developer'))));
-natcasesort($developers);
-
 $releaseStats = Source::query("
 	select priority, num_releases, count(1) num
 	from (
@@ -194,18 +191,13 @@ $edit = Source::find($_GET['edit'] ?? 0);
 		<? endif ?>
 		<p>Name: <input name="name" required value="<?= html($edit->name ?? '') ?>" <?= $edit ? 'autofocus' : '' ?> /></p>
 		<p>F95 ID: <input name="f95_id" pattern="^\d+$" value="<?= html($edit->f95_id ?? '') ?>" /></p>
-		<p>Developer: <input name="developer" value="<?= html($edit->developer ?? '') ?>" list="dl-developers" /></p>
+		<p>Developer: <input name="developer" value="<?= html($edit->developer ?? '') ?>" /></p>
+		<p>Patreon: <input name="patreon" value="<?= html($edit->patreon ?? '') ?>" /></p>
 		<p>Installed version: <input name="installed" value="<?= html($edit->installed ?? '') ?>" autocomplete="off" list="dl-versions" /></p>
 		<p>Finished: <input name="finished" type="date" value="<?= html($edit->finished ?? '') ?>" /></p>
 		<p><textarea name="description" cols="35" rows="3" placeholder="Description..."><?= html($edit->description ?? '') ?></textarea></p>
 		<p><button>Save</button></p>
 	</fieldset>
-
-	<datalist id="dl-developers">
-		<? foreach ($developers as $name): ?>
-			<option value="<?= html($name) ?>">
-		<? endforeach ?>
-	</datalist>
 
 	<? if ($edit): ?>
 		<datalist id="dl-versions">

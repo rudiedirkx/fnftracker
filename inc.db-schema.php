@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'version' => 16,
+	'version' => 17,
 	'tables' => [
 		'sources' => [
 			'id' => ['pk' => true],
@@ -12,6 +12,7 @@ return [
 			'description',
 			'banner_url',
 			'developer',
+			'patreon',
 			'finished' => ['type' => 'date'],
 			'installed',
 		],

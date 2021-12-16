@@ -71,6 +71,14 @@ class Source extends Model {
 		return ltrim($this->developer, '=');
 	}
 
+	protected function get_custom_patreon() {
+		return substr($this->patreon, 0, 1) === '=';
+	}
+
+	protected function get_pretty_patreon() {
+		return ltrim($this->patreon, '=');
+	}
+
 	protected function get_status_prefix_class() {
 		$played = $this->finished ? ' played' : '';
 		return ($this->last_release->status_prefix_class ?? '') . $played;
