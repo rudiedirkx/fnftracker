@@ -1,19 +1,19 @@
-// window.addEventListener('load', e => setTimeout(() => {
-
 const body = document.body;
+const tables = document.querySelector('#tables');
 
-const debouce = function(delay, callback) {
-	var timer = -1;
-	return function(...args) {
-		clearTimeout(timer);
-		timer = setTimeout(() => callback.apply(this, args), delay);
+const eventIf = function(sel, cb) {
+	return function(e) {
+		const el = e.target.closest(sel);
+		if (el) {
+			cb.call(el, e);
+		}
 	};
 };
 
 document.querySelector('input[name="f95_id"]').addEventListener('input', function(e) {
 	const m = this.value.match(URL_PATTERN);
 	if (m) {
-		this.value = m[1];
+		setTimeout(() => this.value = m[1], 100);
 	}
 });
 
@@ -29,7 +29,7 @@ const sortHandle = function(e) {
 	this.classList.add('sorted');
 	tbl.classList.add('sorting');
 };
-document.querySelectorAll('th[data-sortable]').forEach(el => el.addEventListener('click', sortHandle));
+tables.addEventListener('click', eventIf('th[data-sortable]', sortHandle));
 
 const priorityHandle = function(e) {
 	const tr = this.closest('tr');
@@ -37,71 +37,64 @@ const priorityHandle = function(e) {
 	const nxt = PRIORITIES[(i-1+PRIORITIES.length) % PRIORITIES.length];
 	this.querySelector('output').value = this.querySelector('input').value = tr.dataset.priority = nxt;
 };
-document.querySelectorAll('.sources td.priority').forEach(el => el.addEventListener('click', priorityHandle));
+tables.addEventListener('click', eventIf('.sources td.priority', priorityHandle));
 
-const hiddenHandle = function(e) {
-	this.closest('table').classList.add('showing-hidden-rows');
-	this.closest('tr').remove();
-};
-document.querySelectorAll('tr.hidden-rows:not(.always) td').forEach(el => el.addEventListener('click', hiddenHandle));
-
-const over = function(e) {
+const bannerOver = function(e) {
 	const url = this.closest('tr').dataset.banner;
 	if (!url) return;
 	body.style.setProperty('--banner', `url('${url}')`);
 	body.classList.add('show-banner');
 };
-const out = function(e) {
+const bannerOut = function(e) {
 	body.classList.remove('show-banner');
 };
-document.querySelectorAll('tr[data-banner] span.title-name').forEach(el => {
-	el.addEventListener('mouseover', over);
-	el.addEventListener('mouseout', out);
-});
+tables.addEventListener('mouseover', eventIf('tr[data-banner] span.title-name', bannerOver));
+tables.addEventListener('mouseout', eventIf('tr[data-banner] span.title-name', bannerOut));
 
 const search = document.querySelector('input[type="search"]');
-search.addEventListener('input', debouce(200, function(e) {
-	const q = this.value.toLowerCase().replace(/(^[\s|]+|[\s|]+$)/g, '');
-	const re = new RegExp(q, 'i');
-	document.body.classList.toggle('searching', q != '');
-	const rows = document.querySelectorAll('tr[data-search]');
-	rows.forEach(tr => tr.hidden = q && !re.test(tr.dataset.search));
-}));
-search.dispatchEvent(new CustomEvent('input'));
+const searchHandle = function(value) {
+	if (value.length == 1 && value != '*') return;
+
+	return fetch(new Request(
+		'?search=' + encodeURIComponent(value.trim()), {
+		headers: {"Accept": 'html/partial'},
+	})).then(x => x.text()).then(html => {
+		tables.innerHTML = html;
+	});
+};
+search.addEventListener('input', function(e) {
+	searchHandle(this.value);
+});
+// search.dispatchEvent(new CustomEvent('input'));
 document.addEventListener('keyup', function(e) {
 	if (e.code == 'Slash' && document.activeElement.matches('body, a, button, td[tabindex]')) {
 		search.focus();
 		search.select();
 	}
 });
-const searchHandle = function(e) {
-	e.preventDefault();
-	search.value = this.dataset.query || this.closest('tr').querySelector('.title-name').textContent.split('(')[0].trim();
+const searchIconHandle = function(icon) {
+	search.value = icon.dataset.query || icon.closest('tr').querySelector('.title-name').textContent.split('(')[0].trim();
 	search.focus();
-	search.dispatchEvent(new CustomEvent('input'));
+	searchHandle(search.value);
+	// search.dispatchEvent(new CustomEvent('input'));
 };
-document.querySelectorAll('.search-icon').forEach(el => el.addEventListener('click', searchHandle));
-
-document.querySelectorAll('tr.description').forEach(el => {
-	const name = el.previousElementSibling.querySelector('.title-name');
-	var timer = 0;
-	name.addEventListener('mouseover', e => {
-		clearTimeout(timer);
-		timer = setTimeout(() => {
-			el.classList.add('show-description');
-		}, 250);
-	});
-	name.addEventListener('mouseout', e => {
-		clearTimeout(timer);
-		document.querySelectorAll('tr.show-description').forEach(el => el.classList.remove('show-description'));
-	});
-});
+tables.addEventListener('click', eventIf('.search-icon', function(e) {
+	e.preventDefault();
+	searchIconHandle(this);
+}));
 
 document.querySelector('.release-stats').addEventListener('click', e => {
 	const td = e.target.closest('tr[data-releases] td[data-priority]');
-	search.value = `_p${td.dataset.priority}_r${td.parentNode.dataset.releases}_`;
-	search.focus();
-	search.dispatchEvent(new CustomEvent('input'));
+	const p = td.dataset.priority;
+	const r = td.parentNode.dataset.releases;
+
+	(search.value[0] === '*' ? Promise.resolve() : searchHandle('*')).then(() => {
+		search.value = `* p=${p} r=${r}`;
+		search.focus();
+		document.querySelectorAll('.sources tbody tr').forEach(tr => {
+			tr.hidden = tr.dataset.priority != p || tr.dataset.releases != r;
+		});
+	});
 });
 
 Array.from(document.querySelectorAll('.hilited, .hilited *')).some(el => el.focus() || el == document.activeElement);
@@ -149,5 +142,3 @@ if (cf) {
 		co = ci.querySelector('.cutout');
 	});
 }
-
-// }, 200));

@@ -47,6 +47,13 @@ class Source extends Model {
 		throw $throw;
 	}
 
+	protected function get_title_title() {
+		$parts = [];
+		if ($this->description) $parts[] = $this->description;
+		if (count($this->characters)) $parts[] = count($this->characters) . ' characters';
+		return implode(' | ', $parts);
+	}
+
 	protected function get_draft_or_priority() {
 		return $this->f95_id ? $this->priority : self::DRAFT_PRIORITY;
 	}

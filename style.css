@@ -76,9 +76,6 @@ tr.played .pstatus:before {
 	color: orange;
 	font-weight: bold;
 }
-body:not(.searching) table.sources:not(.showing-hidden-rows) .finished {
-	display: none;
-}
 td > .cols {
 	display: flex;
 	justify-content: space-between;
@@ -86,8 +83,8 @@ td > .cols {
 td > .cols > :last-child {
 	margin-left: .5em;
 }
-tbody + tbody {
-	border-top: solid 3px black;
+tr.recency-2 {
+	background-color: #ff03;
 }
 tr.description:not(.show-description) {
 	display: none;
@@ -97,21 +94,6 @@ tr.has-description .title-name {
 }
 span.char.img {
 	color: blue;
-}
-tr.hidden-rows td {
-	text-align: center;
-	background-color: #eee;
-}
-tr.hidden-rows:not(.always) td {
-	cursor: pointer;
-}
-tr.hidden-rows:not(.always) td:hover {
-	background-color: #ddd;
-}
-body:not(.searching) tr.hidden-rows ~ tr,
-body.searching tr.hidden-rows:not(.always),
-table.sorting .hidden-rows {
-	display: none;
 }
 table.release-stats tr > * {
 	text-align: right;

@@ -52,6 +52,8 @@ class Release extends Model {
 	}
 
 	protected function get_cleaned_version() {
+		if ($this->version === null) return '';
+
 		$version = trim(explode(' (', $this->version)[0]);
 		if (preg_match('#^v[\d\.]+$#', $version)) {
 			$version = substr($version, 1);
