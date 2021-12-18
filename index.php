@@ -110,10 +110,10 @@ if ( $search === '*' ) {
 	$changes = [];
 }
 elseif ( strlen($search) ) {
-	$sources = Source::all("(name LIKE ? OR developer LIKE ? OR description LIKE ?) ORDER BY (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC", ["%$search%", "%$search%", "%$search%"]);
+	$sources = Source::all("(name LIKE ? OR developer LIKE ? OR patreon LIKE ? OR description LIKE ?) ORDER BY (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC", ["%$search%", "%$search%", "%$search%", "%$search%"]);
 	$ids = array_column($sources, 'id');
 
-	$changesLimit = count($sources) <= 3 ? 101 : 51;
+	$changesLimit = count($sources) <= 3 ? 101 : 26;
 	$changes = Release::all("
 		source_id in (?) AND source_id in (select source_id from releases group by source_id having count(1) > 1)
 		order by first_fetch_on desc

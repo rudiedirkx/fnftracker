@@ -25,7 +25,7 @@
 						<a class="search-icon" href>&#128270;</a>
 						<a class="edit-icon" href="?edit=<?= $fetch->source_id ?>">&#9998;</a>
 						<?if ($fetch->source->developer): ?>
-							<span class="developer"><?= html($fetch->source->pretty_developer) ?></span>
+							<span class="developer" title="Patreon: <?= html($fetch->source->pretty_patreon ?: '?') ?>"><?= html($fetch->source->pretty_developer) ?></span>
 							<a class="search-icon" href data-query="<?= html($fetch->source->pretty_developer) ?>">&#128270;</a>
 						<? endif ?>
 						<span class="pstatus"></span>
@@ -83,7 +83,7 @@
 						<a class="search-icon" href>&#128270;</a>
 						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>
 						<?if ($source->developer): ?>
-							<span class="developer"><?= html($source->pretty_developer) ?></span>
+							<span class="developer" title="Patreon: <?= html($source->pretty_patreon ?: '?') ?>"><?= html($source->pretty_developer) ?></span>
 							<a class="search-icon" href data-query="<?= html($source->pretty_developer) ?>">&#128270;</a>
 						<? endif ?>
 						<span class="pstatus"></span>

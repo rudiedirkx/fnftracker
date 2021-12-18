@@ -34,6 +34,7 @@ echo json_encode([
 	'source' => $source->name,
 	'source_id' => (int) $source->id,
 	'developer' => $source->developer,
+	'patreon' => $source->patreon,
 	'release_id' => $releaseId,
 	'release_date' => $fetcher->release,
 	'new' => $releaseId != $lastReleaseId,
