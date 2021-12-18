@@ -171,17 +171,16 @@ class Fetcher {
 
 	protected function getPatreon(Node $doc, string $text) {
 		$base = 'https://www.patreon.com/';
-		$link = $doc->query('a[href^="' . $base . '"]');
+		$link = $doc->query('.message-threadStarterPost .message-body a[href^="' . $base . '"]');
 		if ($link) {
 			$path = substr($link['href'], strlen($base));
-			if ($path) {
-				if (preg_match('#^user\?u=(\d+)$#', $path, $match)) {
-					return 'u:' . $match[1];
-				}
+			if (preg_match('#^user\?u=(\d+)$#', $path, $match)) {
+				return 'u:' . $match[1];
+			}
 
-				if (strpos($path, '/') === false) {
-					return $path;
-				}
+			$path = preg_replace('#/(overview|posts)$#', '', $path);
+			if ($path && strpos($path, '/') === false) {
+				return $path;
 			}
 		}
 	}
