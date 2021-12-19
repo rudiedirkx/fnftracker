@@ -21,11 +21,12 @@ if ( isset($_POST['priorities']) ) {
 	return do_redirect('index');
 }
 
-if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['installed'], $_POST['finished'], $_POST['description']) ) {
+if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['patreon'], $_POST['installed'], $_POST['finished'], $_POST['description']) ) {
 	$data = [
 		'name' => trim($_POST['name']),
 		'f95_id' => trim($_POST['f95_id']) ?: null,
 		'developer' => trim($_POST['developer']),
+		'patreon' => trim($_POST['patreon']) ?: null,
 		'installed' => trim($_POST['installed']) ?: null,
 		'description' => trim($_POST['description']) ?: null,
 		'finished' => trim($_POST['finished']) ?: null,
@@ -136,6 +137,8 @@ Source::eager('last_release', $sources);
 Source::eager('num_releases', $sources);
 Source::eager('characters', $sources);
 
+$patreons = array_values(Source::fields('patreon', 'patreon IS NOT NULL ORDER BY patreon'));
+
 $totalChanges = Release::count('source_id in (select source_id from releases group by source_id having count(1) > 1)');
 $totalSources = Source::count('1=1');
 
@@ -192,12 +195,18 @@ $edit = Source::find($_GET['edit'] ?? 0);
 		<p>Name: <input name="name" required value="<?= html($edit->name ?? '') ?>" <?= $edit ? 'autofocus' : '' ?> /></p>
 		<p>F95 ID: <input name="f95_id" pattern="^\d+$" value="<?= html($edit->f95_id ?? '') ?>" /></p>
 		<p>Developer: <input name="developer" value="<?= html($edit->developer ?? '') ?>" /></p>
-		<p>Patreon: <input name="patreon" value="<?= html($edit->patreon ?? '') ?>" /></p>
+		<p>Patreon: <input name="patreon" value="<?= html($edit->patreon ?? '') ?>" list="dl-patreons" /></p>
 		<p>Installed version: <input name="installed" value="<?= html($edit->installed ?? '') ?>" autocomplete="off" list="dl-versions" /></p>
 		<p>Finished: <input name="finished" type="date" value="<?= html($edit->finished ?? '') ?>" /></p>
 		<p><textarea name="description" cols="35" rows="3" placeholder="Description..."><?= html($edit->description ?? '') ?></textarea></p>
 		<p><button>Save</button></p>
 	</fieldset>
+
+	<datalist id="dl-patreons">
+		<? foreach ($patreons as $patreon): ?>
+			<option value="<?= html($patreon) ?>">
+		<? endforeach ?>
+	</datalist>
 
 	<? if ($edit): ?>
 		<datalist id="dl-versions">
