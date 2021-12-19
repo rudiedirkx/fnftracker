@@ -173,7 +173,7 @@ class Fetcher {
 		$base = 'https://www.patreon.com/';
 		$link = $doc->query('.message-threadStarterPost .message-body a[href*="patreon.com/"]');
 		if ($link) {
-			$path = preg_replace('#^https?://(www\.)?patreon\.com/#', '', $link['href']);
+			$path = trim(preg_replace('#^https?://(www\.)?patreon\.com/#', '', $link['href']), '/');
 			if (preg_match('#^user\?u=(\d+)$#', $path, $match)) {
 				return 'u:' . $match[1];
 			}
@@ -190,7 +190,7 @@ class Fetcher {
 			return explode(' - ', trim(preg_replace('#\s+f95zone$#i', '', trim($name, '- '))))[0];
 		};
 		$trim = function($name) {
-			return trim(preg_replace('# (games|studios|productions?)$#i', '', $name));
+			return trim(preg_replace('# (games|studios?|productions?)$#i', '', $name));
 		};
 
 		$title = $doc->query('head title');
