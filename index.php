@@ -130,7 +130,7 @@ else {
 	$_sources = Release::eager('source', $changes);
 	Source::eager('characters', $_sources);
 
-	$sources = Source::all("created_on > ? ORDER BY (f95_id is null) desc, created_on desc", [strtotime('-3 weeks')]);
+	$sources = Source::all("(created_on > ? OR f95_id IS NULL) ORDER BY (f95_id is null) desc, created_on desc", [strtotime('-3 weeks')]);
 }
 
 Source::eager('last_release', $sources);
