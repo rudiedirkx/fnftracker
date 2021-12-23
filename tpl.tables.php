@@ -55,6 +55,7 @@
 			<tr>
 				<th></th>
 				<th class="title sorted">Title</th>
+				<th></th>
 				<th data-sortable>Latest release</th>
 				<th data-sortable="asc">Version</th>
 				<th data-sortable="asc">Last checked</th>
@@ -89,6 +90,11 @@
 						<span class="pstatus"></span>
 						<? if ($source->last_release->software_prefix_label ?? null): ?>
 							<span class="psoftware"><?= $source->last_release->software_prefix_label ?></span>
+						<? endif ?>
+					</td>
+					<td>
+						<?if ($source->developer && $source->patreon): ?>
+							<a href="https://www.patreon.com/<?= html($source->pretty_patreon) ?>" target="_blank"><img src="patreon.png" alt="Patreon" /></a>
 						<? endif ?>
 					</td>
 					<td nowrap class="recent-<?= $source->last_release->recent_release ?? '' ?> <?= $source->not_release_date ? 'not-release-date' : '' ?> old-last-change-<?= $source->old_last_change ?>">

@@ -50,6 +50,7 @@ const bannerOut = function(e) {
 };
 tables.addEventListener('mouseover', eventIf('tr[data-banner] span.title-name', bannerOver));
 tables.addEventListener('mouseout', eventIf('tr[data-banner] span.title-name', bannerOut));
+tables.addEventListener('mouseout', bannerOut);
 
 const search = document.querySelector('input[type="search"]');
 const searchHandle = function(value) {
@@ -60,6 +61,7 @@ const searchHandle = function(value) {
 		headers: {"Accept": 'html/partial'},
 	})).then(x => x.text()).then(html => {
 		tables.innerHTML = html;
+		bannerOut();
 	});
 };
 search.addEventListener('input', function(e) {
