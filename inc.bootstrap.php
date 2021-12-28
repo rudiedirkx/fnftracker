@@ -18,4 +18,7 @@ $db->ensureSchema(require 'inc.db-schema.php');
 Model::$_db = $db;
 
 define('TODAY', date('Y-m-d'));
+define('LAST_24_HOURS', strtotime('-1 day'));
+define('CREATED_RECENTLY_ENOUGH', strtotime('-3 weeks'));
+
 define('F95_HOST', parse_url(F95_URL, PHP_URL_HOST));

@@ -13,7 +13,7 @@
 		<tbody>
 			<? foreach ($changes as $fetch): ?>
 				<tr
-					class="<?= $fetch->status_prefix_class ?> recency-<?= $fetch->fetch_recency ?> <? if ($fetch->source->title_title): ?>has-description<? endif ?>"
+					class="<?= $hilite == $fetch->source_id ? 'hilited' : '' ?> <?= $fetch->status_prefix_class ?> recency-<?= $fetch->fetch_recency ?> <? if ($fetch->source->title_title): ?>has-description<? endif ?>"
 					data-banner="<?= html($fetch->source->banner_url) ?>"
 					data-priority="<?= $fetch->source->priority ?>"
 				>
@@ -112,7 +112,7 @@
 							</div>
 						<? endif ?>
 					</td>
-					<td nowrap>
+					<td nowrap class="created-<?= $source->created_recency ?>">
 						<?= date('Y-m-d', $source->created_on) ?>
 					</td>
 					<td class="finished" nowrap>

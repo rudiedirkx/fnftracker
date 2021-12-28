@@ -47,6 +47,18 @@ class Source extends Model {
 		throw $throw;
 	}
 
+	protected function get_created_recency() {
+		if ($this->created_on > LAST_24_HOURS) {
+			return 2;
+		}
+
+		if ($this->created_on > CREATED_RECENTLY_ENOUGH) {
+			return 1;
+		}
+
+		return 0;
+	}
+
 	protected function get_title_title() {
 		$parts = [];
 		if ($this->description) $parts[] = $this->description;

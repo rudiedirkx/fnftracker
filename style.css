@@ -35,7 +35,7 @@ th, td {
 th:first-child:last-child {
 	text-align: center;
 }
-tr.hilited,
+table tr.hilited,
 legend.hilited {
 	background: #c8e5ee;
 }
@@ -122,11 +122,13 @@ table.release-stats tr > * {
 .with-priority {
 	border-left: solid 14px var(--prio-color);
 }
-.recent-1 {
+.recent-1,
+.created-2 {
 	color: green;
 	font-weight: bold;
 }
-.recent-2 {
+.recent-2,
+.created-1 {
 	color: green;
 }
 .recent-3 {
