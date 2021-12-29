@@ -147,7 +147,9 @@ td.title {
 .old-last-change-2 {
 	font-weight: bold;
 }
-.installed-version,
+.installed-version {
+	color: orange;
+}
 .developer {
 	color: #999;
 }
