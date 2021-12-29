@@ -147,11 +147,12 @@ td.title {
 .old-last-change-2 {
 	font-weight: bold;
 }
-.installed-version {
-	color: orange;
-}
+.installed-version,
 .developer {
 	color: #999;
+}
+table.sources .installed-version {
+	color: orange;
 }
 .prefixes {
 	font-weight: bold;
