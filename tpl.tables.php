@@ -1,3 +1,5 @@
+<!-- <?= str_replace('-->', '', $sql) ?> -->
+
 <h2>Recent changes (<?= $changesLimit && $changesLimit == count($changes) ? ($changesLimit-1) . '+' : count($changes) ?> / <?= $totalChanges ?>)</h2>
 
 <div class="table-wrapper">

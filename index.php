@@ -105,16 +105,18 @@ $changes = $sources = [];
 
 $search = trim($_GET['search'] ?? '');
 if ( $search === '*' ) {
-	$sources = Source::all("1=1 ORDER BY (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
+	$sql = '1=1';
+	$sources = Source::all("$sql ORDER BY (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
 
 	$changesLimit = 0;
 	$changes = [];
 }
 elseif ( strlen($search) ) {
-	$sources = Source::all("(name LIKE ? OR developer LIKE ? OR patreon LIKE ? OR description LIKE ?) ORDER BY (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC", ["%$search%", "%$search%", "%$search%", "%$search%"]);
+	$sql = Source::makeSearchSql($search);
+	$sources = Source::all("$sql ORDER BY (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
 	$ids = array_column($sources, 'id');
 
-	$changesLimit = count($sources) <= 3 ? 101 : 26;
+	$changesLimit = count($sources) <= 3 ? 101 : 11;
 	$changes = Release::all("
 		source_id in (?) AND source_id in (select source_id from releases group by source_id having count(1) > 1)
 		order by first_fetch_on desc
@@ -130,7 +132,8 @@ else {
 	$_sources = Release::eager('source', $changes);
 	Source::eager('characters', $_sources);
 
-	$sources = Source::all("(created_on > ? OR f95_id IS NULL) ORDER BY (f95_id is null) desc, created_on desc", [CREATED_RECENTLY_ENOUGH]);
+	$sql = '(created_on > ? OR f95_id IS NULL)';
+	$sources = Source::all("$sql ORDER BY (f95_id is null) desc, created_on desc", [CREATED_RECENTLY_ENOUGH]);
 }
 
 Source::eager('last_release', $sources);

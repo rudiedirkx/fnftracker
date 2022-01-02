@@ -13,6 +13,31 @@ class Source extends Model {
 
 	static public $_table = 'sources';
 
+	static public function makeSearchSql(string $query) {
+		$parts = preg_split('#\s+#', $query);
+
+		$sql = [];
+		$search = [];
+		foreach ($parts as $part) {
+			if (preg_match('#^p=(\d+)$#', $part, $match)) {
+				$sql[] = self::$_db->replaceholders("priority = ?", [$match[1]]);
+			}
+			elseif (preg_match('#^r=(\d+)$#', $part, $match)) {
+				$sql[] = "(select count(1) from releases where source_id = sources.id) = " . (int) $match[1];
+			}
+			else {
+				$search[] = $part;
+			}
+		}
+
+		if (count($search)) {
+			$search = '%' . implode(' ', $search) . '%';
+			$sql[] = self::$_db->replaceholders("(name LIKE ? OR developer LIKE ? OR patreon LIKE ? OR description LIKE ?)", [$search, $search, $search, $search]);
+		}
+
+		return implode(' AND ', $sql);
+	}
+
 	static public function findForScraper($id, $f95_id) {
 		if ($id) {
 			return self::find($id);

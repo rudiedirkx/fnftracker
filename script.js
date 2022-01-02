@@ -90,13 +90,9 @@ document.querySelector('.release-stats').addEventListener('click', e => {
 	const p = td.dataset.priority;
 	const r = td.parentNode.dataset.releases;
 
-	(search.value[0] === '*' ? Promise.resolve() : searchHandle('*')).then(() => {
-		search.value = `* p=${p} r=${r}`;
-		search.focus();
-		document.querySelectorAll('.sources tbody tr').forEach(tr => {
-			tr.hidden = tr.dataset.priority != p || tr.dataset.releases != r;
-		});
-	});
+	search.value = `p=${p} r=${r}`;
+	search.focus();
+	searchHandle(search.value);
 });
 
 Array.from(document.querySelectorAll('.hilited, .hilited *')).some(el => el.focus() || el == document.activeElement);
