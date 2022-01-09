@@ -174,6 +174,7 @@ class Fetcher {
 		$link = $doc->query('.message-threadStarterPost .message-body a[href*="patreon.com/"]');
 		if ($link) {
 			$path = trim(preg_replace('#^https?://(www\.)?patreon\.com/#', '', $link['href']), '/');
+			$path = trim(preg_replace('/[\?#].+$/', '', $path), '/');
 			if (preg_match('#^user\?u=(\d+)$#', $path, $match)) {
 				return 'u:' . $match[1];
 			}
