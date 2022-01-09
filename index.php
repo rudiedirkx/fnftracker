@@ -280,16 +280,16 @@ $edit = Source::find($_GET['edit'] ?? 0);
 			<tr>
 				<th></th>
 				<? foreach (array_reverse(array_keys(Source::PRIORITIES)) as $prio): ?>
-					<th><?= array_sum($releaseStatsGroups[$prio] ?? []) ?></th>
+					<th data-pr-search="p=<?= $prio ?>"><?= array_sum($releaseStatsGroups[$prio] ?? []) ?></th>
 				<? endforeach ?>
 			</tr>
 		</thead>
 		<tbody>
 			<? for ($r = 1; $r <= $mr; $r++): ?>
 				<tr data-releases="<?= $r ?>">
-					<th><?= $r ?>x</th>
+					<th data-pr-search="r=<?= $r ?>"><?= $r ?>x</th>
 					<? foreach (array_reverse(array_keys(Source::PRIORITIES)) as $prio): ?>
-						<td data-priority="<?= $prio ?>" class="priority"><?= $releaseStatsGroups[$prio][$r] ?? '' ?></td>
+						<td data-pr-search="p=<?= $prio ?> r=<?= $r ?>" data-priority="<?= $prio ?>" class="priority"><?= $releaseStatsGroups[$prio][$r] ?? '' ?></td>
 					<? endforeach ?>
 				</tr>
 			<? endfor ?>

@@ -99,6 +99,9 @@ table.release-stats tr > * {
 	text-align: right;
 	width: 2.2em;
 }
+[data-pr-search] {
+	cursor: pointer;
+}
 [data-priority] {
 	--prio-color: pink;
 	--prio-color-txt: black;

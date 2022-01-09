@@ -85,15 +85,11 @@ tables.addEventListener('click', eventIf('.search-icon', function(e) {
 	searchIconHandle(this);
 }));
 
-document.querySelector('.release-stats').addEventListener('click', e => {
-	const td = e.target.closest('tr[data-releases] td[data-priority]');
-	const p = td.dataset.priority;
-	const r = td.parentNode.dataset.releases;
-
-	search.value = `p=${p} r=${r}`;
+document.querySelector('.release-stats').addEventListener('click', eventIf('[data-pr-search]', e => {
+	search.value = e.target.dataset.prSearch;
 	search.focus();
 	searchHandle(search.value);
-});
+}));
 
 Array.from(document.querySelectorAll('.hilited, .hilited *')).some(el => el.focus() || el == document.activeElement);
 
