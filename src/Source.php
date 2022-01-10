@@ -116,6 +116,14 @@ class Source extends Model {
 		return ltrim($this->patreon, '=');
 	}
 
+	protected function get_patreon_path() {
+		if (preg_match('#^u:(\d+)$#', $this->patreon, $match)) {
+			return 'user?u=' . $match[1];
+		}
+
+		return $this->patreon;
+	}
+
 	protected function get_status_prefix_class() {
 		$played = $this->finished ? ' played' : '';
 		return ($this->last_release->status_prefix_class ?? '') . $played;
