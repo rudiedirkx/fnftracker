@@ -12,8 +12,9 @@ $sources = Source::all("priority >= 0 AND patreon IS NOT NULL ORDER BY priority 
 $patreons = [];
 foreach ($sources as $source) {
 	$patreon = mb_strtolower($source->pretty_patreon);
-	if (count($patreons[$patreon] ?? []) < 3) {
-		$patreons[$patreon][] = $source->name;
+	$name = preg_replace('# S\d+$#', '', $source->name);
+	if (count($patreons[$patreon] ?? []) < 3 && !in_array($name, $patreons[$patreon] ?? [])) {
+		$patreons[$patreon][] = $name;
 	}
 }
 
