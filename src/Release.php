@@ -8,6 +8,14 @@ class Release extends Model {
 
 	static public $_table = 'releases';
 
+	protected function get_old_last_change() {
+		if ($this->release_date <= date('Y-m-d', strtotime('-1 year', $this->first_fetch_on))) {
+			return 1;
+		}
+
+		return 0;
+	}
+
 	protected function get_fetch_recency() {
 		if (date('Y-m-d', $this->first_fetch_on) == TODAY) {
 			return 2;
