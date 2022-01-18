@@ -31,8 +31,11 @@ class Source extends Model {
 		}
 
 		if (count($search)) {
-			$search = '%' . implode(' ', $search) . '%';
-			$sql[] = self::$_db->replaceholders("(name LIKE ? OR developer LIKE ? OR patreon LIKE ? OR description LIKE ?)", [$search, $search, $search, $search]);
+			$searches = array_map(function($search) {
+				$search = '%' . trim($search) . '%';
+				return self::$_db->replaceholders("(name LIKE ? OR developer LIKE ? OR patreon LIKE ? OR description LIKE ?)", [$search, $search, $search, $search]);
+			}, explode('|', implode(' ', $search)));
+			$sql[] = '(' . implode(' OR ', $searches) . ')';
 		}
 
 		return implode(' AND ', $sql);
