@@ -8,8 +8,12 @@ class Release extends Model {
 
 	static public $_table = 'releases';
 
+	protected function get_not_release_date() {
+		return !$this->release_date && $this->thread_date;
+	}
+
 	protected function get_old_last_change() {
-		if ($this->release_date <= date('Y-m-d', strtotime('-1 year', $this->first_fetch_on))) {
+		if ($this->release_date && $this->release_date <= date('Y-m-d', strtotime('-1 year', $this->first_fetch_on))) {
 			return 1;
 		}
 

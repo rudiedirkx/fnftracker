@@ -133,7 +133,7 @@ class Source extends Model {
 	}
 
 	protected function get_not_release_date() {
-		return $this->last_release && !$this->last_release->release_date && $this->last_release->thread_date;
+		return $this->last_release->not_release_date ?? false;
 	}
 
 	protected function get_old_last_change() {
