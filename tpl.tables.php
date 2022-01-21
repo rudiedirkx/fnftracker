@@ -56,7 +56,7 @@
 		<thead>
 			<tr>
 				<th></th>
-				<th class="title sorted">Title</th>
+				<th class="title">Title</th>
 				<th></th>
 				<th data-sortable>Latest release</th>
 				<th data-sortable="asc">Version</th>
