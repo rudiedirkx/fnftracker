@@ -56,13 +56,13 @@
 		<thead>
 			<tr>
 				<th></th>
-				<th class="title">Title</th>
+				<th class="title <?= $sorted == 'name' ? 'sorted' : '' ?>">Title</th>
 				<th></th>
-				<th data-sortable>Latest release</th>
-				<th data-sortable="asc">Version</th>
-				<th data-sortable="asc">Last checked</th>
-				<th data-sortable>Added</th>
-				<th data-sortable class="finished">Finished</th>
+				<th>Latest release</th>
+				<th>Version</th>
+				<th>Last checked</th>
+				<th class="<?= $sorted == 'created_on' ? 'sorted' : '' ?>">Added</th>
+				<th data-sortable="-finished" class="<?= $sorted == 'finished' ? 'sorted' : '' ?>">Finished</th>
 			</tr>
 		</thead>
 		<tbody>

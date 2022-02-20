@@ -16,7 +16,8 @@ class Source extends Model {
 	static public function makeSearchSql(string $query) {
 		$parts = preg_split('#\s+#', $query);
 
-		$sql = [];
+		$sql = $order = [];
+		$sorted = null;
 		$search = [];
 		foreach ($parts as $part) {
 			if (preg_match('#^p=(\d+)$#', $part, $match)) {
@@ -24,6 +25,11 @@ class Source extends Model {
 			}
 			elseif (preg_match('#^r=(\d+)$#', $part, $match)) {
 				$sql[] = "(select count(1) from releases where source_id = sources.id) = " . (int) $match[1];
+			}
+			elseif (in_array($part[0], ['-', '+']) && in_array($column = ltrim($part, '-+'), ['finished'])) {
+				$sql[] = "$column is not null";
+				$order[] = "$column " . ($part[0] === '-' ? 'desc' : 'asc');
+				$sorted or $sorted = $column;
 			}
 			else {
 				$search[] = $part;
@@ -38,7 +44,11 @@ class Source extends Model {
 			$sql[] = '(' . implode(' OR ', $searches) . ')';
 		}
 
-		return implode(' AND ', $sql);
+		return (object) [
+			'source_where' => implode(' AND ', $sql) ?: '1=1',
+			'source_sorted' => $sorted ?? 'name',
+			'source_order' => implode(' AND ', $order) ?: '1=1',
+		];
 	}
 
 	static public function findForScraper($id, $f95_id) {

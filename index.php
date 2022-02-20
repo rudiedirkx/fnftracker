@@ -106,14 +106,17 @@ $changes = $sources = [];
 $search = trim($_GET['search'] ?? '');
 if ( $search === '*' ) {
 	$sql = '1=1';
+	$sorted = 'name';
 	$sources = Source::all("$sql ORDER BY (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
 
 	$changesLimit = 0;
 	$changes = [];
 }
 elseif ( strlen($search) ) {
-	$sql = Source::makeSearchSql($search);
-	$sources = Source::all("$sql ORDER BY (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
+	$query = Source::makeSearchSql($search);
+	$sql = $query->source_where;
+	$sorted = $query->source_sorted;
+	$sources = Source::all("$sql ORDER BY $query->source_order, (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
 	$ids = array_column($sources, 'id');
 
 	$changesLimit = count($sources) <= 3 ? 101 : 11;
@@ -133,6 +136,7 @@ else {
 	Source::eager('characters', $_sources);
 
 	$sql = '(created_on > ? OR f95_id IS NULL)';
+	$sorted = 'created_on';
 	$sources = Source::all("$sql ORDER BY (f95_id is null) desc, created_on desc", [CREATED_RECENTLY_ENOUGH]);
 }
 

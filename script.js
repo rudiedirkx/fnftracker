@@ -18,16 +18,10 @@ document.querySelector('input[name="f95_id"]').addEventListener('input', functio
 });
 
 const sortHandle = function(e) {
-	const i = this.cellIndex;
-	const tbl = this.closest('table');
-	let rows = Array.from(tbl.querySelectorAll('tbody > tr:not(.hidden-rows):not(.description)'));
-	rows.sort((a, b) => a.cells[i].textContent < b.cells[i].textContent ? 1 : -1);
-	this.dataset.sortable === 'asc' && (rows = rows.reverse());
-	const tb = tbl.createTBody();
-	rows.forEach(tr => (tr.nextElementSibling && tr.nextElementSibling.classList.contains('description') ? [tr, tr.nextElementSibling] : [tr]).forEach(tr => tb.append(tr)));
-	tbl.querySelectorAll('.sorted').forEach(th => th.classList.remove('sorted'));
-	this.classList.add('sorted');
-	tbl.classList.add('sorting');
+	const sorter = this.dataset.sortable;
+	search.value = sorter;
+	search.focus();
+	searchHandle(search.value); // .then(_ => document.querySelector(`[data-sortable="${sorter}"]`).classList.add('sorted'));
 };
 tables.addEventListener('click', eventIf('th[data-sortable]', sortHandle));
 
