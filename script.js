@@ -50,8 +50,7 @@ const search = document.querySelector('input[type="search"]');
 const searchHandle = function(value) {
 	if (value.length == 1 && value != '*') return;
 
-	return fetch(new Request(
-		'?search=' + encodeURIComponent(value.trim()), {
+	return fetch(new Request('?search=' + encodeURIComponent(value.trim()), {
 		headers: {"Accept": 'html/partial'},
 	})).then(x => x.text()).then(html => {
 		tables.innerHTML = html;
@@ -77,6 +76,20 @@ const searchIconHandle = function(icon) {
 tables.addEventListener('click', eventIf('.search-icon', function(e) {
 	e.preventDefault();
 	searchIconHandle(this);
+}));
+
+tables.addEventListener('click', eventIf('a.delete', function(e) {
+	e.preventDefault();
+	if (!confirm('Delete this row forever?')) return;
+
+	fetch(new Request('?', {
+		method: 'post',
+		body: this.dataset.body,
+		headers: {"Content-type": 'application/x-www-form-urlencoded'},
+	})).then(x => x.text()).then(txt => {
+		alert(txt.trim());
+		searchHandle(search.value);
+	});
 }));
 
 document.querySelector('.release-stats').addEventListener('click', eventIf('[data-pr-search]', e => {

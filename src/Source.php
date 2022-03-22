@@ -19,6 +19,7 @@ class Source extends Model {
 		$sql = $order = [];
 		$sorted = null;
 		$search = [];
+		$delete = false;
 		foreach ($parts as $part) {
 			if (preg_match('#^p=(\d+)$#', $part, $match)) {
 				$sql[] = self::$_db->replaceholders("priority = ?", [$match[1]]);
@@ -30,6 +31,9 @@ class Source extends Model {
 				$sql[] = "$column is not null";
 				$order[] = "$column " . ($part[0] === '-' ? 'desc' : 'asc');
 				$sorted or $sorted = $column;
+			}
+			elseif ($part === 'delete') {
+				$delete = true;
 			}
 			else {
 				$search[] = $part;
@@ -45,6 +49,7 @@ class Source extends Model {
 		}
 
 		return (object) [
+			'delete' => $delete,
 			'source_where' => implode(' AND ', $sql) ?: '1=1',
 			'source_sorted' => $sorted ?? 'name',
 			'source_order' => implode(' AND ', $order) ?: '1=1',

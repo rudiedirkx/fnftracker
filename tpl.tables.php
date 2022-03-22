@@ -10,6 +10,9 @@
 				<th>Released</th>
 				<th class="sorted">Detected</th>
 				<th>Version</th>
+				<? if ($delete): ?>
+					<th></th>
+				<? endif ?>
 			</tr>
 		</thead>
 		<tbody>
@@ -43,6 +46,9 @@
 						</div>
 					</td>
 					<td nowrap tabindex="0" class="version" title="<?= html($fetch->version) ?>"><span><?= html($fetch->cleaned_version) ?></span></td>
+					<? if ($delete): ?>
+						<td><a href data-body="delete_release=<?= $fetch->id ?>" class="delete">x</a></td>
+					<? endif ?>
 				</tr>
 			<? endforeach ?>
 		</tbody>

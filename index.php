@@ -54,6 +54,12 @@ if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['patreo
 	return do_redirect('index');
 }
 
+if ( isset($_POST['delete_release']) ) {
+	Release::find($_POST['delete_release'])->delete();
+	echo "Release deleted\n";
+	exit;
+}
+
 if ( isset($_GET['edit'], $_POST['char_name'], $_POST['char_role'], $_FILES['char_file'], $_POST['char_cutout']) ) {
 	$source = Source::find($_GET['edit']);
 
@@ -103,6 +109,7 @@ setcookie('hilite_source', 0, 1);
 
 $changes = $sources = [];
 
+$delete = false;
 $search = trim($_GET['search'] ?? '');
 if ( $search === '*' ) {
 	$sql = '1=1';
@@ -114,6 +121,7 @@ if ( $search === '*' ) {
 }
 elseif ( strlen($search) ) {
 	$query = Source::makeSearchSql($search);
+	$delete = $query->delete;
 	$sql = $query->source_where;
 	$sorted = $query->source_sorted;
 	$sources = Source::all("$sql ORDER BY $query->source_order, (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
