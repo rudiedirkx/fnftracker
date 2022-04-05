@@ -38,7 +38,9 @@
 							<span class="psoftware"><?= $fetch->software_prefix_label ?></span>
 						<? endif ?>
 					</td>
-					<td nowrap class="<?= $fetch->not_release_date ? 'not-release-date' : '' ?> recent-<?= $fetch->recent_release ?> old-last-change-<?= $fetch->old_last_change ?>"><?= $fetch->release_date ?? $fetch->thread_date ?></td>
+					<td nowrap class="<?= $fetch->not_release_date ? 'not-release-date' : '' ?> recent-<?= $fetch->recent_release ?> old-last-change-<?= $fetch->old_last_change ?>" title="<?= html($fetch->thread_date) ?>">
+						<?= $fetch->release_date ?? $fetch->thread_date ?>
+					</td>
 					<td nowrap title="<?= date('H:i', $fetch->first_fetch_on) ?>">
 						<div class="cols">
 							<span><?= date('Y-m-d', $fetch->first_fetch_on) ?></span>

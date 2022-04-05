@@ -70,7 +70,8 @@ class Fetcher {
 
 	public function syncFromHtml(string $html, string $url = null) : int {
 		$doc = Node::create($html);
-		$text = $this->getLdText($doc);
+		// $text = $this->getLdText($doc);
+		$text = $this->getOPText($doc);
 
 		$this->name = $this->getName($doc);
 		[$this->release, $this->thread] = $this->getDates($text);
@@ -259,6 +260,12 @@ class Fetcher {
 		$el = $doc->query('script[type="application/ld+json"]');
 		$data = json_decode($el->textContent, true);
 		return $data['articleBody'];
+	}
+
+	protected function getOPText(Node $doc) {
+		$el = $doc->query('.message:not(.sticky-container) .message-content');
+		$text = trim(preg_replace('# +#', ' ', trim($el->innerText)));
+		return $text;
 	}
 
 }
