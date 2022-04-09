@@ -92,6 +92,17 @@ tr.description:not(.show-description) {
 tr.has-description .title-name {
 	color: blue;
 }
+
+.hiding-untracked tr.untracked {
+	display: none;
+}
+#show-untrackeds {
+	background-color: #999;
+	color: #fff;
+	text-align: center;
+	cursor: pointer;
+}
+
 span.char.img {
 	color: blue;
 }

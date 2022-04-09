@@ -73,10 +73,18 @@
 				<th data-sortable="-finished" class="<?= $sorted == 'finished' ? 'sorted' : '' ?>">Finished</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody class="<?= $collapseUntracked ? 'hiding-untracked' : '' ?>">
+			<? $untrackeds = 0 ?>
 			<? foreach ($sources as $source): ?>
+				<? $untrackeds += $source->f95_id ? 0 : 1 ?>
+				<? if ($collapseUntracked && $source->f95_id): ?>
+					<? $collapseUntracked = false ?>
+					<tr>
+						<td colspan="8" id="show-untrackeds"><?= $untrackeds ?> untrackeds</td>
+					</tr>
+				<? endif ?>
 				<tr
-					class="<?= $hilite == $source->id ? 'hilited' : '' ?> recency-<?= $source->last_release->fetch_recency ?? '' ?> <?= $source->status_prefix_class ?? '' ?> <? if ($source->title_title): ?>has-description<? endif ?>"
+					class="<?= $collapseUntracked && !$source->f95_id ? 'untracked' : '' ?><?= $hilite == $source->id ? 'hilited' : '' ?> recency-<?= $source->last_release->fetch_recency ?? '' ?> <?= $source->status_prefix_class ?? '' ?> <? if ($source->title_title): ?>has-description<? endif ?>"
 					data-id="<?= $source->id ?>"
 					data-banner="<?= html($source->banner_url) ?>"
 					data-priority="<?= $source->priority ?>"

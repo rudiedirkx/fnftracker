@@ -109,7 +109,7 @@ setcookie('hilite_source', 0, 1);
 
 $changes = $sources = [];
 
-$delete = false;
+$delete = $collapseUntracked = false;
 $search = trim($_GET['search'] ?? '');
 if ( $search === '*' ) {
 	$sql = '1=1';
@@ -135,6 +135,7 @@ elseif ( strlen($search) ) {
 	", [count($ids) ? $ids : 0]);
 }
 else {
+	$collapseUntracked = true;
 	$changesLimit = 0;
 	$changes = Release::all("
 		first_fetch_on > ? AND source_id in (select source_id from releases group by source_id having count(1) > 1)

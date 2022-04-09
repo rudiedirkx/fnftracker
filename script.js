@@ -92,6 +92,14 @@ tables.addEventListener('click', eventIf('a.delete', function(e) {
 	});
 }));
 
+(function(btn) {
+	if (!btn) return;
+	btn.addEventListener('click', e => {
+		document.querySelector('.hiding-untracked').classList.remove('hiding-untracked');
+		btn.closest('tr').remove();
+	});
+})(document.querySelector('#show-untrackeds'));
+
 document.querySelector('.release-stats').addEventListener('click', eventIf('[data-pr-search]', e => {
 	search.value = e.target.dataset.prSearch;
 	search.focus();
