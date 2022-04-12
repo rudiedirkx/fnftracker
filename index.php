@@ -62,6 +62,9 @@ if ( isset($_POST['delete_release']) ) {
 
 if ( isset($_GET['edit'], $_POST['char_name'], $_POST['char_role'], $_FILES['char_file'], $_POST['char_cutout']) ) {
 	$source = Source::find($_GET['edit']);
+// print_r($_POST);
+// print_r($source->characters);
+// exit;
 
 	$id = null;
 	if (strlen(trim($_POST['char_name']))) {
@@ -81,6 +84,12 @@ if ( isset($_GET['edit'], $_POST['char_name'], $_POST['char_role'], $_FILES['cha
 			// echo $img->response('jpg', 70);
 			$img->save($filepath = __DIR__ . '/' . CHARS_DIR . '/' . $id . '.jpg');
 			@chmod($filepath, 0666);
+		}
+	}
+
+	foreach ($_POST['char'] ?? [] as $id => $char) {
+		if (strlen(trim($char['name'])) && isset($source->characters[$id])) {
+			$source->characters[$id]->update($char);
 		}
 	}
 
@@ -257,8 +266,8 @@ $edit = Source::find($_GET['edit'] ?? 0);
 									<img src="<?= html($char->public_path) ?>" class="char" />
 								<? endif ?>
 							</td>
-							<td><?= html($char) ?></td>
-							<td><?= html($char->role) ?></td>
+							<td><input name="char[<?= $char->id ?>][name]" value="<?= html($char->name) ?>" /></td>
+							<td><input name="char[<?= $char->id ?>][role]" value="<?= html($char->role) ?>" /></td>
 							<td><input type="checkbox" name="char_delete[]" value="<?= $char->id ?>" /></td>
 						</tr>
 					<? endforeach ?>
