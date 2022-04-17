@@ -249,7 +249,7 @@ $edit = Source::find($_GET['edit'] ?? 0);
 		<fieldset>
 			<legend>Characters</legend>
 
-			<table>
+			<table class="characters">
 				<thead>
 					<tr>
 						<th></th>
@@ -266,8 +266,8 @@ $edit = Source::find($_GET['edit'] ?? 0);
 									<img src="<?= html($char->public_path) ?>" class="char" />
 								<? endif ?>
 							</td>
-							<td><input name="char[<?= $char->id ?>][name]" value="<?= html($char->name) ?>" /></td>
-							<td><input name="char[<?= $char->id ?>][role]" value="<?= html($char->role) ?>" /></td>
+							<td><input class="text" name="char[<?= $char->id ?>][name]" value="<?= html($char->name) ?>" /></td>
+							<td><input class="text" name="char[<?= $char->id ?>][role]" value="<?= html($char->role) ?>" /></td>
 							<td><input type="checkbox" name="char_delete[]" value="<?= $char->id ?>" /></td>
 						</tr>
 					<? endforeach ?>

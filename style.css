@@ -103,6 +103,11 @@ tr.has-description .title-name {
 	cursor: pointer;
 }
 
+.characters input.text {
+	padding: 0;
+	border: 0;
+}
+
 span.char.img {
 	color: blue;
 }
