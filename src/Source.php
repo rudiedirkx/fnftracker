@@ -27,6 +27,9 @@ class Source extends Model {
 			elseif (preg_match('#^r=(\d+)$#', $part, $match)) {
 				$sql[] = "(select count(1) from releases where source_id = sources.id) = " . (int) $match[1];
 			}
+			elseif (preg_match('#^id=(\d+)$#', $part, $match)) {
+				$sql[] = "f95_id = " . (int) $match[1];
+			}
 			elseif (in_array($part[0], ['-', '+']) && in_array($column = ltrim($part, '-+'), ['finished'])) {
 				$sql[] = "$column is not null";
 				$order[] = "$column " . ($part[0] === '-' ? 'desc' : 'asc');
