@@ -3,6 +3,7 @@
 use GuzzleHttp\Exception\TransferException;
 use Intervention\Image\ImageManagerStatic;
 use rdx\f95\Character;
+use rdx\f95\IndexContent;
 use rdx\f95\Release;
 use rdx\f95\Source;
 
@@ -114,58 +115,15 @@ if ( isset($_GET['sync']) ) {
 }
 
 $hilite = $_COOKIE['hilite_source'] ?? 0;
-setcookie('hilite_source', 0, 1);
+if ($hilite) setcookie('hilite_source', 0, 1);
 
-$changes = $sources = [];
-
-$delete = $collapseUntracked = false;
-$search = trim($_GET['search'] ?? '');
-if ( $search === '*' ) {
-	$sql = '1=1';
-	$sorted = 'name';
-	$sources = Source::all("$sql ORDER BY (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
-
-	$changesLimit = 0;
-	$changes = [];
-}
-elseif ( strlen($search) ) {
-	$query = Source::makeSearchSql($search);
-	$delete = $query->delete;
-	$sql = $query->source_where;
-	$sorted = $query->source_sorted;
-	$sources = Source::all("$sql ORDER BY $query->source_order, (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
-	$ids = array_column($sources, 'id');
-
-	$changesLimit = count($sources) <= 3 ? 101 : 11;
-	$changes = Release::all("
-		source_id in (?) AND source_id in (select source_id from releases group by source_id having count(1) > 1)
-		order by first_fetch_on desc
-		limit $changesLimit
-	", [count($ids) ? $ids : 0]);
-}
-else {
-	$collapseUntracked = true;
-	$changesLimit = 0;
-	$changes = Release::all("
-		first_fetch_on > ? AND source_id in (select source_id from releases group by source_id having count(1) > 1)
-		order by first_fetch_on desc
-	", [strtotime('-' . RECENT0 . ' days')]);
-	$_sources = Release::eager('source', $changes);
-	Source::eager('characters', $_sources);
-
-	$sql = '(created_on > ? OR f95_id IS NULL)';
-	$sorted = 'created_on';
-	$sources = Source::all("$sql ORDER BY (f95_id is null) desc, created_on desc", [CREATED_RECENTLY_ENOUGH]);
-}
-
-Source::eager('last_release', $sources);
-Source::eager('num_releases', $sources);
-Source::eager('characters', $sources);
-
-$patreons = array_values(Source::fields('patreon', 'patreon IS NOT NULL ORDER BY patreon'));
-
-$totalChanges = Release::count('source_id in (select source_id from releases group by source_id having count(1) > 1)');
-$totalSources = Source::count('1=1');
+$index = IndexContent::fromSearch(trim($_GET['search'] ?? ''));
+$index->hiliteSource = $hilite;
+$index->eagerLoad();
+$index->setTotals(
+	Source::count('1=1'),
+	Release::count('source_id in (select source_id from releases group by source_id having count(1) > 1)'),
+);
 
 if ( ($_SERVER['HTTP_ACCEPT'] ?? '') == 'html/partial' ) {
 	include 'tpl.tables.php';
@@ -173,6 +131,8 @@ if ( ($_SERVER['HTTP_ACCEPT'] ?? '') == 'html/partial' ) {
 }
 
 include 'tpl.header.php';
+
+$patreons = array_values(Source::fields('patreon', 'patreon IS NOT NULL ORDER BY patreon'));
 
 $releaseStats = Source::query("
 	select priority, num_releases, count(1) num

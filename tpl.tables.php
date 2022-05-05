@@ -1,6 +1,6 @@
-<!-- <?= str_replace('-->', '', $sql) ?> -->
+<!-- <?= str_replace('-->', '', $index->sourcesSql) ?> -->
 
-<h2>Recent changes (<?= $changesLimit && $changesLimit == count($changes) ? ($changesLimit-1) . '+' : count($changes) ?> / <?= $totalChanges ?>)</h2>
+<h2>Recent releases (<?= $index->getReleasesCountLabel() ?>)</h2>
 
 <div class="table-wrapper">
 	<table class="changes">
@@ -8,17 +8,17 @@
 			<tr>
 				<th class="title">Title</th>
 				<th>Released</th>
-				<th class="sorted">Detected</th>
+				<th class="<?= $index->releasesSorted == 'first_fetch_on' ? 'sorted' : '' ?>">Detected</th>
 				<th>Version</th>
-				<? if ($delete): ?>
+				<? if ($index->deleting): ?>
 					<th></th>
 				<? endif ?>
 			</tr>
 		</thead>
 		<tbody>
-			<? foreach ($changes as $fetch): ?>
+			<? foreach ($index->releases as $fetch): ?>
 				<tr
-					class="<?= $hilite == $fetch->source_id ? 'hilited' : '' ?> <?= $fetch->status_prefix_class ?> recency-<?= $fetch->fetch_recency ?> <? if ($fetch->source->title_title): ?>has-description<? endif ?>"
+					class="<?= $index->hiliteSource == $fetch->source_id ? 'hilited' : '' ?> <?= $fetch->status_prefix_class ?> recency-<?= $fetch->fetch_recency ?> <? if ($fetch->source->title_title): ?>has-description<? endif ?>"
 					data-banner="<?= html($fetch->source->banner_url) ?>"
 					data-priority="<?= $fetch->source->priority ?>"
 				>
@@ -48,7 +48,7 @@
 						</div>
 					</td>
 					<td nowrap tabindex="0" class="version" title="<?= html($fetch->version) ?>"><span><?= html($fetch->cleaned_version) ?></span></td>
-					<? if ($delete): ?>
+					<? if ($index->deleting): ?>
 						<td><a href data-body="delete_release=<?= $fetch->id ?>" class="delete">x</a></td>
 					<? endif ?>
 				</tr>
@@ -57,34 +57,34 @@
 	</table>
 </div>
 
-<h2>Sources (<?= count($sources) ?> / <?= $totalSources ?>)</h2>
+<h2>Sources (<?= $index->getSourcesCountLabel() ?>)</h2>
 
 <form method="post" action class="table-wrapper">
 	<table class="sources">
 		<thead>
 			<tr>
 				<th></th>
-				<th class="title <?= $sorted == 'name' ? 'sorted' : '' ?>">Title</th>
+				<th class="title <?= $index->sourcesSorted == 'name' ? 'sorted' : '' ?>">Title</th>
 				<th></th>
 				<th>Latest release</th>
 				<th>Version</th>
 				<th>Last checked</th>
-				<th class="<?= $sorted == 'created_on' ? 'sorted' : '' ?>">Added</th>
-				<th data-sortable="-finished" class="<?= $sorted == 'finished' ? 'sorted' : '' ?>">Finished</th>
+				<th class="<?= $index->sourcesSorted == 'created_on' ? 'sorted' : '' ?>">Added</th>
+				<th data-sortable="-finished" class="<?= $index->sourcesSorted == 'finished' ? 'sorted' : '' ?>">Finished</th>
 			</tr>
 		</thead>
-		<tbody class="<?= $collapseUntracked ? 'hiding-untracked' : '' ?>">
+		<tbody class="<?= $index->collapseUntracked ? 'hiding-untracked' : '' ?>">
 			<? $untrackeds = 0 ?>
-			<? foreach ($sources as $source): ?>
+			<? foreach ($index->sources as $source): ?>
 				<? $untrackeds += $source->f95_id ? 0 : 1 ?>
-				<? if ($collapseUntracked && $source->f95_id): ?>
-					<? $collapseUntracked = false ?>
+				<? if ($index->collapseUntracked && $source->f95_id): ?>
+					<? $index->collapseUntracked = false ?>
 					<tr>
 						<td colspan="8" id="show-untrackeds"><?= $untrackeds ?> untrackeds</td>
 					</tr>
 				<? endif ?>
 				<tr
-					class="<?= $collapseUntracked && !$source->f95_id ? 'untracked' : '' ?><?= $hilite == $source->id ? 'hilited' : '' ?> recency-<?= $source->last_release->fetch_recency ?? '' ?> <?= $source->status_prefix_class ?? '' ?> <? if ($source->title_title): ?>has-description<? endif ?>"
+					class="<?= $index->collapseUntracked && !$source->f95_id ? 'untracked' : '' ?><?= $index->hiliteSource == $source->id ? 'hilited' : '' ?> recency-<?= $source->last_release->fetch_recency ?? '' ?> <?= $source->status_prefix_class ?? '' ?> <? if ($source->title_title): ?>has-description<? endif ?>"
 					data-id="<?= $source->id ?>"
 					data-banner="<?= html($source->banner_url) ?>"
 					data-priority="<?= $source->priority ?>"

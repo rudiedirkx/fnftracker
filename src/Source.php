@@ -13,52 +13,6 @@ class Source extends Model {
 
 	static public $_table = 'sources';
 
-	static public function makeSearchSql(string $query) {
-		$parts = preg_split('#\s+#', $query);
-
-		$sql = $order = [];
-		$sorted = null;
-		$search = [];
-		$delete = false;
-		foreach ($parts as $part) {
-			if (preg_match('#^p=(\d+)$#', $part, $match)) {
-				$sql[] = self::$_db->replaceholders("priority = ?", [$match[1]]);
-			}
-			elseif (preg_match('#^r=(\d+)$#', $part, $match)) {
-				$sql[] = "(select count(1) from releases where source_id = sources.id) = " . (int) $match[1];
-			}
-			elseif (preg_match('#^id=(\d+)$#', $part, $match)) {
-				$sql[] = "f95_id = " . (int) $match[1];
-			}
-			elseif (in_array($part[0], ['-', '+']) && in_array($column = ltrim($part, '-+'), ['finished'])) {
-				$sql[] = "$column is not null";
-				$order[] = "$column " . ($part[0] === '-' ? 'desc' : 'asc');
-				$sorted or $sorted = $column;
-			}
-			elseif ($part === 'delete') {
-				$delete = true;
-			}
-			else {
-				$search[] = $part;
-			}
-		}
-
-		if (count($search)) {
-			$searches = array_map(function($search) {
-				$search = '%' . trim($search) . '%';
-				return self::$_db->replaceholders("(name LIKE ? OR developer LIKE ? OR patreon LIKE ? OR description LIKE ?)", [$search, $search, $search, $search]);
-			}, explode('|', implode(' ', $search)));
-			$sql[] = '(' . implode(' OR ', $searches) . ')';
-		}
-
-		return (object) [
-			'delete' => $delete,
-			'source_where' => implode(' AND ', $sql) ?: '1=1',
-			'source_sorted' => $sorted ?? 'name',
-			'source_order' => implode(' AND ', $order) ?: '1=1',
-		];
-	}
-
 	static public function findForScraper($id, $f95_id) {
 		if ($id) {
 			return self::find($id);
