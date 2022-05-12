@@ -25,6 +25,7 @@ class Fetcher {
 	public $version;
 	public $prefixes;
 
+	public $rating;
 	public $developer;
 	public $patreon;
 	public $banner;
@@ -79,11 +80,15 @@ class Fetcher {
 		$this->banner = $this->getBanner($doc);
 		$this->developer = $this->getDeveloper($doc, $text);
 		$this->patreon = $this->getPatreon($doc, $text);
+		$this->rating = $this->getRating($doc);
 		$this->prefixes = implode(',', $this->getPrefixes($doc)) ?: null;
 
 		$this->persistSource();
 
-		$update = ['banner_url' => $this->banner];
+		$update = [
+			'banner_url' => $this->banner,
+			'f95_rating' => $this->rating,
+		];
 		if (!$this->source->custom_developer) {
 			$update['developer'] = $this->developer;
 		}
@@ -167,6 +172,17 @@ class Fetcher {
 			return $banner->parent()['href'];
 		}
 
+		return null;
+	}
+
+	protected function getRating(Node $doc) : ?int {
+		$select = $doc->query('select[name="rating"]');
+		if ($select) {
+			$rating = (float) $select['data-initial-rating'];
+			if ($rating > 0) {
+				return round(20 * $rating);
+			}
+		}
 		return null;
 	}
 

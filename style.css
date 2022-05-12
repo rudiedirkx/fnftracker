@@ -170,8 +170,13 @@ td.title {
 .developer {
 	color: #999;
 }
-table.sources .installed-version {
+.installed-version {
 	color: orange;
+}
+.rating {
+	color: purple;
+	font-weight: bold;
+	font-size: 0.9rem;
 }
 .prefixes {
 	font-weight: bold;
