@@ -59,7 +59,7 @@ class IndexContentSearch extends IndexContent {
 		}
 
 		$this->sourcesSql = implode(' AND ', $sql) ?: '1=1';
-		$this->sourcesOrder = implode(', ', $order) ?: '1';
+		$this->sourcesOrder = implode(', ', $order) ?: '1=1';
 		$this->sourcesSorted = $sorted ?? 'name';
 	}
 
