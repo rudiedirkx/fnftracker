@@ -10,8 +10,13 @@ function aro_group( array $objects, string $property ) : array {
 
 function get_url( $path, $query = array() ) {
 	$query = $query ? '?' . http_build_query($query) : '';
+	$fragment = '';
+	if (count($x = explode('#', $path, 2)) > 1) {
+		$path = $x[0];
+		$fragment = '#' . $x[1];
+	}
 	$path = $path ? $path . '.php' : basename($_SERVER['SCRIPT_NAME']);
-	return $path . $query;
+	return $path . $query . $fragment;
 }
 
 function do_json( array $data ) {

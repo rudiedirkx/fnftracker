@@ -102,7 +102,7 @@ if ( isset($_GET['edit'], $_POST['char_name'], $_POST['char_role'], $_FILES['cha
 		}
 	}
 
-	return do_redirect('index', ['edit' => $source->id]);
+	return do_redirect('index#characters-form-add', ['edit' => $source->id]);
 }
 
 if ( isset($_GET['sync']) ) {
@@ -207,7 +207,7 @@ $edit = Source::find($_GET['edit'] ?? 0);
 
 	<form method="post" action enctype="multipart/form-data">
 		<fieldset>
-			<legend>Characters</legend>
+			<legend>Characters (<?= count($edit->characters) ?></legend>
 
 			<table class="characters">
 				<thead>
@@ -237,10 +237,11 @@ $edit = Source::find($_GET['edit'] ?? 0);
 			<br>
 
 			<fieldset>
+				<a id="characters-form-add" style="position: relative; top: -200px"></a>
 				<legend>Add</legend>
 
 				<p>Name: <input name="char_name" /></p>
-				<p>Role: <input name="char_role" /></p>
+				<p>Role: <input name="char_role" list="dl-char-roles" /></p>
 				<p>
 					<input name="char_file" type="file" />
 					<input name="char_cutout" type="hidden" />
@@ -248,6 +249,14 @@ $edit = Source::find($_GET['edit'] ?? 0);
 				<p><button>Save</button></p>
 				<div id="char_image"></div>
 			</fieldset>
+
+			<datalist id="dl-char-roles">
+				<? $roles = array_filter(array_unique(array_column($edit->characters, 'role'))) ?>
+				<? natcasesort($roles) ?>
+				<? foreach ($roles as $role): ?>
+					<option value="<?= html($role) ?>">
+				<? endforeach ?>
+			</datalist>
 		</fieldset>
 	</form>
 <? endif ?>
