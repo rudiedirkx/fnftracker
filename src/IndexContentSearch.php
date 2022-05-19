@@ -5,6 +5,7 @@ namespace rdx\f95;
 class IndexContentSearch extends IndexContent {
 
 	protected string $sourcesOrder;
+	protected int $releasesLimit;
 
 	public function __construct(public string $search) {
 		$this->prepareSql();
@@ -12,15 +13,20 @@ class IndexContentSearch extends IndexContent {
 		$this->sources = Source::all("$this->sourcesSql ORDER BY $this->sourcesOrder, (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
 		$ids = array_column($this->sources, 'id');
 
-		$changesLimit = count($this->sources) <= 3 ? 101 : 11;
+		$this->releasesLimit = count($this->sources) <= 3 ? 101 : 11;
 		$this->releases = Release::all("
 			source_id in (?) AND source_id in (select source_id from releases group by source_id having count(1) > 1)
 			order by first_fetch_on desc
-			limit $changesLimit
+			limit $this->releasesLimit
 		", [count($ids) ? $ids : 0]);
 	}
 
-	public function prepareSql() {
+	public function getReleasesCountLabel() : string {
+		$num = count($this->releases) >= $this->releasesLimit ? ($this->releasesLimit - 1) . '+' : count($this->releases);
+		return $num . ' / ' . $this->totalReleases;
+	}
+
+	protected function prepareSql() : void {
 		$parts = preg_split('#\s+#', $this->search);
 
 		$sql = [];
