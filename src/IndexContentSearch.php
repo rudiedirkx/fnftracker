@@ -43,6 +43,9 @@ class IndexContentSearch extends IndexContent {
 			elseif (preg_match('#^id=(\d+)$#', $part, $match)) {
 				$sql[] = "f95_id = " . (int) $match[1];
 			}
+			elseif (preg_match('#^rating=(\d+)$#', $part, $match)) {
+				$sql[] = "round((cast(f95_rating as float)) / 10) = " . (int) $match[1];
+			}
 			elseif (in_array($part[0], ['-', '+']) && in_array($column = ltrim($part, '-+'), ['finished'])) {
 				$sql[] = "$column is not null";
 				$order[] = "$column " . ($part[0] === '-' ? 'desc' : 'asc');

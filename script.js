@@ -100,7 +100,7 @@ tables.addEventListener('click', eventIf('a.delete', function(e) {
 	});
 })(document.querySelector('#show-untrackeds'));
 
-document.querySelector('.release-stats').addEventListener('click', eventIf('[data-pr-search]', e => {
+document.querySelector('#stats').addEventListener('click', eventIf('[data-pr-search]', e => {
 	search.value = e.target.dataset.prSearch;
 	search.focus();
 	searchHandle(search.value);

@@ -111,6 +111,7 @@ tr.has-description .title-name {
 span.char.img {
 	color: blue;
 }
+table.source-ratings tr > *,
 table.release-stats tr > * {
 	text-align: right;
 	width: 2.2em;

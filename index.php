@@ -151,6 +151,20 @@ $releaseStatsGroups = array_reduce($releaseStats, function(array $grid, Source $
 }, []);
 // print_r($releaseStatsGroups);
 
+$sourceRatings = $db->fetch("
+	select priority, round((cast(f95_rating as float)) / 10) rating, count(1) num_sources
+	from sources
+	where f95_rating is not null
+	group by priority, rating
+	order by rating desc, priority desc
+")->all();
+// print_r($sourceRatings);
+$sourceRatingsGroups = array_reduce($sourceRatings, function(array $grid, $source) {
+	$grid[$source->priority][(int) $source->rating] = $source->num_sources;
+	return $grid;
+}, []);
+// print_r($sourceRatingsGroups);
+
 $edit = Source::find($_GET['edit'] ?? 0);
 
 ?>
@@ -263,30 +277,9 @@ $edit = Source::find($_GET['edit'] ?? 0);
 
 <br>
 
-<fieldset>
-	<legend>Release stats</legend>
-	<? $mr = max(array_keys(array_replace(...$releaseStatsGroups))) ?>
-	<table class="release-stats">
-		<thead>
-			<tr>
-				<th></th>
-				<? foreach (array_reverse(array_keys(Source::PRIORITIES)) as $prio): ?>
-					<th data-pr-search="p=<?= $prio ?>"><?= array_sum($releaseStatsGroups[$prio] ?? []) ?></th>
-				<? endforeach ?>
-			</tr>
-		</thead>
-		<tbody>
-			<? for ($r = 1; $r <= $mr; $r++): ?>
-				<tr data-releases="<?= $r ?>">
-					<th data-pr-search="r=<?= $r ?>"><?= $r ?>x</th>
-					<? foreach (array_reverse(array_keys(Source::PRIORITIES)) as $prio): ?>
-						<td data-pr-search="p=<?= $prio ?> r=<?= $r ?>" data-priority="<?= $prio ?>" class="priority"><?= $releaseStatsGroups[$prio][$r] ?? '' ?></td>
-					<? endforeach ?>
-				</tr>
-			<? endfor ?>
-		</tbody>
-	</table>
-</fieldset>
+<div id="stats" style="display: flex; overflow-x: auto">
+	<?php include 'tpl.stats.php' ?>
+</div>
 
 <script>
 window.URL_PATTERN = /^<?= strtr(preg_quote(F95_URL, '/'), [
