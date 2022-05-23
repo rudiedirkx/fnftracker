@@ -86,11 +86,14 @@ td > .cols > :last-child {
 tr.recency-2 {
 	background-color: #ff03;
 }
-tr.description:not(.show-description) {
-	display: none;
+tr.wdesc .title-name {
+	color: lightgreen;
 }
-tr.has-description .title-name {
+tr.wchars .title-name {
 	color: blue;
+}
+tr.wdesc.wchars .title-name {
+	color: fuchsia;
 }
 
 .hiding-untracked tr.untracked {

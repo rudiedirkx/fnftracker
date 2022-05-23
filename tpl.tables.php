@@ -18,7 +18,12 @@
 		<tbody>
 			<? foreach ($index->releases as $fetch): ?>
 				<tr
-					class="<?= $index->hiliteSource == $fetch->source_id ? 'hilited' : '' ?> <?= $fetch->status_prefix_class ?> recency-<?= $fetch->fetch_recency ?> <? if ($fetch->source->title_title): ?>has-description<? endif ?>"
+					class="
+						<?= $index->hiliteSource == $fetch->source_id ? 'hilited' : '' ?>
+						<?= $fetch->status_prefix_class ?>
+						recency-<?= $fetch->fetch_recency ?>
+						<?= $fetch->source->title_class ?>
+					"
 					data-banner="<?= html($fetch->source->banner_url) ?>"
 					data-priority="<?= $fetch->source->priority ?>"
 				>
@@ -87,7 +92,13 @@
 					</tr>
 				<? endif ?>
 				<tr
-					class="<?= $index->collapseUntracked && !$source->f95_id ? 'untracked' : '' ?><?= $index->hiliteSource == $source->id ? 'hilited' : '' ?> recency-<?= $source->last_release->fetch_recency ?? '' ?> <?= $source->status_prefix_class ?? '' ?> <? if ($source->title_title): ?>has-description<? endif ?>"
+					class="
+						<?= $index->collapseUntracked && !$source->f95_id ? 'untracked' : '' ?>
+						<?= $index->hiliteSource == $source->id ? 'hilited' : '' ?>
+						recency-<?= $source->last_release->fetch_recency ?? '' ?>
+						<?= $source->status_prefix_class ?? '' ?>
+						<?= $source->title_class ?>
+					"
 					data-id="<?= $source->id ?>"
 					data-banner="<?= html($source->banner_url) ?>"
 					data-priority="<?= $source->priority ?>"

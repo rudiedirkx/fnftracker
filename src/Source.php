@@ -66,6 +66,13 @@ class Source extends Model {
 		return implode(' | ', $parts);
 	}
 
+	protected function get_title_class() {
+		$parts = [];
+		if ($this->description) $parts[] = 'wdesc';
+		if (count($this->characters)) $parts[] = 'wchars';
+		return implode(' ', $parts);
+	}
+
 	protected function get_draft_or_priority() {
 		return $this->f95_id ? $this->priority : self::DRAFT_PRIORITY;
 	}
