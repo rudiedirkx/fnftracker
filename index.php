@@ -78,9 +78,9 @@ if ( isset($_GET['edit'], $_POST['char_name'], $_POST['char_role'], $_FILES['cha
 
 	if ($id && $_FILES['char_file']['tmp_name'] && !$_FILES['char_file']['error']) {
 		[$x, $y, $s] = explode(',', $_POST['char_cutout'] . ',,');
-		if ($x && $y && $s) {
+		if (is_numeric($x) && is_numeric($y) && is_numeric($s)) {
 			$img = ImageManagerStatic::make($_FILES['char_file']['tmp_name']);
-			$img->crop($s, $s, $x, $y);
+			$img->crop(max(0, $s), max(0, $s), max(0, $x), max(0, $y));
 			$img->resize(200, 200);
 			// echo $img->response('jpg', 70);
 			$img->save($filepath = __DIR__ . '/' . CHARS_DIR . '/' . $id . '.jpg');
@@ -221,7 +221,7 @@ $edit = Source::find($_GET['edit'] ?? 0);
 
 	<form method="post" action enctype="multipart/form-data">
 		<fieldset>
-			<legend>Characters (<?= count($edit->characters) ?></legend>
+			<legend>Characters (<?= count($edit->characters) ?>)</legend>
 
 			<table class="characters">
 				<thead>
