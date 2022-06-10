@@ -258,7 +258,7 @@ $edit = Source::find($_GET['edit'] ?? 0);
 				<p>Role: <input name="char_role" list="dl-char-roles" /></p>
 				<p>
 					<input name="char_file" type="file" />
-					<input name="char_cutout" type="hidden" />
+					<input name="char_cutout" tabindex="-1" placeholder="cutout coords..." style="opacity: 0.5" />
 				</p>
 				<p><button>Save</button></p>
 				<div id="char_image"></div>

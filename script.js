@@ -141,13 +141,22 @@ if (cf) {
 	});
 
 	cf.addEventListener('change', function(e) {
-		const f = this.files[0];
-		const img = document.createElement('img');
-		img.src = URL.createObjectURL(f);
-		// this.value = '';
+		cc.required = Boolean(this.value);
+		cc.value = '';
 
-		ci.innerHTML = '<div class="cutout"></div>';
-		ci.append(img);
-		co = ci.querySelector('.cutout');
+		if (this.value) {
+			const f = this.files[0];
+			const img = document.createElement('img');
+			img.src = URL.createObjectURL(f);
+			// this.value = '';
+
+			ci.innerHTML = '<div class="cutout"></div>';
+			ci.append(img);
+			co = ci.querySelector('.cutout');
+		}
+		else {
+			ci.innerHTML = '';
+			co = null;
+		}
 	});
 }
