@@ -140,7 +140,7 @@ if (cf) {
 		ci.classList.toggle('dragging', dragging = false);
 	});
 
-	cf.addEventListener('change', function(e) {
+	function handleDrop() {
 		cc.required = Boolean(this.value);
 		cc.value = '';
 
@@ -158,5 +158,14 @@ if (cf) {
 			ci.innerHTML = '';
 			co = null;
 		}
-	});
+	}
+	cf.addEventListener('change', handleDrop);
+
+	const fs = cf.closest('fieldset');
+	fs.ondragover = e => e.preventDefault();
+	fs.ondrop = e => {
+		e.preventDefault();
+		cf.files = e.dataTransfer.files;
+		handleDrop.call(cf);
+	};
 }
