@@ -159,10 +159,22 @@ if (cf) {
 	cf.addEventListener('change', handleDrop);
 
 	const fs = cf.closest('fieldset');
-	fs.ondragover = e => e.preventDefault();
+	var dragging2 = 0;
+	fs.ondragover = e => {
+		e.preventDefault();
+		const file = e.dataTransfer.items[0];
+		if (file && file.kind == 'file' && file.type.startsWith('image/')) {
+			clearTimeout(dragging2);
+			fs.classList.add('droppable');
+		}
+	};
 	fs.ondrop = e => {
 		e.preventDefault();
 		cf.files = e.dataTransfer.files;
 		handleDrop.call(cf);
+		fs.classList.remove('droppable');
+	};
+	fs.ondragleave = e => {
+		dragging2 = setTimeout(_ => fs.classList.remove('droppable'), 50);
 	};
 }

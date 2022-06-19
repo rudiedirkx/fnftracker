@@ -110,10 +110,13 @@ tr.wdesc.wchars .title-name {
 	padding: 0;
 	border: 0;
 }
-
+fieldset.droppable {
+	background: #eee;
+}
 span.char.img {
 	color: blue;
 }
+
 table.source-ratings tr > *,
 table.release-stats tr > * {
 	text-align: right;
