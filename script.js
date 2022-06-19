@@ -92,13 +92,10 @@ tables.addEventListener('click', eventIf('a.delete', function(e) {
 	});
 }));
 
-(function(btn) {
-	if (!btn) return;
-	btn.addEventListener('click', e => {
-		document.querySelector('.hiding-untracked').classList.remove('hiding-untracked');
-		btn.closest('tr').remove();
-	});
-})(document.querySelector('#show-untrackeds'));
+tables.addEventListener('click', eventIf('#show-untrackeds', function(e) {
+	document.querySelector('.hiding-untracked').classList.remove('hiding-untracked');
+	this.closest('tr').remove();
+}));
 
 document.querySelector('#stats').addEventListener('click', eventIf('[data-pr-search]', e => {
 	search.value = e.target.dataset.prSearch;
