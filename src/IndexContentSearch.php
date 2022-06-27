@@ -51,6 +51,10 @@ class IndexContentSearch extends IndexContent {
 				$order[] = "$column " . ($part[0] === '-' ? 'desc' : 'asc');
 				$sorted or $sorted = $column;
 			}
+			elseif ($part === '-last_checked') {
+				$order[] = "(select max(last_fetch_on) from releases where source_id = sources.id) desc";
+				$sorted or $sorted = trim($part, '-');
+			}
 			elseif ($part === 'delete') {
 				$this->deleting = true;
 			}

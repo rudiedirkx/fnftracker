@@ -76,7 +76,7 @@
 				<th></th>
 				<th>Latest release</th>
 				<th>Version</th>
-				<th>Last checked</th>
+				<th data-sortable="-last_checked" class="<?= $index->sourcesSorted == 'last_checked' ? 'sorted' : '' ?>">Last checked</th>
 				<th class="<?= $index->sourcesSorted == 'created_on' ? 'sorted' : '' ?>">Added</th>
 				<th data-sortable="-finished" class="<?= $index->sourcesSorted == 'finished' ? 'sorted' : '' ?>">Finished</th>
 			</tr>
