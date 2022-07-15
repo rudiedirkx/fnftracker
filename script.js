@@ -73,7 +73,7 @@ const searchIconHandle = function(icon) {
 	searchHandle(search.value);
 	// search.dispatchEvent(new CustomEvent('input'));
 };
-tables.addEventListener('click', eventIf('.search-icon', function(e) {
+document.addEventListener('click', eventIf('.search-icon', function(e) {
 	e.preventDefault();
 	searchIconHandle(this);
 }));

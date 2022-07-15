@@ -187,6 +187,7 @@ $edit = Source::find($_GET['edit'] ?? 0);
 			<p>
 				Created: <?= date('Y-m-d H:i', $edit->created_on) ?>
 				<a class="goto" target="_blank" href="<?= html($edit->last_release->url) ?>">&#10132;</a>
+				<a class="search-icon" href data-query="<?= html($edit->name) ?>">&#128270;</a>
 			</p>
 		<? else: ?>
 			<legend>Add source</legend>
