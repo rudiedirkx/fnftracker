@@ -47,14 +47,21 @@ tables.addEventListener('mouseout', eventIf('tr[data-banner] span.title-name', b
 tables.addEventListener('mouseout', bannerOut);
 
 const search = document.querySelector('input[type="search"]');
+let searchAborter = null;
 const searchHandle = function(value) {
 	if (value.length == 1 && value != '*') return;
 
+	if (searchAborter) searchAborter.abort('search');
+	searchAborter = new AbortController();
 	return fetch(new Request('?search=' + encodeURIComponent(value.trim()), {
+		signal: searchAborter.signal,
 		headers: {"Accept": 'html/partial'},
 	})).then(x => x.text()).then(html => {
+		searchAborter = null;
 		tables.innerHTML = html;
 		bannerOut();
+	}).catch(ex => {
+		if (!ex.message.includes(' aborted ')) console.warn(ex);
 	});
 };
 search.addEventListener('input', function(e) {
