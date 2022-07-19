@@ -57,7 +57,13 @@ if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['patreo
 
 if ( isset($_POST['delete_release']) ) {
 	Release::find($_POST['delete_release'])->delete();
-	echo "Release deleted\n";
+	http_response_code(204);
+	exit;
+}
+
+if ( isset($_POST['delete_source']) ) {
+	Source::find($_POST['delete_source'])->delete();
+	http_response_code(204);
 	exit;
 }
 

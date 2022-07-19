@@ -94,7 +94,7 @@ tables.addEventListener('click', eventIf('a.delete', function(e) {
 		body: this.dataset.body,
 		headers: {"Content-type": 'application/x-www-form-urlencoded'},
 	})).then(x => x.text()).then(txt => {
-		alert(txt.trim());
+		if (txt.trim()) alert(txt.trim());
 		searchHandle(search.value);
 	});
 }));
