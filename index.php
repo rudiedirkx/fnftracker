@@ -132,6 +132,7 @@ $index->setTotals(
 );
 
 if ( ($_SERVER['HTTP_ACCEPT'] ?? '') == 'html/partial' ) {
+	header('Cache-Control: no-store, no-cache, must-revalidate');
 	include 'tpl.tables.php';
 	exit;
 }
