@@ -36,6 +36,8 @@ abstract class IndexContent {
 		Source::eager('characters', $this->sources);
 	}
 
+	abstract public function getNoSourcesMessage() : string;
+
 	static public function fromSearch(string $search) : self {
 		if ( $search === '*' ) {
 			return new IndexContentAll();

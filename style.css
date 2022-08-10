@@ -105,6 +105,9 @@ tr.wdesc.wchars .title-name {
 	text-align: center;
 	cursor: pointer;
 }
+tr.empty td {
+	text-align: center;
+}
 
 .characters input.text {
 	padding: 0;

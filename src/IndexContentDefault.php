@@ -20,4 +20,8 @@ class IndexContentDefault extends IndexContent {
 		$this->sources = Source::all("$this->sourcesSql ORDER BY (f95_id is null) desc, created_on desc", [CREATED_RECENTLY_ENOUGH]);
 	}
 
+	public function getNoSourcesMessage() : string {
+		return sprintf('No new sources in the last %s...', CREATED_RECENTLY_ENOUGH_TIMESTR);
+	}
+
 }

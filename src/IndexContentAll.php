@@ -13,4 +13,8 @@ class IndexContentAll extends IndexContent {
 		$this->releases = [];
 	}
 
+	public function getNoSourcesMessage() : string {
+		return 'No sources at all..?';
+	}
+
 }

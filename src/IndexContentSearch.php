@@ -76,4 +76,8 @@ class IndexContentSearch extends IndexContent {
 		$this->sourcesSorted = $sorted ?? 'name';
 	}
 
+	public function getNoSourcesMessage() : string {
+		return 'No sources match these terms...';
+	}
+
 }

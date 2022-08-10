@@ -85,6 +85,11 @@
 			</tr>
 		</thead>
 		<tbody class="<?= $index->collapseUntracked ? 'hiding-untracked' : '' ?>">
+			<? if (!count($index->sources)): ?>
+				<tr class="empty">
+					<td colspan="99"><?= $index->getNoSourcesMessage() ?></td>
+				</tr>
+			<? endif ?>
 			<? $untrackeds = 0 ?>
 			<? foreach ($index->sources as $source): ?>
 				<? $untrackeds += $source->f95_id ? 0 : 1 ?>

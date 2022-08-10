@@ -19,6 +19,7 @@ Model::$_db = $db;
 
 define('TODAY', date('Y-m-d'));
 define('LAST_24_HOURS', strtotime('-1 day'));
-define('CREATED_RECENTLY_ENOUGH', strtotime('-3 weeks'));
+define('CREATED_RECENTLY_ENOUGH_TIMESTR', '3 weeks');
+define('CREATED_RECENTLY_ENOUGH', strtotime('-' . CREATED_RECENTLY_ENOUGH_TIMESTR));
 
 define('F95_HOST', parse_url(F95_URL, PHP_URL_HOST));
