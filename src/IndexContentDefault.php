@@ -4,8 +4,6 @@ namespace rdx\f95;
 
 class IndexContentDefault extends IndexContent {
 
-	public bool $collapseUntracked = true;
-
 	public string $sourcesSorted = 'created_on';
 
 	public function __construct() {
@@ -18,6 +16,13 @@ class IndexContentDefault extends IndexContent {
 
 		$this->sourcesSql = '(created_on > ? OR f95_id IS NULL)';
 		$this->sources = Source::all("$this->sourcesSql ORDER BY (f95_id is null) desc, created_on desc", [CREATED_RECENTLY_ENOUGH]);
+
+		foreach ($this->sources as $source) {
+			if ($source->f95_id) {
+				$this->collapseUntracked = true;
+				break;
+			}
+		}
 	}
 
 	public function getNoSourcesMessage() : string {
