@@ -10,6 +10,8 @@ class IndexContentSearch extends IndexContent {
 	public function __construct(public string $search) {
 		$this->prepareSql();
 
+		if (isset($this->sources, $this->releases)) return;
+
 		$this->sources = Source::all("$this->sourcesSql ORDER BY $this->sourcesOrder, (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
 		$ids = array_column($this->sources, 'id');
 
@@ -55,7 +57,11 @@ class IndexContentSearch extends IndexContent {
 				$order[] = "(select max(last_fetch_on) from releases where source_id = sources.id) desc";
 				$sorted or $sorted = trim($part, '-');
 			}
-			elseif ($part === 'delete') {
+			elseif ($part === '=prefixed') {
+				$this->prepareSqlForPrefixed();
+				return;
+			}
+			elseif ($part === '=delete') {
 				$this->deleting = true;
 			}
 			else {
@@ -71,9 +77,33 @@ class IndexContentSearch extends IndexContent {
 			$sql[] = '(' . implode(' OR ', $searches) . ')';
 		}
 
-		$this->sourcesSql = implode(' AND ', $sql) ?: '1=1';
+		$this->sourcesSql = implode(' AND ', $sql);
 		$this->sourcesOrder = implode(', ', $order) ?: '1=1';
 		$this->sourcesSorted = $sorted ?? 'name';
+	}
+
+	protected function prepareSqlForPrefixed() : void {
+		$this->showSourceDetectedInsteadOfChecked = true;
+
+		$this->releasesLimit = 1;
+		$this->releases = [];
+
+		$this->sourcesOrder = 'r.first_fetch_on';
+		$this->sourcesSorted = 'first_fetch_on';
+		$this->sourcesSql = <<<'SQL'
+			SELECT s.*
+			FROM "sources" s
+			JOIN (
+				select source_id, max(id) id
+				from releases
+				group by source_id
+			) x ON x.source_id = s.id
+			JOIN releases r ON r.id = x.id
+			WHERE (r.prefixes like 'completed' OR r.prefixes like 'onhold' OR r.prefixes like 'abandoned')
+			ORDER BY r.first_fetch_on DESC
+			LIMIT 50
+		SQL;
+		$this->sources = Source::query($this->sourcesSql);
 	}
 
 	public function getNoSourcesMessage() : string {

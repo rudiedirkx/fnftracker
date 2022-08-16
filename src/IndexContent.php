@@ -6,11 +6,14 @@ abstract class IndexContent {
 
 	public bool $deleting = false;
 	public bool $collapseUntracked = false;
+	public bool $showSourceDetectedInsteadOfChecked = false;
 
 	public int $hiliteSource = 0;
+
 	public string $sourcesSql;
 	public string $sourcesSorted;
 	public array $sources;
+
 	public string $releasesSorted = 'first_fetch_on';
 	public array $releases;
 

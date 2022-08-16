@@ -11,8 +11,9 @@ use rdx\jsdom\Node;
 
 class Fetcher {
 
+	const STATUS_PREFIXES = ['completed', 'onhold', 'abandoned'];
 	const KEEP_PREFIXES = [
-		'completed', 'onhold', 'abandoned',
+		...self::STATUS_PREFIXES,
 		'rpgm', 'unity', 'html', 'others', 'flash', 'unreal engine',
 	];
 

@@ -1,4 +1,4 @@
-<!-- <?= str_replace('-->', '', $index->sourcesSql) ?> -->
+<!-- sources: <?= str_replace('-->', '', $index->sourcesSql) ?> -->
 
 <h2>Recent releases (<?= $index->getReleasesCountLabel() ?>)</h2>
 
@@ -76,7 +76,11 @@
 				<th></th>
 				<th>Latest release</th>
 				<th>Version</th>
-				<th data-sortable="-last_checked" class="<?= $index->sourcesSorted == 'last_checked' ? 'sorted' : '' ?>">Last checked</th>
+				<? if ($index->showSourceDetectedInsteadOfChecked): ?>
+					<th class="sorted">Detected</th>
+				<? else: ?>
+					<th data-sortable="-last_checked" class="<?= $index->sourcesSorted == 'last_checked' ? 'sorted' : '' ?>">Last checked</th>
+				<? endif ?>
 				<th data-sortable="-created_on" class="<?= $index->sourcesSorted == 'created_on' ? 'sorted' : '' ?>">Added</th>
 				<th data-sortable="-finished" class="<?= $index->sourcesSorted == 'finished' ? 'sorted' : '' ?>">Finished</th>
 				<? if ($index->deleting): ?>
@@ -149,10 +153,14 @@
 					<td nowrap tabindex="0" class="version" title="<?= html($source->last_release->version) ?>"><span><?= $source->last_release->cleaned_version ?? '' ?></span></td>
 					<td nowrap>
 						<? if ($source->last_release): ?>
-							<div class="cols">
-								<span><?= date('Y-m-d', $source->last_release->last_fetch_on) ?></span>
-								<a class="goto" target="_blank" href="<?= html($source->last_release->url) ?>">&#10132;</a>
-							</div>
+							<? if ($index->showSourceDetectedInsteadOfChecked): ?>
+								<?= date('Y-m-d', $source->last_release->first_fetch_on) ?>
+							<? else: ?>
+								<div class="cols">
+									<span><?= date('Y-m-d', $source->last_release->last_fetch_on) ?></span>
+									<a class="goto" target="_blank" href="<?= html($source->last_release->url) ?>">&#10132;</a>
+								</div>
+							<? endif ?>
 						<? endif ?>
 					</td>
 					<td nowrap class="created-<?= $source->created_recency ?>">
