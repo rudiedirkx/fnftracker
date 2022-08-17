@@ -41,13 +41,17 @@ use rdx\f95\Source;
 			</tr>
 		</thead>
 		<tbody>
-			<? for ($r = 10; $r >= 1; $r--): ?>
+			<? for ($r = 10; $r >= 1; $r--):
+				$row = 0;
+				?>
 				<tr>
 					<th><?= number_format($r, 0) ?></th>
-					<? foreach (array_reverse(array_keys(Source::PRIORITIES)) as $prio): ?>
+					<? foreach (array_reverse(array_keys(Source::PRIORITIES)) as $prio):
+						$row += $sourceRatingsGroups[$prio][$r] ?? 0;
+						?>
 						<td data-pr-search="p=<?= $prio ?> rating=<?= $r ?>" data-priority="<?= $prio ?>" class="priority"><?= $sourceRatingsGroups[$prio][$r] ?? '' ?></td>
 					<? endforeach ?>
-					<th><?= 0 ?></th>
+					<th><?= $row ?></th>
 				</tr>
 			<? endfor ?>
 		</tbody>
