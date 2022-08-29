@@ -103,7 +103,7 @@ class Source extends Model {
 			return 'user?u=' . $match[1];
 		}
 
-		return $this->patreon;
+		return $this->pretty_patreon;
 	}
 
 	protected function get_status_prefix_class() {
