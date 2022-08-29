@@ -45,7 +45,7 @@ use rdx\f95\Source;
 				$row = 0;
 				?>
 				<tr>
-					<th><?= number_format($r, 0) ?></th>
+					<th data-pr-search="rating=<?= $r ?>"><?= number_format($r, 0) ?></th>
 					<? foreach (array_reverse(array_keys(Source::PRIORITIES)) as $prio):
 						$row += $sourceRatingsGroups[$prio][$r] ?? 0;
 						?>
