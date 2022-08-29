@@ -165,7 +165,7 @@ if (cf) {
 	}
 	cf.addEventListener('change', handleDrop);
 
-	const fs = cf.closest('fieldset');
+	const fs = cf.closest('form');
 	var dragging2 = 0;
 	fs.ondragover = e => {
 		e.preventDefault();

@@ -113,7 +113,7 @@ tr.empty td {
 	padding: 0;
 	border: 0;
 }
-fieldset.droppable {
+.droppable {
 	background: #eee;
 }
 span.char.img {
