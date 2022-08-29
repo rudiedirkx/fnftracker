@@ -153,14 +153,14 @@
 					<td nowrap tabindex="0" class="version" title="<?= html($source->last_release->version) ?>"><span><?= $source->last_release->cleaned_version ?? '' ?></span></td>
 					<td nowrap>
 						<? if ($source->last_release): ?>
-							<? if ($index->showSourceDetectedInsteadOfChecked): ?>
-								<?= date('Y-m-d', $source->last_release->first_fetch_on) ?>
-							<? else: ?>
-								<div class="cols">
+							<div class="cols">
+								<? if ($index->showSourceDetectedInsteadOfChecked): ?>
+									<?= date('Y-m-d', $source->last_release->first_fetch_on) ?>
+								<? else: ?>
 									<span><?= date('Y-m-d', $source->last_release->last_fetch_on) ?></span>
-									<a class="goto" target="_blank" href="<?= html($source->last_release->url) ?>">&#10132;</a>
-								</div>
-							<? endif ?>
+								<? endif ?>
+								<a class="goto" target="_blank" href="<?= html($source->last_release->url) ?>">&#10132;</a>
+							</div>
 						<? endif ?>
 					</td>
 					<td nowrap class="created-<?= $source->created_recency ?>">
