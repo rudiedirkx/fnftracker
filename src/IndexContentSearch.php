@@ -73,7 +73,7 @@ class IndexContentSearch extends IndexContent {
 			$searches = array_map(function($search) {
 				$search = '%' . trim($search) . '%';
 				return Source::$_db->replaceholders("(name LIKE ? OR developer LIKE ? OR patreon LIKE ? OR description LIKE ?)", [$search, $search, $search, $search]);
-			}, explode('|', implode(' ', $search)));
+			}, array_filter(explode('|', implode(' ', $search))));
 			$sql[] = '(' . implode(' OR ', $searches) . ')';
 		}
 
