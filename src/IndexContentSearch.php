@@ -61,6 +61,9 @@ class IndexContentSearch extends IndexContent {
 				$this->prepareSqlForPrefixed();
 				return;
 			}
+			elseif ($part === '=characters') {
+				$sql[] = "sources.id in (select source_id from characters)";
+			}
 			elseif ($part === '=delete') {
 				$this->deleting = true;
 			}
