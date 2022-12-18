@@ -57,6 +57,11 @@ class IndexContentSearch extends IndexContent {
 				$order[] = "(select max(last_fetch_on) from releases where source_id = sources.id) desc";
 				$sorted or $sorted = trim($part, '-');
 			}
+			elseif (ltrim($part, '-+') === 'last_release') {
+				$dir = $part[0] === '-' ? 'desc' : 'asc';
+				$order[] = "(select max(release_date) from releases where source_id = sources.id) $dir";
+				$sorted or $sorted = trim($part, '-');
+			}
 			elseif ($part === '=prefixed') {
 				$this->prepareSqlForPrefixed();
 				return;
