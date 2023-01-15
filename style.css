@@ -109,9 +109,17 @@ tr.empty td {
 	text-align: center;
 }
 
+.characters .no-picture {
+	background-color: #fdd;
+}
+.characters .no-picture td {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
 .characters input.text {
 	padding: 0;
 	border: 0;
+	background-color: transparent;
 }
 .droppable {
 	background: #eee;

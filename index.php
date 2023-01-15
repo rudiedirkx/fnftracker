@@ -242,7 +242,7 @@ $edit = Source::find($_GET['edit'] ?? 0);
 				</thead>
 				<tbody>
 					<? foreach ($edit->characters as $char): ?>
-						<tr>
+						<tr class="<?= $char->public_path ? '' : 'no-picture' ?>">
 							<td>
 								<? if ($char->public_path): ?>
 									<img src="<?= html($char->public_path) ?>" class="char" />
