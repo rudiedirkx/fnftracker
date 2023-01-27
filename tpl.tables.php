@@ -74,7 +74,7 @@
 				<th></th>
 				<th class="title <?= $index->sourcesSorted == 'name' ? 'sorted' : '' ?>">Title</th>
 				<th></th>
-				<th>Latest release</th>
+				<th data-sortable="-last_release" class="<?= $index->sourcesSorted == 'last_release' ? 'sorted' : '' ?>">Latest release</th>
 				<th>Version</th>
 				<? if ($index->showSourceDetectedInsteadOfChecked): ?>
 					<th class="sorted">Detected</th>

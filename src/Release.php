@@ -48,7 +48,7 @@ class Release extends Model {
 	}
 
 	protected function get_status_prefix_class() {
-		foreach (explode(',', $this->prefixes) as $prefix) {
+		foreach (explode(',', $this->prefixes ?? '') as $prefix) {
 			if (in_array($prefix, self::STATUS_PREFIXES)) {
 				return $prefix;
 			}
@@ -56,7 +56,7 @@ class Release extends Model {
 	}
 
 	protected function get_software_prefix_label() {
-		foreach (explode(',', $this->prefixes) as $prefix) {
+		foreach (explode(',', $this->prefixes ?? '') as $prefix) {
 			if (!in_array($prefix, self::STATUS_PREFIXES)) {
 				return explode(' ', $prefix)[0];
 			}

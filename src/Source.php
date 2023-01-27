@@ -87,7 +87,7 @@ class Source extends Model {
 	}
 
 	protected function get_pretty_developer() {
-		return ltrim($this->developer, '=');
+		return ltrim($this->developer ?? '', '=');
 	}
 
 	protected function get_custom_patreon() {
@@ -95,7 +95,7 @@ class Source extends Model {
 	}
 
 	protected function get_pretty_patreon() {
-		return ltrim($this->patreon, '=');
+		return ltrim($this->patreon ?? '', '=');
 	}
 
 	protected function get_patreon_path() {
