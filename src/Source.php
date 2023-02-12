@@ -83,7 +83,7 @@ class Source extends Model {
 	}
 
 	protected function get_custom_developer() {
-		return substr($this->developer, 0, 1) === '=';
+		return substr($this->developer ?? '', 0, 1) === '=';
 	}
 
 	protected function get_pretty_developer() {
@@ -91,7 +91,7 @@ class Source extends Model {
 	}
 
 	protected function get_custom_patreon() {
-		return substr($this->patreon, 0, 1) === '=';
+		return substr($this->patreon ?? '', 0, 1) === '=';
 	}
 
 	protected function get_pretty_patreon() {
