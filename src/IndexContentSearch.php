@@ -71,7 +71,7 @@ class IndexContentSearch extends IndexContent {
 			elseif ($part === '=characters') {
 				$sql[] = "sources.id in (select source_id from characters)";
 			}
-			elseif ($part === '=delete') {
+			elseif ($part === '=del') {
 				$this->deleting = true;
 			}
 			else {

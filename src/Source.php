@@ -24,6 +24,7 @@ class Source extends Model {
 			}
 
 			return new self([
+				'id' => 0,
 				'f95_id' => $f95_id,
 			]);
 		}
