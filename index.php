@@ -74,12 +74,14 @@ if ( isset($_GET['edit'], $_POST['char_name'], $_POST['char_role'], $_FILES['cha
 // exit;
 
 	$id = null;
+	$hash = 'characters-form-add';
 	if (strlen(trim($_POST['char_name']))) {
 		$id = Character::insert([
 			'source_id' => $source->id,
 			'name' => $_POST['char_name'],
 			'role' => $_POST['char_role'],
 		]);
+		$hash = 'characters-id-' . $id;
 	}
 
 	if ($id && $_FILES['char_file']['tmp_name'] && !$_FILES['char_file']['error']) {
@@ -108,7 +110,7 @@ if ( isset($_GET['edit'], $_POST['char_name'], $_POST['char_role'], $_FILES['cha
 		}
 	}
 
-	return do_redirect('index#characters-form-add', ['edit' => $source->id]);
+	return do_redirect("index#$hash", ['edit' => $source->id]);
 }
 
 if ( isset($_GET['sync']) ) {
@@ -242,7 +244,7 @@ $edit = Source::find($_GET['edit'] ?? 0);
 				</thead>
 				<tbody>
 					<? foreach ($edit->characters as $char): ?>
-						<tr class="<?= $char->public_path ? '' : 'no-picture' ?>">
+						<tr id="characters-id-<?= $char->id ?>" class="<?= $char->public_path ? '' : 'no-picture' ?>">
 							<td>
 								<? if ($char->public_path): ?>
 									<img src="<?= html($char->public_path) ?>" class="char" />
