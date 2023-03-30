@@ -96,6 +96,10 @@ tr.wdesc.wchars .title-name {
 	color: fuchsia;
 }
 
+input.editing-release[data-name="release_date"] {
+	width: 8em;
+}
+
 .hiding-untracked tr.untracked {
 	display: none;
 }

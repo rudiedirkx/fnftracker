@@ -71,8 +71,14 @@ class IndexContentSearch extends IndexContent {
 			elseif ($part === '=characters') {
 				$sql[] = "sources.id in (select source_id from characters)";
 			}
+			elseif ($part === '=') {
+				// Ignore
+			}
 			elseif ($part === '=del') {
 				$this->deleting = true;
+			}
+			elseif ($part === '=edit') {
+				$this->editing = true;
 			}
 			else {
 				$search[] = $part;

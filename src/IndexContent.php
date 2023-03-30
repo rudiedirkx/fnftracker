@@ -5,6 +5,7 @@ namespace rdx\f95;
 abstract class IndexContent {
 
 	public bool $deleting = false;
+	public bool $editing = false;
 	public bool $collapseUntracked = false;
 	public bool $showSourceDetectedInsteadOfChecked = false;
 

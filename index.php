@@ -55,6 +55,21 @@ if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['patreo
 	return do_redirect('index');
 }
 
+if ( isset($_POST['edit_release']) ) {
+	$release = Release::find($_POST['edit_release']);
+	if (!empty($_POST['release_date'])) {
+		$release->update([
+			'release_date' => trim($_POST['release_date']),
+		]);
+	}
+	else {
+		http_response_code(400);
+		exit('Do what?');
+	}
+	http_response_code(204);
+	exit;
+}
+
 if ( isset($_POST['delete_release']) ) {
 	Release::find($_POST['delete_release'])->delete();
 	http_response_code(204);

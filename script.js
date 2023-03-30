@@ -99,6 +99,24 @@ tables.addEventListener('click', eventIf('a.delete', function(e) {
 	});
 }));
 
+tables.addEventListener('change', eventIf('input.editing-release', function(e) {
+	e.preventDefault();
+
+	const inp = this;
+	const data = new FormData();
+	data.append('edit_release', this.dataset.fetch);
+	data.append(this.dataset.name, this.value);
+	fetch(new Request('?', {
+		method: 'post',
+		body: data,
+	})).then(x => x.text()).then(txt => {
+		if (txt.trim()) {
+			alert(txt.trim());
+			inp.value = inp.defaultValue;
+		}
+	});
+}));
+
 tables.addEventListener('click', eventIf('#show-untrackeds', function(e) {
 	document.querySelector('.hiding-untracked').classList.remove('hiding-untracked');
 	this.closest('tr').remove();
