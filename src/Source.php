@@ -9,7 +9,13 @@ class Source extends Model {
 	const DRAFT_PRIORITY = 80;
 
 	const RECENTS = [RECENT0, RECENT1, RECENT2];
-	const PRIORITIES = [0 => null, 1 => 8, 2 => 4, 3 => 2];
+	const PRIORITIES = [
+		// importance => recheck in days
+		0 => null,
+		1 => 8,
+		2 => 4,
+		3 => 2,
+	];
 
 	static public $_table = 'sources';
 
