@@ -98,6 +98,7 @@ tr.wdesc.wchars .title-name {
 
 input.editing-release[data-name="release_date"] {
 	width: 8em;
+	color: inherit;
 }
 
 .hiding-untracked tr.untracked {
