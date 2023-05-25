@@ -197,21 +197,54 @@ class Fetcher {
 		return null;
 	}
 
-	protected function getPatreon(Node $doc, string $text) {
-		$base = 'https://www.patreon.com/';
-		$link = $doc->query('.message-threadStarterPost .message-body a[href*="patreon.com/"]');
-		if ($link) {
-			$path = trim(preg_replace('#^https?://(www\.)?patreon\.com/#', '', $link['href']), '/');
-			if (preg_match('#^user(?:/(?:posts|about))?\?u=(\d+)($|&)#', $path, $match)) {
-				return 'u:' . $match[1];
-			}
+	protected function getDeveloperLinks(Node $container) : array {
+		$el = $container->xpathRaw('//b[text()="Developer"]')[0] ??
+			$container->xpathRaw('//b[text()="Publisher"]')[0] ??
+			$container->xpathRaw('//b[text()="Developer/Publisher"]')[0] ??
+			null;
+		if (!$el) return [];
 
-			$path = trim(preg_replace('/[\?#].+$/', '', $path), '/');
-			$path = preg_replace('#/(overview|posts)$#', '', $path);
-			if ($path && strpos($path, '/') === false) {
-				return $path;
+		$nodes = [];
+		for ($i = 0; $i < 20; $i++) {
+			$el = $el->nextSibling;
+			if ($el->nodeName == 'br' || $el->nodeValue == 'Version') {
+				return $nodes;
+			}
+			elseif ($el->nodeName == 'a') {
+				$nodes[] = new Node($el);
 			}
 		}
+
+		return [];
+	}
+
+	protected function getPatreonUsername(string $url) {
+		$path = trim(preg_replace('#^https?://(www\.)?patreon\.com/#', '', $url), '/');
+		if (preg_match('#^user(?:/(?:posts|about))?\?u=(\d+)($|&)#', $path, $match)) {
+			return 'u:' . $match[1];
+		}
+
+		$path = trim(preg_replace('/[\?#].+$/', '', $path), '/');
+		$path = preg_replace('#/(overview|posts)$#', '', $path);
+		if ($path && strpos($path, '/') === false) {
+			return $path;
+		}
+	}
+
+	protected function getPatreon(Node $doc, string $text) {
+		$container = $doc->query('.message-threadStarterPost .message-body');
+
+		$links = $this->getDeveloperLinks($container);
+		foreach ($links as $link) {
+			if (preg_replace('#^www\.#', '', parse_url($link['href'], PHP_URL_HOST)) == 'patreon.com') {
+				return $this->getPatreonUsername($link['href']);
+			}
+		}
+
+		// $link = $container->query('a[href*="patreon.com/"]');
+		// if ($link) {
+		// 	return $this->getPatreonUsername($link['href']);
+		// }
 	}
 
 	protected function getDeveloper(Node $doc, string $text) {
