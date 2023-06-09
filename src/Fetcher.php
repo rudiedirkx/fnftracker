@@ -207,6 +207,9 @@ class Fetcher {
 		$nodes = [];
 		for ($i = 0; $i < 20; $i++) {
 			$el = $el->nextSibling;
+			if (!$el) {
+				return $nodes;
+			}
 			if ($el->nodeName == 'br' || $el->nodeValue == 'Version') {
 				return $nodes;
 			}
