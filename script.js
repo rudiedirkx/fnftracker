@@ -135,6 +135,7 @@ if (cf) {
 	const ci = document.querySelector('#char_image');
 	const cc = document.querySelector('input[name="char_cutout"]');
 	var co;
+	var scale = 1.0;
 
 	var dragging = false;
 	var x, y, w, h, s;
@@ -155,7 +156,7 @@ if (cf) {
 		co.style.top = `${y}px`;
 		co.style.width = `${s}px`;
 		co.style.height = `${s}px`;
-		cc.value = ([x, y, s]).join(',');
+		cc.value = ([Math.round(x / scale), Math.round(y / scale), Math.round(s / scale)]).join(',');
 	});
 	document.addEventListener('mouseup', function(e) {
 		e.preventDefault();
@@ -171,6 +172,10 @@ if (cf) {
 			const img = document.createElement('img');
 			img.src = URL.createObjectURL(f);
 			// this.value = '';
+			img.onload = function() {
+				scale = this.clientWidth / this.naturalWidth;
+				console.log(scale);
+			};
 
 			ci.innerHTML = '<div class="cutout"></div>';
 			ci.append(img);
@@ -182,6 +187,14 @@ if (cf) {
 		}
 	}
 	cf.addEventListener('change', handleDrop);
+
+	window.onresize = function() {
+		const img = ci.querySelector('img');
+		if (img) {
+			scale = img.clientWidth / img.naturalWidth;
+			console.log(scale);
+		}
+	};
 
 	const fs = cf.closest('form');
 	var dragging2 = 0;

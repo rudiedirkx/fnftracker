@@ -219,15 +219,13 @@ a.goto, a.sync, a.edit-icon, a.search-icon {
 }
 
 #char_image {
-	/*max-width: 500px;
-	max-height: 500px;*/
 	position: relative;
 	overflow: hidden;
 }
 #char_image img {
 	display: block;
-	/*max-width: 100%;
-	max-height: 100%;*/
+	max-width: 90vw;
+	max-height: 90vh;
 	pointer-events: none;
 }
 #char_image .cutout {
