@@ -14,7 +14,7 @@ class Fetcher {
 	const STATUS_PREFIXES = ['completed', 'onhold', 'abandoned'];
 	const KEEP_PREFIXES = [
 		...self::STATUS_PREFIXES,
-		'rpgm', 'unity', 'html', 'others', 'flash', 'unreal engine',
+		'rpgm', 'unity', 'html', 'others', 'flash', 'unreal engine', 'java',
 	];
 
 	public $source;
