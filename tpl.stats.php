@@ -2,6 +2,8 @@
 
 use rdx\f95\Source;
 
+$prioSources = array_map(fn($arr) => array_sum($arr), $releaseStatsGroups);
+
 ?>
 <fieldset>
 	<legend>Release stats</legend>
@@ -56,12 +58,9 @@ use rdx\f95\Source;
 			<? endfor ?>
 		</tbody>
 	</table>
-	<table class="source-ratings">
-		<? foreach ([] ?? $sourceRatings as $row): ?>
-			<tr>
-				<th><?= round($row->rating) ?></th>
-				<td><?= $row->num_sources ?>x</td>
-			</tr>
-		<? endforeach ?>
-	</table>
+</fieldset>
+
+<fieldset>
+	<legend>Prognosis</legend>
+	<p>~<?= Source::numPerDay($prioSources) ?> per day</p>
 </fieldset>

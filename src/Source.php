@@ -36,6 +36,16 @@ class Source extends Model {
 		}
 	}
 
+	static public function numPerDay(array $prioSources) : int {
+		unset($prioSources[0]);
+		$p3 = ($prioSources[3] ?? 0) / self::PRIORITIES[3];
+		$p2 = ($prioSources[2] ?? 0) / self::PRIORITIES[2];
+		$p1 = ($prioSources[1] ?? 0) / self::PRIORITIES[1];
+		$time = $p3 + $p2 + $p1;
+		$anyway = (array_sum($prioSources) - $time) * CRON_DO_ANYWAY;
+		return round($time + $anyway);
+	}
+
 	public function sync(int $attempts = 1) {
 		if (!$this->f95_id) return;
 
