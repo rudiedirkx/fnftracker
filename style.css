@@ -114,6 +114,7 @@ tr.empty td {
 	text-align: center;
 }
 
+.characters .no-name,
 .characters .no-picture {
 	background-color: #fdd;
 }
