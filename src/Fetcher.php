@@ -199,7 +199,8 @@ class Fetcher {
 
 	protected function getDeveloperLinks(Node $container) : array {
 		$el = $container->xpathRaw('//b[text()="Developer"]')[0] ??
-		$el = $container->xpathRaw('//b[text()="Developer:"]')[0] ??
+			$container->xpathRaw('//b[text()="Developer:"]')[0] ??
+			$container->xpathRaw('//b[text()="Developer: "]')[0] ??
 			$container->xpathRaw('//b[text()="Publisher"]')[0] ??
 			$container->xpathRaw('//b[text()="Developer/Publisher"]')[0] ??
 			null;
