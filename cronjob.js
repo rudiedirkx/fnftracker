@@ -1,11 +1,15 @@
 const puppeteer = require('puppeteer');
 const request = require('request');
+const commandLineArgs = require('command-line-args')
 // const FormData = require('form-data');
 const fs = require('fs');
 // const {Readable} = require('stream');
 const cfg = require('./env.js');
 
-const test = process.argv[2] === 'test';
+const options = commandLineArgs([
+	{name: 'test', type: Number, defaultValue: 0},
+]);
+options.test ??= 1;
 
 const wait = (ms, out) => new Promise(resolve => {
 	setTimeout(resolve, ms, out);
@@ -50,9 +54,9 @@ function sendResponse(id, html , url) {
 	console.log(`${cfg.baseUrl}/ - ${cfg.f95Url}/`);
 	console.log('');
 
-	console.log('test', test);
+	console.log('test', options.test);
 console.time('getUrls');
-	const urls = await getUrls();
+	let urls = await getUrls();
 console.timeEnd('getUrls');
 	console.log('urls', urls.length);
 
@@ -76,10 +80,14 @@ console.timeEnd('getUrls');
 			document.querySelector('[name="remember"]').closest('label').click();
 		});
 
+		// await page.screenshot({path: 'screenshot-1.jpg'});
+
 		await Promise.all([
 			page.waitForNavigation(),
 			page.click('[type="submit"]', {delay: Math.random() * 400}),
 		]);
+
+		// await page.screenshot({path: 'screenshot-2.jpg'});
 
 		const loggedIn = await page.$('[href="/account/"]') != null;
 		return loggedIn;
@@ -89,23 +97,33 @@ console.time('logIn');
 	const loggedIn = await logIn();
 console.timeEnd('logIn');
 	console.log('loggedIn', loggedIn);
-	if (!loggedIn || test) {
+	if (!loggedIn || options.test == 1) {
 		process.exit(1);
+	}
+	console.log('');
+
+	if (options.test > 1) {
+		urls.splice(2, 9999);
+		console.log('OVERRIDE urls', urls.length);
+		console.log('');
 	}
 
 	const total = urls.length;
 	var news = 0;
 	for ( let i = 0; i < urls.length; i++ ) {
+		if (i > 0) {
+			await wait(Math.random() * 5000);
+		}
+
 		const [id, url] = urls[i];
 console.log(id, url);
 		await page.goto(url);
 		const body = await page.content();
 
 		const saved = await sendResponse(id, body, page.url());
+console.log('saved', saved);
 		if ( saved && saved.new ) news++;
 		console.log(`${i+1} / ${total}`);
-
-		await wait(Math.random() * 5000);
 	}
 
 	console.log(`^ ${news} new releases`);
