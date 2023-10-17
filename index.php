@@ -270,7 +270,10 @@ $edit = Source::find($_GET['edit'] ?? 0);
 							</td>
 							<td><input class="text" name="char[<?= $char->id ?>][name]" value="<?= html($char->name) ?>" /></td>
 							<td><input class="text" name="char[<?= $char->id ?>][role]" value="<?= html($char->role) ?>" /></td>
-							<td><input type="checkbox" name="char_delete[]" value="<?= $char->id ?>" /></td>
+							<td>
+								<input type="checkbox" name="char_delete[]" value="<?= $char->id ?>" />
+								<button type="button" class="reupload-character" data-name="<?= html($char->name) ?>" data-role="<?= html($char->role) ?>" style="float: right">⇩</button>
+							</td>
 						</tr>
 					<? endforeach ?>
 				</tbody>

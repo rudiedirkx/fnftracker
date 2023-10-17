@@ -130,6 +130,14 @@ document.querySelector('#stats').addEventListener('click', eventIf('[data-pr-sea
 
 Array.from(document.querySelectorAll('.hilited, .hilited *')).some(el => el.focus() || el == document.activeElement);
 
+document.querySelector('table.characters').addEventListener('click', eventIf('button.reupload-character', function(e) {
+	this.previousElementSibling.checked = true;
+	const nameEl = document.querySelector('input[name="char_name"]');
+	nameEl.value = this.dataset.name;
+	document.querySelector('input[name="char_role"]').value = this.dataset.role;
+	nameEl.focus();
+}));
+
 const cf = document.querySelector('input[name="char_file"]');
 if (cf) {
 	const ci = document.querySelector('#char_image');
