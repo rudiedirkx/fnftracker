@@ -64,7 +64,7 @@ class IndexContentSearch extends IndexContent {
 				$sorted or $sorted = trim($part, '-');
 				$sql[] = '1=1';
 			}
-			elseif ($part === '=prefixed') {
+			elseif (in_array($part, ['=prefix', '=prefixed'])) {
 				$this->prepareSqlForPrefixed($sql);
 				return;
 			}
