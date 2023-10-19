@@ -218,6 +218,9 @@ class Fetcher {
 			elseif ($el->nodeName == 'a') {
 				$nodes[] = new Node($el);
 			}
+			elseif (count($as = (new Node($el))->queryAll('a')) == 1) {
+				$nodes[] = $as[0];
+			}
 		}
 
 		return [];
