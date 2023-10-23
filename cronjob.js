@@ -62,7 +62,7 @@ console.timeEnd('getUrls');
 
 	const browser = await puppeteer.launch({
 		defaultViewport: {width: 1218, height: 650},
-		headless: true,
+		headless: 'new',
 		// args: [
 		// 	'--no-sandbox',
 		// 	'--disable-dev-shm-usage',
