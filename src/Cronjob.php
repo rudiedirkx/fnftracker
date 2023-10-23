@@ -4,35 +4,32 @@ namespace rdx\f95;
 
 class Cronjob {
 
-	protected $priomap;
-	protected $sources;
-	protected $skipped = [];
+	protected array $priomap;
+	protected array $checking;
 
 	public function __construct() {
 		$this->priomap = array_filter(array_map(function($days) {
-			return $days ? strtotime('+5 hours', strtotime("-$days days")) : null;
+			return $days ? date('Y-m-d', strtotime('+5 hours', strtotime("-$days days"))) : null;
 		}, Source::PRIORITIES));
-
-		$this->sources = Source::all('priority > 0 AND f95_id is not null');
-		Source::eager('last_release', $this->sources);
 	}
 
 	public function getSources() {
-		shuffle($this->sources);
+		$sources = Source::all('priority > 0 AND f95_id is not null');
+		Source::eager('last_release', $sources);
+		shuffle($sources);
 
-		foreach ( $this->sources as $source ) {
-			$anyway = false;
-			if ( $source->last_release->last_fetch_on > $this->priomap[$source->priority] ) {
-				if ( rand(0, 100)/100 < CRON_DO_ANYWAY ) {
-					$anyway = true;
-				}
-				else {
-					$this->skipped[] = $source;
-					continue;
-				}
+		$this->checking = array_map(fn() => [0, 0], $this->priomap);
+
+		$anyway = CRON_DO_ANYWAY * 100;
+		foreach ( $sources as $source ) {
+			if ( date('Y-m-d', $source->last_release->last_fetch_on) <= $this->priomap[$source->priority] ) {
+				$this->checking[$source->priority][0]++;
+				yield [$source, false];
 			}
-
-			yield [$source, $anyway];
+			elseif ( rand(0, 100) < $anyway ) {
+				$this->checking[$source->priority][1]++;
+				yield [$source, true];
+			}
 		}
 
 	}
