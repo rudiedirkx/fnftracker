@@ -320,6 +320,8 @@ window.URL_PATTERN = /^<?= strtr(preg_quote(F95_URL, '/'), [
 window.PRIORITIES = <?= json_encode(array_keys(Source::PRIORITIES)) ?>;
 </script>
 <script defer async src="<?= html_asset('script.js') ?>"></script>
+<link rel="stylesheet" href="<?= html_asset('croppr.css') ?>">
+<script defer async src="<?= html_asset('croppr.js') ?>"></script>
 <?php
 
 include 'tpl.footer.php';

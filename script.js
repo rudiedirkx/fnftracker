@@ -142,34 +142,6 @@ const cf = document.querySelector('input[name="char_file"]');
 if (cf) {
 	const ci = document.querySelector('#char_image');
 	const cc = document.querySelector('input[name="char_cutout"]');
-	var co;
-	var scale = 1.0;
-
-	var dragging = false;
-	var x, y, w, h, s;
-	ci.addEventListener('mousedown', function(e) {
-		e.preventDefault();
-		if (e.button != 0) return;
-
-		[x, y] = [e.offsetX, e.offsetY];
-		ci.classList.toggle('dragging', dragging = true);
-	});
-	ci.addEventListener('mousemove', function(e) {
-		e.preventDefault();
-		if (!dragging) return;
-
-		[w, h] = [e.offsetX - x, e.offsetY - y];
-		s = Math.round((w + h) / 2);
-		co.style.left = `${x}px`;
-		co.style.top = `${y}px`;
-		co.style.width = `${s}px`;
-		co.style.height = `${s}px`;
-		cc.value = ([Math.round(x / scale), Math.round(y / scale), Math.round(s / scale)]).join(',');
-	});
-	document.addEventListener('mouseup', function(e) {
-		e.preventDefault();
-		ci.classList.toggle('dragging', dragging = false);
-	});
 
 	function handleDrop() {
 		cc.required = Boolean(this.value);
@@ -179,30 +151,29 @@ if (cf) {
 			const f = this.files[0];
 			const img = document.createElement('img');
 			img.src = URL.createObjectURL(f);
-			// this.value = '';
 			img.onload = function() {
 				scale = this.clientWidth / this.naturalWidth;
 				console.log(scale);
 			};
 
-			ci.innerHTML = '<div class="cutout"></div>';
+			ci.innerHTML = '';
 			ci.append(img);
-			co = ci.querySelector('.cutout');
+
+			const croppr = new Croppr(img, {
+				aspectRatio: 1.0,
+				minSize: [100, 100, 'px'],
+				startSize: [10, 10, 'px'],
+				onCropEnd(value) {
+					cc.value = ([value.x, value.y, value.width]).join(',');
+				},
+			});
+			console.log('croppr', croppr);
 		}
 		else {
 			ci.innerHTML = '';
-			co = null;
 		}
 	}
 	cf.addEventListener('change', handleDrop);
-
-	window.onresize = function() {
-		const img = ci.querySelector('img');
-		if (img) {
-			scale = img.clientWidth / img.naturalWidth;
-			console.log(scale);
-		}
-	};
 
 	const fs = cf.closest('form');
 	var dragging2 = 0;
