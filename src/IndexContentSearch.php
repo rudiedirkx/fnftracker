@@ -109,17 +109,17 @@ class IndexContentSearch extends IndexContent {
 		$prefixesSql = implode(' OR ', array_map(fn($prefix) => sprintf("r.prefixes LIKE '%s'", $prefix), Fetcher::STATUS_PREFIXES));
 		$sourcesSql = implode(' AND ', $sql) ?: '1=1';
 		$this->sourcesSql = <<<SQL
-			SELECT s.*
-			FROM sources s
+			SELECT sources.*
+			FROM sources
 			JOIN (
 				select source_id, max(id) id
 				from releases
 				group by source_id
-			) x ON x.source_id = s.id
+			) x ON x.source_id = sources.id
 			JOIN releases r ON r.id = x.id
 			WHERE ($sourcesSql) AND ($prefixesSql)
 			ORDER BY $this->sourcesOrder DESC
-			LIMIT 50
+			LIMIT 100
 		SQL;
 		$this->sources = Source::query($this->sourcesSql);
 	}
