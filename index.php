@@ -297,6 +297,7 @@ $edit = Source::find($_GET['edit'] ?? 0);
 
 			<datalist id="dl-char-roles">
 				<? $roles = array_filter(array_unique(array_column($edit->characters, 'role'))) ?>
+				<? $roles = [...$roles, ...array_map(fn($char) => "$char->name's ", $edit->characters)] ?>
 				<? natcasesort($roles) ?>
 				<? foreach ($roles as $role): ?>
 					<option value="<?= html($role) ?>">
