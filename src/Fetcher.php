@@ -260,7 +260,7 @@ class Fetcher {
 			return explode(' - ', trim(preg_replace('#\s+f95zone$#i', '', trim($name, '- '))))[0];
 		};
 		$trim = function($name) {
-			return trim(preg_replace('# (interactive|games|studios?|productions?)$#i', '', $name));
+			return trim(preg_replace('# (interactive|games|studios?|productions?)$#i', '', trim($name, '!?')));
 		};
 
 		$title = $doc->query('head title');
