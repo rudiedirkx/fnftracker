@@ -38,5 +38,5 @@ echo json_encode([
 	'version' => $fetcher->version,
 	'release_id' => $releaseId,
 	'release_date' => $fetcher->release,
-	'new' => $releaseId != $lastReleaseId,
+	'new' => $releaseId && $releaseId != $lastReleaseId,
 ]);

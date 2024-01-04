@@ -117,12 +117,22 @@ console.timeEnd('logIn');
 
 		const [id, url] = urls[i];
 console.log(id, url);
-		await page.goto(url);
-		const body = await page.content();
+		try {
+			const rsp = await page.goto(url);
+			if (rsp && rsp.status() == 200) {
+				const body = await page.content();
 
-		const saved = await sendResponse(id, body, page.url());
+				const saved = await sendResponse(id, body, page.url());
 console.log('saved', saved);
-		if ( saved && saved.new ) news++;
+				if ( saved && saved.new ) news++;
+			}
+			else {
+				console.log('ERROR', 'http code', rsp.status());
+			}
+		}
+		catch (ex) {
+			console.log('ERROR', ex);
+		}
 		console.log(`${i+1} / ${total}`);
 	}
 

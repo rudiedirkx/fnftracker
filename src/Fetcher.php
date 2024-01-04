@@ -74,6 +74,7 @@ class Fetcher {
 		$doc = Node::create($html);
 		// $text = $this->getLdText($doc);
 		$text = $this->getOPText($doc);
+		if (!$text) return 0;
 
 		$this->name = $this->getName($doc);
 		[$this->release, $this->thread] = $this->getDates($text);
@@ -332,7 +333,7 @@ class Fetcher {
 
 	protected function getOPText(Node $doc) {
 		$el = $doc->query('.message:not(.sticky-container) .message-content');
-		$text = trim(preg_replace('# +#', ' ', trim($el->innerText)));
+		$text = trim(preg_replace('# +#', ' ', trim($el->innerText ?? '')));
 		return $text;
 	}
 
