@@ -4,7 +4,8 @@ const commandLineArgs = require('command-line-args')
 // const FormData = require('form-data');
 const fs = require('fs');
 // const {Readable} = require('stream');
-const cfg = require('./env.js');
+// const cfg = require('./env.js');
+let cfg = {};
 
 const options = commandLineArgs([
 	{name: 'test', type: Number, defaultValue: 0},
@@ -51,6 +52,13 @@ function sendResponse(id, html , url) {
 }
 
 (async () => {
+	try {
+		cfg = await import('../env.js');
+	}
+	catch (ex) {
+		cfg = await import('./env.js');
+	}
+
 	console.log(`${cfg.baseUrl}/ - ${cfg.f95Url}/`);
 	console.log('');
 
