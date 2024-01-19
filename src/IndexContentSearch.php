@@ -5,6 +5,7 @@ namespace rdx\f95;
 class IndexContentSearch extends IndexContent {
 
 	protected string $sourcesOrder;
+	protected ?int $sourcesLimit = null;
 	protected int $releasesLimit;
 
 	public function __construct(public string $search) {
@@ -12,7 +13,8 @@ class IndexContentSearch extends IndexContent {
 
 		if (isset($this->sources, $this->releases)) return;
 
-		$this->sources = Source::all("$this->sourcesSql ORDER BY $this->sourcesOrder, (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC");
+		$limit = $this->sourcesLimit ? 'limit ' . $this->sourcesLimit : '';
+		$this->sources = Source::all("$this->sourcesSql ORDER BY $this->sourcesOrder, (f95_id is null) desc, priority DESC, LOWER(REGEXP_REPLACE('^(the|a) ', '', name)) ASC $limit");
 		$ids = array_column($this->sources, 'id');
 
 		$this->releasesLimit = count($this->sources) <= 3 ? 101 : 11;
@@ -52,6 +54,7 @@ class IndexContentSearch extends IndexContent {
 				$sql[] = "$column is not null";
 				$order[] = "$column " . ($part[0] === '-' ? 'desc' : 'asc');
 				$sorted or $sorted = $column;
+				if (!$this->sourcesLimit) $this->sourcesLimit = 100;
 			}
 			elseif ($part === '-last_checked') {
 				$order[] = "(select max(last_fetch_on) from releases where source_id = sources.id) desc";
@@ -63,6 +66,7 @@ class IndexContentSearch extends IndexContent {
 				$order[] = "(select max(release_date) from releases where source_id = sources.id) $dir";
 				$sorted or $sorted = trim($part, '-');
 				$sql[] = '1=1';
+				if (!$this->sourcesLimit) $this->sourcesLimit = 100;
 			}
 			elseif (in_array($part, ['=prefix', '=prefixed'])) {
 				$this->prepareSqlForPrefixed($sql);
@@ -70,6 +74,9 @@ class IndexContentSearch extends IndexContent {
 			}
 			elseif ($part === '=characters') {
 				$sql[] = "sources.id in (select source_id from characters)";
+			}
+			elseif ($part === '=all') {
+				$this->sourcesLimit = 9999;
 			}
 			elseif ($part === '=') {
 				// Ignore
