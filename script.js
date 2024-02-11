@@ -130,7 +130,8 @@ document.querySelector('#stats').addEventListener('click', eventIf('[data-pr-sea
 
 Array.from(document.querySelectorAll('.hilited, .hilited *')).some(el => el.focus() || el == document.activeElement);
 
-document.querySelector('table.characters').addEventListener('click', eventIf('button.reupload-character', function(e) {
+const tblChars = document.querySelector('table.characters');
+if (tblChars) tblChars.addEventListener('click', eventIf('button.reupload-character', function(e) {
 	this.previousElementSibling.checked = true;
 	const nameEl = document.querySelector('input[name="char_name"]');
 	nameEl.value = this.dataset.name;
