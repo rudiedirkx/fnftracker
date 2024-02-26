@@ -7,6 +7,7 @@ class IndexContentSearch extends IndexContent {
 	protected string $sourcesOrder;
 	protected ?int $sourcesLimit = null;
 	protected int $releasesLimit;
+	protected bool $onlyMultiReleases = true;
 
 	public function __construct(public string $search) {
 		$this->prepareSql();
@@ -18,8 +19,9 @@ class IndexContentSearch extends IndexContent {
 		$ids = array_column($this->sources, 'id');
 
 		$this->releasesLimit = count($this->sources) <= 3 ? 101 : 11;
+		$multi = $this->onlyMultiReleases ? 1 : 0;
 		$this->releases = Release::all("
-			source_id in (?) AND source_id in (select source_id from releases group by source_id having count(1) > 1)
+			source_id in (?) AND source_id in (select source_id from releases group by source_id having count(1) > $multi)
 			order by first_fetch_on desc
 			limit $this->releasesLimit
 		", [count($ids) ? $ids : 0]);
@@ -86,6 +88,7 @@ class IndexContentSearch extends IndexContent {
 			}
 			elseif ($part === '=edit') {
 				$this->editing = true;
+				$this->onlyMultiReleases = false;
 			}
 			else {
 				$search[] = $part;
