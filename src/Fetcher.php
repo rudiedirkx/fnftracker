@@ -140,7 +140,7 @@ class Fetcher {
 	}
 
 	protected function getName(Node $doc) {
-		$h1 = $doc->query('h1');
+		$h1 = $doc->query('.pageContent h1');
 		foreach ($h1->childNodes as $node) {
 			if ($node instanceof DOMText) {
 				$name = $node->textContent;
