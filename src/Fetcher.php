@@ -179,8 +179,14 @@ class Fetcher {
 
 	protected function getRating(Node $doc) : ?int {
 		// Voting widget
-		$select = $doc->query('select[name="rating"]');
+		$select = $doc->query('select[name="rating"][data-initial-rating][data-vote-content]');
 		if ($select) {
+			if (preg_match('#\b(\d+) Votes?\b#', $select['data-vote-content'], $match)) {
+				if ($match[1] < 2) {
+					return null;
+				}
+			}
+
 			$rating = (float) $select['data-initial-rating'];
 			if ($rating > 0) {
 				return round(20 * $rating);
@@ -189,7 +195,7 @@ class Fetcher {
 		}
 
 		// Having voted stars
-		$stars = $doc->query('.bratr-rating[title]');
+		$stars = $doc->query('.p-title-pageAction .bratr-rating[title]');
 		if (preg_match('#(\d+(?:\.\d+)?) star#', $stars->textContent, $match)) {
 			$rating = (float) $match[1];
 			return round(20 * $rating);
