@@ -214,7 +214,7 @@ class Fetcher {
 		if (!$el) return [];
 
 		$nodes = [];
-		for ($i = 0; $i < 20; $i++) {
+		for ($i = 0; $i < 30; $i++) {
 			$el = $el->nextSibling;
 			if (!$el) {
 				return $nodes;
