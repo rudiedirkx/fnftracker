@@ -71,6 +71,7 @@ class IndexContentSearch extends IndexContent {
 				if (!$this->sourcesLimit) $this->sourcesLimit = 100;
 			}
 			elseif (in_array($part, ['=prefix', '=prefixed'])) {
+				if (!$this->sourcesLimit) $this->sourcesLimit = 100;
 				$this->prepareSqlForPrefixed($sql);
 				return;
 			}
@@ -129,7 +130,7 @@ class IndexContentSearch extends IndexContent {
 			JOIN releases r ON r.id = x.id
 			WHERE ($sourcesSql) AND ($prefixesSql)
 			ORDER BY $this->sourcesOrder DESC
-			LIMIT 100
+			LIMIT $this->sourcesLimit
 		SQL;
 		$this->sources = Source::query($this->sourcesSql);
 	}
