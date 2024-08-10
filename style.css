@@ -5,12 +5,15 @@ a, a:visited {
 	color: deeppink;
 }
 
-body.show-banner {
-	/*--transparency: 0.75;*/
-	background: none right top no-repeat;
-	background-image: /*linear-gradient(rgba(255, 255, 255, var(--transparency)), rgba(255, 255, 255, var(--transparency))),*/ var(--banner);
-	background-size: contain;
-	background-attachment: fixed;
+#source-banner {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	max-width: 100%;
+}
+body:not(.show-banner) #source-banner {
+	display: none;
 }
 
 h1 {

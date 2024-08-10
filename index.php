@@ -192,6 +192,8 @@ $sourceRatingsGroups = array_reduce($sourceRatings, function(array $grid, $sourc
 $edit = Source::find($_GET['edit'] ?? 0);
 
 ?>
+<img id="source-banner" />
+
 <p>
 	<input <?= $edit ? '' : 'autofocus' ?> type="search" placeholder="Name &amp; developer..." value="<?= html($_GET['search'] ?? '') ?>" />
 	<button onclick="return window.open('https://google.com/search?q=site:<?= F95_HOST ?>+' + encodeURIComponent(this.previousElementSibling.value)), false">&#128269;</button>

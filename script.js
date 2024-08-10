@@ -36,7 +36,8 @@ tables.addEventListener('click', eventIf('.sources td.priority', priorityHandle)
 const bannerOver = function(e) {
 	const url = this.closest('tr').dataset.banner;
 	if (!url) return;
-	body.style.setProperty('--banner', `url('${url}')`);
+	// body.style.setProperty('--banner', `url('${url}')`);
+	document.querySelector('#source-banner').src = url;
 	body.classList.add('show-banner');
 };
 const bannerOut = function(e) {
