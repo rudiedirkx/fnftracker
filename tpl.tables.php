@@ -154,7 +154,7 @@
 							<a class="sync" href="?sync=<?= $source->id ?>">&#8635;</a>
 						</div>
 					</td>
-					<td nowrap tabindex="0" class="version" title="<?= html($source->last_release->version) ?>"><span><?= $source->last_release->cleaned_version ?? '' ?></span></td>
+					<td nowrap tabindex="0" class="version" title="<?= html($source->last_release->version ?? '') ?>"><span><?= $source->last_release->cleaned_version ?? '' ?></span></td>
 					<td nowrap>
 						<? if ($source->last_release): ?>
 							<div class="cols">

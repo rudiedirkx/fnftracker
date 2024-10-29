@@ -36,7 +36,9 @@ class Release extends Model {
 		return $this->getRecentness($this->first_fetch_on);
 	}
 
-	protected function getRecentness($date) {
+	protected function getRecentness(null|int|string $date) {
+		if (!$date) return 0;
+
 		$utc = is_numeric($date) ? $date : strtotime($date);
 		foreach (Source::RECENTS as $i => $days) {
 			if (strtotime("-$days days") < $utc) {
