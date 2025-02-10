@@ -17,6 +17,7 @@ class Fetcher {
 		'rpgm', 'unity', 'html', 'others', 'flash', 'unreal engine', 'java',
 	];
 
+	public $debug;
 	public $source;
 	public $url;
 
@@ -31,8 +32,9 @@ class Fetcher {
 	public $patreon;
 	public $banner;
 
-	public function __construct(Source $source) {
+	public function __construct(Source $source, bool $debug = false) {
 		$this->source = $source;
+		$this->debug = $debug;
 
 		$this->url = strtr(F95_URL, [
 			'{name}' => 'x',
@@ -84,6 +86,10 @@ class Fetcher {
 		$this->patreon = $this->getPatreon($doc, $text);
 		$this->rating = $this->getRating($doc);
 		$this->prefixes = implode(',', $this->getPrefixes($doc)) ?: null;
+
+		if ($this->debug) {
+			dd($this);
+		}
 
 		$this->persistSource();
 
@@ -211,26 +217,29 @@ class Fetcher {
 			$container->xpathRaw('//b[text()="Publisher"]')[0] ??
 			$container->xpathRaw('//b[text()="Developer/Publisher"]')[0] ??
 			null;
-		if (!$el) return [];
+		if (!$el) return [[], []];
 
-		$nodes = [];
+		$preLinks = $links = [];
 		for ($i = 0; $i < 30; $i++) {
 			$el = $el->nextSibling;
 			if (!$el) {
-				return $nodes;
+				return [$links, $preLinks];
 			}
 			if ($el->nodeName == 'br' || $el->nodeValue == 'Version') {
-				return $nodes;
+				return [$links, $preLinks];
 			}
 			elseif ($el->nodeName == 'a') {
-				$nodes[] = new Node($el);
+				$links[] = new Node($el);
 			}
 			elseif (count($as = (new Node($el))->queryAll('a')) == 1) {
-				$nodes[] = $as[0];
+				$links[] = $as[0];
+			}
+			elseif (!count($links)) {
+				$preLinks[] = new Node($el);
 			}
 		}
 
-		return [];
+		return [[], []];
 	}
 
 	protected function getPatreonUsername(string $url) {
@@ -249,7 +258,7 @@ class Fetcher {
 	protected function getPatreon(Node $doc, string $text) {
 		$container = $doc->query('.message-threadStarterPost .message-body');
 
-		$links = $this->getDeveloperLinks($container);
+		[$links] = $this->getDeveloperLinks($container);
 		foreach ($links as $link) {
 			if (preg_replace('#^www\.#', '', parse_url($link['href'], PHP_URL_HOST)) == 'patreon.com') {
 				return $this->getPatreonUsername($link['href']);
@@ -267,12 +276,18 @@ class Fetcher {
 			return explode(' - ', trim(preg_replace('#\s+f95zone$#i', '', trim($name, '- '))))[0];
 		};
 		$trim = function($name) {
-			return trim(preg_replace('# (interactive|games|studios?|productions?)$#i', '', trim($name, '!?')));
+			return trim(preg_replace('# (interactive|games|studios?|productions?)$#i', '', trim($name, '!?: ')));
 		};
 
 		$title = $doc->query('head title');
 		if ($title && preg_match('#[\[\(]([^\]\)]+)[\]\)] \| F95zone$#i', $title->innerText, $match)) {
 			return $trim($match[1]);
+		}
+
+		$container = $doc->query('.message-threadStarterPost .message-body');
+		[, $preLinks] = $this->getDeveloperLinks($container);
+		if (count($preLinks)) {
+			return $trim($clean($preLinks[0]->textContent));
 		}
 
 		$body = $doc->query('.message-threadStarterPost .message-body > .bbWrapper')->innerText;
