@@ -249,7 +249,7 @@ class Fetcher {
 		}
 
 		$path = trim(preg_replace('/[\?#].+$/', '', $path), '/');
-		$path = preg_replace('#/(overview|posts)$#', '', $path);
+		$path = preg_replace('#/(home|overview|posts)$#', '', $path);
 		$path = preg_replace('#^(c)/(.)#', '$2', $path);
 		if ($path && strpos($path, '/') === false) {
 			return $path;
