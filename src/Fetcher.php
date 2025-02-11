@@ -250,6 +250,7 @@ class Fetcher {
 
 		$path = trim(preg_replace('/[\?#].+$/', '', $path), '/');
 		$path = preg_replace('#/(overview|posts)$#', '', $path);
+		$path = preg_replace('#^(c)/(.)#', '$2', $path);
 		if ($path && strpos($path, '/') === false) {
 			return $path;
 		}
@@ -280,14 +281,17 @@ class Fetcher {
 		};
 
 		$title = $doc->query('head title');
-		if ($title && preg_match('#[\[\(]([^\]\)]+)[\]\)] \| F95zone$#i', $title->innerText, $match)) {
+		if ($title && preg_match('#[\[\(]([^\]\)]+)[\]\)] \| F95zone( |$)#i', $title->innerText, $match)) {
 			return $trim($match[1]);
 		}
 
 		$container = $doc->query('.message-threadStarterPost .message-body');
 		[, $preLinks] = $this->getDeveloperLinks($container);
 		if (count($preLinks)) {
-			return $trim($clean($preLinks[0]->textContent));
+			$developer = $trim($clean($preLinks[0]->textContent));
+			if ($developer) {
+				return $developer;
+			}
 		}
 
 		$body = $doc->query('.message-threadStarterPost .message-body > .bbWrapper')->innerText;
