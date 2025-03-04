@@ -1,5 +1,6 @@
 <?php
 
+use rdx\f95\Cronjob;
 use rdx\f95\Source;
 
 $prioSources = array_map(fn($arr) => array_sum($arr), $releaseStatsGroups);
@@ -63,4 +64,5 @@ $prioSources = array_map(fn($arr) => array_sum($arr), $releaseStatsGroups);
 <fieldset>
 	<legend>Prognosis</legend>
 	<p>~<?= Source::numPerDay($prioSources) ?> per day</p>
+	<p>Cronjob: <?= iterator_count((new Cronjob())->getSources()) ?></p>
 </fieldset>
