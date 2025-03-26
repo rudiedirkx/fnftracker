@@ -32,6 +32,9 @@ if ( isset($_POST['name'], $_POST['f95_id'], $_POST['developer'], $_POST['patreo
 		'description' => trim($_POST['description']) ?: null,
 		'finished' => trim($_POST['finished']) ?: null,
 	];
+	if ( isset($_POST['priority']) ) {
+		$data['priority'] = $_POST['priority'];
+	}
 
 	if ( isset($_POST['id']) ) {
 		$id = $_POST['id'];
@@ -220,6 +223,9 @@ $edit = Source::find($_GET['edit'] ?? 0);
 		<? endif ?>
 		<p>Name: <input name="name" required value="<?= html($edit->name ?? '') ?>" <?= $edit ? 'autofocus' : '' ?> /></p>
 		<p>F95 ID: <input name="f95_id" pattern="^\d+$" value="<?= html($edit->f95_id ?? '') ?>" /></p>
+		<? if ($edit): ?>
+			<p>Priority: <select name="priority"><? foreach (Source::PRIORITIES as $prio => $foo): ?><option value="<?= $prio ?>" <?= $edit->priority == $prio ? 'selected' : '' ?>><?= $prio ?> &nbsp;</option><? endforeach ?></select></p>
+		<? endif ?>
 		<p>Developer: <input name="developer" value="<?= html($edit->developer ?? '') ?>" /></p>
 		<p>Patreon: <input name="patreon" value="<?= html($edit->patreon ?? '') ?>" list="dl-patreons" /></p>
 		<p>Installed version: <input name="installed" value="<?= html($edit->installed ?? '') ?>" autocomplete="off" list="dl-versions" /></p>
