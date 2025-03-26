@@ -38,6 +38,7 @@ abstract class IndexContent {
 		Source::eager('last_release', $this->sources);
 		Source::eager('num_releases', $this->sources);
 		Source::eager('characters', $this->sources);
+		Source::eager('versions', $this->sources);
 	}
 
 	abstract public function getNoSourcesMessage() : string;

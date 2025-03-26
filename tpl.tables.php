@@ -30,7 +30,7 @@
 					<td class="with-priority title">
 						<span class="title-name" title="<?= html($fetch->source->title_title) ?>"><?= html($fetch->source->name) ?></span>
 						<? if ($fetch->source->installed): ?>
-							<span class="installed-version">(<?= html($fetch->source->installed) ?>)</span>
+							<span class="installed-version <?= $fetch->source->installed_class ?>">(<?= html($fetch->source->installed) ?>)</span>
 						<? endif ?>
 						<a class="search-icon" href>&#128270;</a>
 						<a class="edit-icon" href="?edit=<?= $fetch->source_id ?>">&#9998;</a>
