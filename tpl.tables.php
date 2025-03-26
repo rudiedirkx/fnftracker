@@ -127,7 +127,7 @@
 					<td class="title">
 						<span class="title-name" title="<?= html($source->title_title) ?>"><?= html($source->name) ?></span>
 						<? if ($source->installed): ?>
-							<span class="installed-version">(<?= html($source->installed) ?>)</span>
+							<span class="installed-version <?= $source->installed_class ?>">(<?= html($source->installed) ?>)</span>
 						<? endif ?>
 						<a class="search-icon" href>&#128270;</a>
 						<a class="edit-icon" href="?edit=<?= $source->id ?>">&#9998;</a>

@@ -35,6 +35,9 @@ table {
 	border-collapse: collapse;
 	border: solid 1px #999;
 }
+tbody tr:hover {
+	background: #eee;
+}
 th, td {
 	border: solid 1px #999;
 	border-width: 1px 0;
@@ -206,6 +209,12 @@ td.title {
 }
 .installed-version {
 	color: orange;
+}
+.installed-version.uptodate {
+	color: green;
+}
+.installed-version.unknown {
+	color: red;
 }
 .rating {
 	color: purple;

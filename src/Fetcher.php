@@ -56,7 +56,7 @@ class Fetcher {
 		]);
 	}
 
-	public function sync(Guzzle $guzzle = null, $catch = false) : int {
+	public function sync(?Guzzle $guzzle = null, bool $catch = false) : int {
 		$guzzle or $guzzle = self::makeGuzzle();
 
 		try {
@@ -72,7 +72,7 @@ class Fetcher {
 		return $this->syncFromHtml($html, $url);
 	}
 
-	public function syncFromHtml(string $html, string $url = null) : int {
+	public function syncFromHtml(string $html, ?string $url = null) : int {
 		$doc = Node::create($html);
 		// $text = $this->getLdText($doc);
 		$text = $this->getOPText($doc);

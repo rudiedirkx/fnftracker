@@ -90,6 +90,16 @@ class Source extends Model {
 		return implode(' ', $parts);
 	}
 
+	protected function get_installed_class() {
+		if ($this->installed == $this->last_release->version) {
+			return 'uptodate';
+		}
+		if (in_array($this->installed, $this->versions)) {
+			return 'outofdate';
+		}
+		return 'unknown';
+	}
+
 	protected function get_draft_or_priority() {
 		return $this->f95_id ? $this->priority : self::DRAFT_PRIORITY;
 	}
