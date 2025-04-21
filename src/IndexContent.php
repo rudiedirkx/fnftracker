@@ -35,10 +35,17 @@ abstract class IndexContent {
 	}
 
 	public function eagerLoad() : void {
-		Source::eager('last_release', $this->sources);
 		Source::eager('num_releases', $this->sources);
-		Source::eager('characters', $this->sources);
-		Source::eager('versions', $this->sources);
+		$this->eagerLoadSources($this->sources);
+
+		$_sources = Release::eager('source', $this->releases);
+		$this->eagerLoadSources($_sources);
+	}
+
+	protected function eagerLoadSources(array $sources) : void {
+		Source::eager('last_release', $sources);
+		Source::eager('characters', $sources);
+		Source::eager('versions', $sources);
 	}
 
 	abstract public function getNoSourcesMessage() : string;
