@@ -114,6 +114,7 @@
 						recency-<?= $source->last_release->fetch_recency ?? '' ?>
 						<?= $source->status_prefix_class ?? '' ?>
 						<?= $source->title_class ?>
+						version-<?= $source->installed_class ?>
 					"
 					data-id="<?= $source->id ?>"
 					data-banner="<?= html($source->banner_url) ?>"

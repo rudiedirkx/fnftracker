@@ -87,7 +87,9 @@ tr.completed .pstatus:before {
 }
 tr.played .pstatus:before {
 	color: orange;
-	font-weight: bold;
+}
+tr.played.version-uptodate .pstatus:before {
+	color: lightgreen;
 }
 td > .cols {
 	display: flex;
