@@ -34,8 +34,8 @@
 						<? endif ?>
 						<a class="search-icon" href>&#128270;</a>
 						<a class="edit-icon" href="?edit=<?= $fetch->source_id ?>">&#9998;</a>
-						<? if ($fetch->source->f95_rating): ?>
-							<span class="rating">&#9733;<?= round($fetch->source->f95_rating/10) ?></span>
+						<? if ($fetch->f95_rating || $fetch->source->f95_rating): ?>
+							<span class="rating">&#9733;<?= round(($fetch->f95_rating ?? $fetch->source->f95_rating)/10) ?></span>
 						<? endif ?>
 						<?if ($fetch->source->developer): ?>
 							<span class="developer" title="Patreon: <?= html($fetch->source->pretty_patreon ?: '?') ?>"><?= html($fetch->source->pretty_developer) ?></span>

@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'version' => 18,
+	'version' => 19,
 	'tables' => [
 		'sources' => [
 			'id' => ['pk' => true],
@@ -27,6 +27,7 @@ return [
 			'thread_date',
 			'version',
 			'prefixes',
+			'f95_rating' => ['unsigned' => true],
 		],
 		'characters' => [
 			'id' => ['pk' => true],

@@ -116,6 +116,7 @@ class Fetcher {
 				'url' => $url,
 				'first_fetch_on' => time(),
 				'last_fetch_on' => time(),
+				'f95_rating' => $this->rating,
 			]);
 		}
 
