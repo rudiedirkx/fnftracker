@@ -22,7 +22,7 @@ class Cronjob {
 
 		$anyway = CRON_DO_ANYWAY * 100;
 		foreach ( $sources as $source ) {
-			if ( date('Y-m-d', $source->last_release->last_fetch_on) <= $this->priomap[$source->priority] ) {
+			if ( date('Y-m-d', $source->last_release->last_fetch_on ?? 1) <= $this->priomap[$source->priority] ) {
 				$this->checking[$source->priority][0]++;
 				yield [$source, false];
 			}
