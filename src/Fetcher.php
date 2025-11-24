@@ -282,7 +282,7 @@ class Fetcher {
 		};
 
 		$title = $doc->query('head title');
-		if ($title && preg_match('#[\[\(]([^\]\)]+)[\]\)] \| F95zone( |$)#i', $title->innerText, $match)) {
+		if ($title && preg_match('#([^\]\[]+)\] \| F95zone( |$)#i', $title->innerText, $match)) {
 			return $trim($match[1]);
 		}
 
