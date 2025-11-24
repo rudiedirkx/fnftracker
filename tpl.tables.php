@@ -47,7 +47,7 @@
 						<? endif ?>
 					</td>
 					<td nowrap class="<?= $fetch->not_release_date ? 'not-release-date' : '' ?> recent-<?= $fetch->recent_release ?> old-last-change-<?= $fetch->old_last_change ?>" title="<?= html($fetch->thread_date) ?>">
-						<?php if ($index->editing && $fetch->release_date): ?>
+						<?php if ($index->editing): ?>
 							<input class="editing-release" data-name="release_date" data-fetch="<?= $fetch->id ?>" value="<?= html($fetch->release_date) ?>">
 						<?php else: ?>
 							<?= $fetch->release_date ?? $fetch->thread_date ?>
