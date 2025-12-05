@@ -46,7 +46,11 @@
 							<span class="psoftware"><?= $fetch->software_prefix_label ?></span>
 						<? endif ?>
 					</td>
-					<td nowrap class="<?= $fetch->not_release_date ? 'not-release-date' : '' ?> recent-<?= $fetch->recent_release ?> old-last-change-<?= $fetch->old_last_change ?>" title="<?= html($fetch->thread_date) ?>">
+					<td
+						nowrap
+						class="<?= $fetch->not_release_date ? 'not-release-date' : '' ?> recent-<?= $fetch->recent_release ?> old-last-change-<?= $fetch->old_last_change ?>"
+						title="<?= html($fetch->thread_date) ?>"
+					>
 						<?php if ($index->editing): ?>
 							<input class="editing-release" data-name="release_date" data-fetch="<?= $fetch->id ?>" value="<?= html($fetch->release_date) ?>">
 						<?php else: ?>
@@ -59,7 +63,14 @@
 							<a class="goto" target="_blank" href="<?= html($fetch->url) ?>">&#10132;</a>
 						</div>
 					</td>
-					<td nowrap tabindex="0" class="version" title="<?= html($fetch->version) ?>"><span><?= html($fetch->cleaned_version) ?></span></td>
+					<td
+						nowrap
+						tabindex="0"
+						class="version <?= $fetch->source->installed == $fetch->version ? 'installed-version' : '' ?>"
+						title="<?= html($fetch->version) ?>"
+					>
+						<span><?= html($fetch->cleaned_version) ?></span>
+					</td>
 					<? if ($index->deleting): ?>
 						<td><a href data-body="delete_release=<?= $fetch->id ?>" class="delete">x</a></td>
 					<? endif ?>
