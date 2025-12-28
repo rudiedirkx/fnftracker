@@ -14,7 +14,7 @@ class Cronjob {
 	}
 
 	public function getSources() {
-		$sources = Source::all('priority > 0 AND f95_id is not null');
+		$sources = Source::all("priority > 0 AND f95_id is not null AND f95_id <> '1'");
 		Source::eager('last_release', $sources);
 		shuffle($sources);
 
