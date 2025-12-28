@@ -2,11 +2,14 @@
     "name": "rdx/f95tracker",
     "type": "project",
     "require": {
-        "rdx/db": "^1.21",
+        "rdx/db": "^1.28",
         "guzzlehttp/guzzle": "^7.1",
         "rdx/js-dom": "^1.12",
         "intervention/image": "^2.6",
-        "symfony/var-dumper": "^6.0"
+        "symfony/var-dumper": "^6.0",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "rdx/phpstan-extra": "dev-master"
     },
     "autoload": {
         "psr-4": {

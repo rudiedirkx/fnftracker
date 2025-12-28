@@ -55,18 +55,18 @@ class IndexContentSearch extends IndexContent {
 			elseif (in_array($part[0], ['-', '+']) && in_array($column = ltrim($part, '-+'), ['finished', 'created_on'])) {
 				$sql[] = "$column is not null";
 				$order[] = "$column " . ($part[0] === '-' ? 'desc' : 'asc');
-				$sorted or $sorted = $column;
+				if (!$sorted) $sorted = $column;
 				if (!$this->sourcesLimit) $this->sourcesLimit = 100;
 			}
 			elseif ($part === '-last_checked') {
 				$order[] = "(select max(last_fetch_on) from releases where source_id = sources.id) desc";
-				$sorted or $sorted = trim($part, '-');
+				if (!$sorted) $sorted = trim($part, '-');
 				$sql[] = '1=1';
 			}
 			elseif (ltrim($part, '-+') === 'last_release') {
 				$dir = $part[0] === '-' ? 'desc' : 'asc';
 				$order[] = "(select max(release_date) from releases where source_id = sources.id) $dir";
-				$sorted or $sorted = trim($part, '-');
+				if (!$sorted) $sorted = trim($part, '-');
 				$sql[] = '1=1';
 				if (!$this->sourcesLimit) $this->sourcesLimit = 100;
 			}
@@ -109,6 +109,9 @@ class IndexContentSearch extends IndexContent {
 		$this->sourcesSorted = $sorted ?? 'name';
 	}
 
+	/**
+	 * @param list<string> $sql
+	 */
 	protected function prepareSqlForPrefixed(array $sql) : void {
 		$this->showSourceDetectedInsteadOfChecked = true;
 

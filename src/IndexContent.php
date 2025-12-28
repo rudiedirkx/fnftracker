@@ -13,9 +13,11 @@ abstract class IndexContent {
 
 	public string $sourcesSql;
 	public string $sourcesSorted;
+	/** @var array<int, Source> */
 	public array $sources;
 
 	public string $releasesSorted = 'first_fetch_on';
+	/** @var array<int, Release> */
 	public array $releases;
 
 	public int $totalSources;
@@ -42,6 +44,9 @@ abstract class IndexContent {
 		$this->eagerLoadSources($_sources);
 	}
 
+	/**
+	 * @param array<Source> $sources
+	 */
 	protected function eagerLoadSources(array $sources) : void {
 		Source::eager('last_release', $sources);
 		Source::eager('characters', $sources);

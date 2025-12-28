@@ -6,8 +6,10 @@ class Character extends Model {
 
 	static public $_table = 'characters';
 
-	public function deleteImage() {
-		$this->filepath and @unlink($this->filepath);
+	public function deleteImage() : void {
+		if ($this->filepath) {
+			@unlink($this->filepath);
+		}
 	}
 
 	protected function relate_source() {

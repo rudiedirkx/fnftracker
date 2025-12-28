@@ -4,15 +4,15 @@ namespace rdx\f95;
 
 class Release extends Model {
 
-	const STATUS_PREFIXES = ['completed', 'onhold', 'abandoned'];
+	protected const STATUS_PREFIXES = ['completed', 'onhold', 'abandoned'];
 
 	static public $_table = 'releases';
 
-	protected function get_not_release_date() {
+	protected function get_not_release_date() : bool {
 		return !$this->release_date && $this->thread_date;
 	}
 
-	protected function get_old_last_change() {
+	protected function get_old_last_change() : int {
 		if ($this->release_date && $this->release_date <= date('Y-m-d', strtotime('-1 year', $this->first_fetch_on))) {
 			return 1;
 		}
@@ -20,7 +20,7 @@ class Release extends Model {
 		return 0;
 	}
 
-	protected function get_fetch_recency() {
+	protected function get_fetch_recency() : int {
 		if (date('Y-m-d', $this->first_fetch_on) == TODAY) {
 			return 2;
 		}
@@ -28,15 +28,15 @@ class Release extends Model {
 		return $this->recent_fetch == 1 ? 1 : 0;
 	}
 
-	protected function get_recent_release() {
+	protected function get_recent_release() : int {
 		return $this->getRecentness($this->release_date);
 	}
 
-	protected function get_recent_fetch() {
+	protected function get_recent_fetch() : int {
 		return $this->getRecentness($this->first_fetch_on);
 	}
 
-	protected function getRecentness(null|int|string $date) {
+	protected function getRecentness(null|int|string $date) : int {
 		if (!$date) return 0;
 
 		$utc = is_numeric($date) ? $date : strtotime($date);
@@ -49,25 +49,30 @@ class Release extends Model {
 		return 0;
 	}
 
-	protected function get_status_prefix_class() {
+	protected function get_status_prefix_class() : string {
 		foreach (explode(',', $this->prefixes ?? '') as $prefix) {
 			if (in_array($prefix, self::STATUS_PREFIXES)) {
 				return $prefix;
 			}
 		}
+
+		return '';
 	}
 
-	protected function get_software_prefix_label() {
+	protected function get_software_prefix_label() : string {
 		foreach (explode(',', $this->prefixes ?? '') as $prefix) {
 			if (!in_array($prefix, self::STATUS_PREFIXES)) {
 				return explode(' ', $prefix)[0];
 			}
 		}
+
+		return '';
 	}
 
-	protected function get_cleaned_version() {
+	protected function get_cleaned_version() : string {
 		return $this->version ?? '';
 
+		// @phpstan-ignore deadCode.unreachable
 		if ($this->version === null) return '';
 
 		if (preg_match('#^v[\d\.]+$#', $this->version)) {

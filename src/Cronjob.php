@@ -2,9 +2,13 @@
 
 namespace rdx\f95;
 
+use Generator;
+
 class Cronjob {
 
+	/** @var array<int, ?string> */
 	protected array $priomap;
+	/** @var array<int, array{int, int}> */
 	protected array $checking;
 
 	public function __construct() {
@@ -13,6 +17,9 @@ class Cronjob {
 		}, Source::PRIORITIES));
 	}
 
+	/**
+	 * @return Generator<array{Source, bool}>
+	 */
 	public function getSources() {
 		$sources = Source::all("priority > 0 AND f95_id is not null AND f95_id <> '1'");
 		Source::eager('last_release', $sources);

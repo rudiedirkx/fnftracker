@@ -1,0 +1,23 @@
+includes:
+	- vendor/rdx/phpstan-extra/extension-php.neon
+	- vendor/rdx/phpstan-extra/extension-dbfw.neon
+	- phpstan-baseline.neon
+parameters:
+	level: 6
+	bootstrapFiles:
+		- phpstan.php
+	paths:
+		- src/
+	typeAliases:
+		AssocArray: 'array<string, mixed>'
+	dynamicConstantNames:
+		- CHARS_DIR
+	rdx_dbfw:
+		aroPropertiesSchemaFile: 'inc.db-schema.php'
+	checkExplicitMixed: true
+	checkImplicitMixed: true
+	reportMaybes: true
+	treatPhpDocTypesAsCertain: false
+	reportUnmatchedIgnoredErrors: true
+	ignoreErrors:
+		- "#^Method rdx\\\\f95\\\\\\w+::relate_\\w+\\(\\) has no return type specified#"
