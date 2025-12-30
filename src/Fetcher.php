@@ -322,7 +322,7 @@ class Fetcher {
 	}
 
 	protected function getVersion(string $text) : ?string {
-		if (preg_match('#\sVersion: *([^\r\n]+)#', $text, $match)) {
+		if (preg_match('#\sVersion *: *([^\r\n]+)#', $text, $match)) {
 			$version = trim($match[1]);
 			return $version;
 		}
