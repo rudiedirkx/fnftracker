@@ -66,7 +66,7 @@
 					<td
 						nowrap
 						tabindex="0"
-						class="version <?= $fetch->source->installed == $fetch->version ? 'installed-version' : '' ?>"
+						class="version <?= $fetch->source->installed_real === $fetch->version ? 'installed-version' : '' ?>"
 						title="<?= html($fetch->version) ?>"
 					>
 						<span><?= html($fetch->cleaned_version) ?></span>

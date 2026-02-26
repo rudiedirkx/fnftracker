@@ -96,11 +96,25 @@ class Source extends Model {
 		return implode(' ', $parts);
 	}
 
+	protected function get_installed_real() : ?string {
+		if (!$this->installed) return null;
+		if (in_array($this->installed, $this->versions)) {
+			return $this->installed;
+		}
+		$matches = array_filter($this->versions, function(string $version) {
+			return str_starts_with($version, $this->installed);
+		});
+		if (count($matches) == 1) {
+			return reset($matches);
+		}
+		return null;
+	}
+
 	protected function get_installed_class() : string {
-		if ($this->installed == $this->last_release->version) {
+		if ($this->installed_real === $this->last_release->version) {
 			return 'uptodate';
 		}
-		if (in_array($this->installed, $this->versions)) {
+		if (in_array($this->installed_real, $this->versions, true)) {
 			return 'outofdate';
 		}
 		return 'unknown';
