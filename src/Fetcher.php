@@ -336,22 +336,22 @@ class Fetcher {
 
 	protected function getDate(string $text, string $textPpattern) : ?string {
 		$datePattern = '\d\d\d\d ?- ?\d\d? ?- ?\d\d?';
-		if (preg_match("#\s$textPpattern: *($datePattern)#", $text, $match)) {
+		if (preg_match("#\s$textPpattern *: *($datePattern)#", $text, $match)) {
 			return $this->formatDate(str_replace(' ', '', $match[1]));
 		}
 
 		$datePattern = '\d\d? ?- ?[a-zA-Z]{3} ?- ?\d\d\d\d';
-		if (preg_match("#\s$textPpattern: *($datePattern)#", $text, $match)) {
+		if (preg_match("#\s$textPpattern *: *($datePattern)#", $text, $match)) {
 			return $this->formatDate(str_replace('-', ' ', $match[1]));
 		}
 
 		$datePattern = '[a-zA-Z]{3} \d\d?,? \d\d\d\d';
-		if (preg_match("#\s$textPpattern: *($datePattern)#", $text, $match)) {
+		if (preg_match("#\s$textPpattern *: *($datePattern)#", $text, $match)) {
 			return $this->formatDate(str_replace('-', ' ', $match[1]));
 		}
 
 		$datePattern = '(\d\d?)/(\d\d?)/(\d\d\d\d)';
-		if (preg_match("#\s$textPpattern: *$datePattern#", $text, $match)) {
+		if (preg_match("#\s$textPpattern *: *$datePattern#", $text, $match)) {
 			return $this->formatDate("{$match[3]}-{$match[2]}-{$match[1]}") ?? $this->formatDate("{$match[3]}-{$match[1]}-{$match[2]}");
 		}
 
