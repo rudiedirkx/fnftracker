@@ -40,8 +40,8 @@ class IndexContentSearch extends IndexContent {
 		$sorted = null;
 		$search = [];
 		foreach ($parts as $part) {
-			if (preg_match('#^p=(\d+)$#', $part, $match)) {
-				$sql[] = Source::$_db->replaceholders("priority = ?", [$match[1]]);
+			if (preg_match('#^p(=|<|>)(\d+)$#', $part, $match)) {
+				$sql[] = Source::$_db->replaceholders("priority " . $match[1] . " ?", [$match[2]]);
 			}
 			elseif (preg_match('#^r=(\d+)$#', $part, $match)) {
 				$sql[] = "(select count(1) from releases where source_id = sources.id) = " . (int) $match[1];
