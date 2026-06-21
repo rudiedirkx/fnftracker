@@ -27,6 +27,10 @@ h1 {
 	scroll-margin-top: 30px;
 }
 
+input.loading {
+	background-color: #ddd;
+}
+
 .table-wrapper {
 	overflow-x: auto;
 }

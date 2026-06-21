@@ -53,6 +53,7 @@ const searchHandle = function(value) {
 	if (value.length == 1 && value != '*') return;
 
 	if (searchAborter) searchAborter.abort('search');
+	search.classList.add('loading');
 	searchAborter = new AbortController();
 	return fetch(new Request('?search=' + encodeURIComponent(value.trim()), {
 		signal: searchAborter.signal,
@@ -61,6 +62,7 @@ const searchHandle = function(value) {
 		searchAborter = null;
 		tables.innerHTML = html;
 		bannerOut();
+		search.classList.remove('loading');
 	}).catch(ex => {
 		if (!ex.message.includes(' aborted ')) console.warn(ex);
 	});
