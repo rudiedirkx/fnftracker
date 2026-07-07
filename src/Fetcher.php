@@ -12,10 +12,24 @@ use rdx\jsdom\Node;
 
 class Fetcher {
 
-	public const STATUS_PREFIXES = ['completed', 'onhold', 'abandoned'];
+	public const STATUS_PREFIXES = [
+		'abandoned',
+		'completed',
+		'onhold',
+	];
+	protected const ENGINE_PREFIXES = [
+		'flash',
+		'godot',
+		'html',
+		'java',
+		'others',
+		'rpgm',
+		'unity',
+		'unreal engine',
+	];
 	protected const KEEP_PREFIXES = [
 		...self::STATUS_PREFIXES,
-		'rpgm', 'unity', 'html', 'others', 'flash', 'unreal engine', 'java', 'godot',
+		...self::ENGINE_PREFIXES,
 	];
 
 	public bool $debug;
