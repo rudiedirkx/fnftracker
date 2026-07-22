@@ -1,7 +1,9 @@
 <?php
 
 use GuzzleHttp\Exception\TransferException;
-use Intervention\Image\ImageManagerStatic;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
+use Intervention\Image\ImageManager;
 use rdx\f95\Character;
 use rdx\f95\IndexContent;
 use rdx\f95\Release;
@@ -105,7 +107,8 @@ if ( isset($_GET['edit'], $_POST['char_name'], $_POST['char_role'], $_FILES['cha
 	if ($id && $_FILES['char_file']['tmp_name'] && !$_FILES['char_file']['error']) {
 		[$x, $y, $s] = explode(',', $_POST['char_cutout'] . ',,');
 		if (is_numeric($x) && is_numeric($y) && is_numeric($s)) {
-			$img = ImageManagerStatic::make($_FILES['char_file']['tmp_name']);
+			$imageManager = ImageManager::usingDriver(class_exists(\Imagick::class) ? ImagickDriver::class : GdDriver::class);
+			$img = $imageManager->decodePath($_FILES['char_file']['tmp_name']);
 			$img->crop(max(0, $s), max(0, $s), max(0, $x), max(0, $y));
 			$img->resize(200, 200);
 			// echo $img->response('jpg', 70);
