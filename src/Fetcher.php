@@ -268,7 +268,7 @@ class Fetcher {
 	}
 
 	protected function getPatreonUsername(string $url) : ?string {
-		$path = trim(preg_replace('#^https?://(www\.)?patreon\.com/#', '', $url), '/');
+		$path = trim(preg_replace('#^https?://(www\.)?patreon\.com/#', '', $url), '/?');
 		if (preg_match('#^user(?:/(?:posts|about))?\?u=(\d+)($|&)#', $path, $match)) {
 			return 'u:' . $match[1];
 		}
